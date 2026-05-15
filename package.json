@@ -31,7 +31,7 @@
     "react-dom": "19.0.5",
     "server-only": "^0.0.1",
     "tailwindcss-radix": "^2.8.0",
-    "webpack": "^5"
+    "webpack": "^5",
     "swiper": "^11.0.0",
   },
   "devDependencies": {
