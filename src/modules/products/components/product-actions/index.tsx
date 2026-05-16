@@ -57,6 +57,8 @@ export default function ProductActions({
       const variantOptions = optionsAsKeymap(v.options)
       return isEqual(variantOptions, options)
     })
+    console.log("Current Options State:", options);
+  console.log("Found Variant:", found);
   }, [product.variants, options])
 
   // update the options when a variant is selected
