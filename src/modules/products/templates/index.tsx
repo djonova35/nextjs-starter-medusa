@@ -26,6 +26,40 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   }
 
   const [openAccordion, setOpenAccordion] = useState<string | null>(null)
+  const [reviewName, setReviewName] = useState("")
+  const [reviewText, setReviewText] = useState("")
+  const [reviewRating, setReviewRating] = useState(0)
+  const [hoverRating, setHoverRating] = useState(0)
+  const [submitted, setSubmitted] = useState(false)
+  const [reviews, setReviews] = useState<{
+    name: string
+    text: string
+    rating: number
+    date: string
+  }[]>([])
+
+  const handleReviewSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!reviewName || !reviewText || reviewRating === 0) return
+    setReviews([
+      {
+        name: reviewName,
+        text: reviewText,
+        rating: reviewRating,
+        date: new Date().toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      },
+      ...reviews,
+    ])
+    setReviewName("")
+    setReviewText("")
+    setReviewRating(0)
+    setSubmitted(true)
+    setTimeout(() => setSubmitted(false), 3000)
+  }
 
   return (
     <>
@@ -42,7 +76,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
 
-      {/* PRICE + SIZE + ADD TO CART - Original Working Component */}
+      {/* PRICE + SIZES + ADD TO CART */}
       <div className="dj-size-section">
         <Suspense
           fallback={
@@ -84,26 +118,26 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
 
-      {/* ACCORDIONS */}
+      {/* ACCORDIONS - Real Product Data */}
       <div className="dj-accordion">
         {[
           {
             id: "details",
             title: "🧥 Product Details",
             content: product.description ||
-              "Premium quality product from DJONOVA SS26 collection.",
+              "No description available.",
           },
           {
             id: "material",
             title: "🧵 Material & Care",
-            content: product.material ||
-              "100% ethically sourced. Machine wash cold.",
+            content: (product as any).material ||
+              "Please contact us for material information.",
           },
           {
             id: "sizing",
             title: "📏 Sizing Info",
             content:
-              "Runs true to size. Check our size guide for measurements.",
+              "Runs true to size. Check our size guide for detailed measurements across UK, EU and US sizes.",
           },
         ].map((item) => (
           <div key={item.id} className="dj-accordion-item">
@@ -159,16 +193,31 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
 
-      {/* CUSTOMER REVIEWS */}
+      {/* REAL CUSTOMER REVIEWS */}
       <div className="dj-reviews">
         <div className="dj-reviews-title">Customer Reviews</div>
 
         {/* Write Review Form */}
         <div className="dj-write-review">
-          <div className="dj-write-review-title">✍️ Write a Review</div>
+          <div className="dj-write-review-title">
+            ✍️ Write a Review
+          </div>
+          {submitted && (
+            <div style={{
+              background:"#22c55e",
+              color:"#fff",
+              padding:"12px 16px",
+              borderRadius:"8px",
+              marginBottom:"16px",
+              fontSize:"0.9rem",
+              fontWeight:600,
+            }}>
+              ✅ Thank you for your review!
+            </div>
+          )}
           <form
             className="dj-review-form"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleReviewSubmit}
           >
             <div className="dj-form-group">
               <label className="dj-form-label">Your Name</label>
@@ -176,13 +225,30 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
                 className="dj-form-input"
                 type="text"
                 placeholder="e.g. Sarah M."
+                value={reviewName}
+                onChange={(e) => setReviewName(e.target.value)}
+                required
               />
             </div>
             <div className="dj-form-group">
               <label className="dj-form-label">Rating</label>
               <div className="dj-star-select">
                 {[1,2,3,4,5].map((star) => (
-                  <span key={star} className="dj-star-option">★</span>
+                  <span
+                    key={star}
+                    className="dj-star-option"
+                    style={{
+                      color: star <= (hoverRating || reviewRating)
+                        ? "#f5a623"
+                        : "#ddd",
+                      cursor:"pointer",
+                    }}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => setReviewRating(star)}
+                  >
+                    ★
+                  </span>
                 ))}
               </div>
             </div>
@@ -192,6 +258,9 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
                 className="dj-form-textarea"
                 placeholder="Tell us what you think..."
                 rows={4}
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                required
               />
             </div>
             <button type="submit" className="dj-submit-review">
@@ -200,47 +269,51 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           </form>
         </div>
 
-        {/* Reviews Summary */}
-        <div className="dj-reviews-summary">
-          <div className="dj-reviews-avg">4.9</div>
-          <div>
-            <div className="dj-reviews-stars">★★★★★</div>
-            <div className="dj-reviews-count">Based on 47 reviews</div>
+        {/* Customer Reviews List */}
+        {reviews.length === 0 ? (
+          <div style={{
+            textAlign:"center",
+            padding:"32px 20px",
+            color:"#999",
+            fontSize:"0.9rem",
+          }}>
+            No reviews yet. Be the first to review this product! ⭐
           </div>
-        </div>
-
-        {/* Sample Reviews */}
-        {[
-          {
-            name: "Amara O.",
-            date: "2 days ago",
-            stars: "★★★★★",
-            text: "Absolutely love this! Quality is amazing.",
-          },
-          {
-            name: "Marcus T.",
-            date: "1 week ago",
-            stars: "★★★★★",
-            text: "Fast shipping, beautiful packaging!",
-          },
-          {
-            name: "Priya K.",
-            date: "2 weeks ago",
-            stars: "★★★★★",
-            text: "So soft and comfortable. Many compliments!",
-          },
-        ].map((review, i) => (
-          <div key={i} className="dj-review-item">
-            <div className="dj-review-header">
-              <span className="dj-reviewer-name">{review.name}</span>
-              <span className="dj-review-date">{review.date}</span>
+        ) : (
+          <>
+            <div className="dj-reviews-summary">
+              <div className="dj-reviews-avg">
+                {(reviews.reduce((a,r) => a + r.rating, 0) / reviews.length).toFixed(1)}
+              </div>
+              <div>
+                <div className="dj-reviews-stars">
+                  {"★".repeat(Math.round(
+                    reviews.reduce((a,r) => a + r.rating, 0) / reviews.length
+                  ))}
+                </div>
+                <div className="dj-reviews-count">
+                  Based on {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+                </div>
+              </div>
             </div>
-            <div style={{color:"#f5a623",fontSize:"0.85rem",marginBottom:"6px"}}>
-              {review.stars}
-            </div>
-            <div className="dj-review-body">{review.text}</div>
-          </div>
-        ))}
+            {reviews.map((review, i) => (
+              <div key={i} className="dj-review-item">
+                <div className="dj-review-header">
+                  <span className="dj-reviewer-name">{review.name}</span>
+                  <span className="dj-review-date">{review.date}</span>
+                </div>
+                <div style={{
+                  color:"#f5a623",
+                  fontSize:"0.85rem",
+                  marginBottom:"6px",
+                }}>
+                  {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                </div>
+                <div className="dj-review-body">{review.text}</div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
       {/* YOU MAY ALSO LIKE */}
