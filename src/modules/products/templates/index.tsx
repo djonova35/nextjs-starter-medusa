@@ -100,7 +100,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           <div className="dj-shipping-icon">🚚</div>
           <div className="dj-shipping-text">
             <strong>Free UK Standard Delivery</strong>
-            On orders over £75 · 3-7 business days
+            On orders over £40 · 3-7 business days
           </div>
         </div>
         <div className="dj-shipping-item">
@@ -124,8 +124,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           {
             id: "details",
             title: "🧥 Product Details",
-            content: product.description ||
-              "No description available.",
+            content: product.description || "No description available.",
           },
           {
             id: "material",
@@ -156,8 +155,48 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             </div>
             {openAccordion === item.id && (
               <div className="dj-accordion-content">
-                {item.content}
-              </div>
+  {item.id === "details" ? (
+    <ul style={{
+      listStyle: "none",
+      padding: 0,
+      margin: 0,
+      display: "flex",
+      flexDirection: "column",
+      gap: "8px",
+    }}>
+      {item.content
+        .split("\n")
+        .filter((line: string) => line.trim())
+        .map((line: string, i: number) => (
+          <li key={i} style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "8px",
+            fontSize: "0.875rem",
+            color: "#555",
+            lineHeight: "1.5",
+          }}>
+            <span style={{
+              color: "var(--accent)",
+              fontWeight: "bold",
+              flexShrink: 0,
+              marginTop: "1px",
+            }}>✦</span>
+            {line.trim()}
+          </li>
+        ))}
+    </ul>
+  ) : (
+    <p style={{
+      fontSize: "0.875rem",
+      color: "#555",
+      lineHeight: "1.7",
+      margin: 0,
+    }}>
+      {item.content}
+    </p>
+  )}
+</div>
             )}
           </div>
         ))}
