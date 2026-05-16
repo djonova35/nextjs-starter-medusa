@@ -1211,3 +1211,88 @@
   color: #555;
   line-height: 1.6;
 }
+/* ===== REVIEW FORM ===== */
+.dj-write-review {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.dj-write-review-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+.dj-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dj-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dj-form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #333;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.dj-form-input {
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: 'Space Grotesk', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.dj-form-input:focus {
+  border-color: var(--accent);
+}
+.dj-form-textarea {
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: 'Space Grotesk', sans-serif;
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s;
+}
+.dj-form-textarea:focus {
+  border-color: var(--accent);
+}
+.dj-star-select {
+  display: flex;
+  gap: 8px;
+}
+.dj-star-option {
+  font-size: 1.8rem;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.dj-star-option:hover {
+  color: #f5a623;
+}
+.dj-submit-review {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.dj-submit-review:hover {
+  background: #5538d4;
+}
