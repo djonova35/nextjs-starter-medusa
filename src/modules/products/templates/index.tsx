@@ -1,11 +1,15 @@
-"use client"
-import React, { Suspense, useState } from "react"
-import { notFound } from "next/navigation"
-import { HttpTypes } from "@medusajs/types"
+import React, { Suspense } from "react"
+
 import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
+import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
+import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
+import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
+import { notFound } from "next/navigation"
+import { HttpTypes } from "@medusajs/types"
+
 import ProductActionsWrapper from "./product-actions-wrapper"
 
 type ProductTemplateProps = {
@@ -25,348 +29,40 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
-  const [openAccordion, setOpenAccordion] = useState<string | null>(null)
-  const [reviewName, setReviewName] = useState("")
-  const [reviewText, setReviewText] = useState("")
-  const [reviewRating, setReviewRating] = useState(0)
-  const [hoverRating, setHoverRating] = useState(0)
-  const [submitted, setSubmitted] = useState(false)
-  const [reviews, setReviews] = useState<{
-    name: string
-    text: string
-    rating: number
-    date: string
-  }[]>([])
-
-  const handleReviewSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!reviewName || !reviewText || reviewRating === 0) return
-    setReviews([
-      {
-        name: reviewName,
-        text: reviewText,
-        rating: reviewRating,
-        date: new Date().toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
-      },
-      ...reviews,
-    ])
-    setReviewName("")
-    setReviewText("")
-    setReviewRating(0)
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 3000)
-  }
-
   return (
     <>
-      {/* IMAGE GALLERY */}
-      <div className="dj-image-slider">
-        <ImageGallery images={images ?? []} />
-      </div>
-
-      {/* PRODUCT INFO */}
-      <div className="dj-product-info">
-        <div className="dj-product-title">{product.title}</div>
-        <div className="dj-promo-tag">
-          🏷️ Use Code: DJNV20 for 20% off
+      <div
+        className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
+        data-testid="product-container"
+      >
+        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
+          <ProductInfo product={product} />
+          <ProductTabs product={product} />
         </div>
-      </div>
-
-      {/* PRICE + SIZES + ADD TO CART */}
-      <div className="dj-size-section">
-        <Suspense
-          fallback={
-            <ProductActions
-              disabled={true}
-              product={product}
-              region={region}
-            />
-          }
-        >
-          <ProductActionsWrapper
-            id={product.id}
-            region={region}
-          />
-        </Suspense>
-      </div>
-
-      {/* SHIPPING INFO */}
-      <div className="dj-shipping-info">
-        <div className="dj-shipping-item">
-          <div className="dj-shipping-icon">🚚</div>
-          <div className="dj-shipping-text">
-            <strong>Free UK Standard Delivery</strong>
-            On orders over £40 · 3-7 business days
-          </div>
+        <div className="block w-full relative">
+          <ImageGallery images={images} />
         </div>
-        <div className="dj-shipping-item">
-          <div className="dj-shipping-icon">📦</div>
-          <div className="dj-shipping-text">
-            <strong>Express Delivery Available</strong>
-            2 business days · Silver & Gold Members
-          </div>
-        </div>
-        <div className="dj-shipping-item">
-          <div className="dj-shipping-icon">↩️</div>
-          <div className="dj-shipping-text">
-            <a href="#">30-day Free Returns</a>
-          </div>
-        </div>
-      </div>
-
-      {/* ACCORDIONS - Real Product Data */}
-      <div className="dj-accordion">
-        {[
-          {
-            id: "details",
-            title: "🧥 Product Details",
-            content: product.description || "No description available.",
-          },
-          {
-            id: "material",
-            title: "🧵 Material & Care",
-            content: (product as any).material ||
-              "Please contact us for material information.",
-          },
-          {
-            id: "sizing",
-            title: "📏 Sizing Info",
-            content:
-              "Runs true to size. Check our size guide for detailed measurements across UK, EU and US sizes.",
-          },
-        ].map((item) => (
-          <div key={item.id} className="dj-accordion-item">
-            <div
-              className="dj-accordion-header"
-              onClick={() =>
-                setOpenAccordion(
-                  openAccordion === item.id ? null : item.id
-                )
-              }
-            >
-              {item.title}
-              <span className="dj-accordion-icon">
-                {openAccordion === item.id ? "∧" : "∨"}
-              </span>
-            </div>
-            {openAccordion === item.id && (
-              <div className="dj-accordion-content">
-  {item.id === "details" ? (
-    <ul style={{
-      listStyle: "none",
-      padding: 0,
-      margin: 0,
-      display: "flex",
-      flexDirection: "column",
-      gap: "8px",
-    }}>
-      {item.content
-        .split("\n")
-        .filter((line: string) => line.trim())
-        .map((line: string, i: number) => (
-          <li key={i} style={{
-            display: "flex",
-            alignItems: "flex-start",
-            gap: "8px",
-            fontSize: "0.875rem",
-            color: "#555",
-            lineHeight: "1.5",
-          }}>
-            <span style={{
-              color: "var(--accent)",
-              fontWeight: "bold",
-              flexShrink: 0,
-              marginTop: "1px",
-            }}>✦</span>
-            {line.trim()}
-          </li>
-        ))}
-    </ul>
-  ) : (
-    <p style={{
-      fontSize: "0.875rem",
-      color: "#555",
-      lineHeight: "1.7",
-      margin: 0,
-    }}>
-      {item.content}
-    </p>
-  )}
-</div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* STYLE IT WITH */}
-      <div className="dj-complete-look">
-        <div className="dj-section-title">✦ Style It With</div>
-        <div className="dj-look-grid">
-          {[
-            { name: "AURA Low Pro", price: "£189", emoji: "👟" },
-            { name: "NOVA Field Jacket", price: "£245", emoji: "🧥" },
-            { name: "GRID Tech Bag", price: "£195", emoji: "🎒" },
-            { name: "PULSE Pro Buds", price: "£129", emoji: "🎧" },
-          ].map((item, i) => (
-            <div key={i} className="dj-look-item">
-              <div className="dj-look-img">
-                <div style={{
-                  width:"100%",height:"100%",
-                  display:"flex",alignItems:"center",
-                  justifyContent:"center",
-                  fontSize:"2.5rem",
-                  background:"#f5f5f5",
-                }}>
-                  {item.emoji}
-                </div>
-                <button className="dj-look-add">🛍️</button>
-              </div>
-              <div className="dj-look-name">{item.name}</div>
-              <div className="dj-look-price">{item.price}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* REAL CUSTOMER REVIEWS */}
-      <div className="dj-reviews">
-        <div className="dj-reviews-title">Customer Reviews</div>
-
-        {/* Write Review Form */}
-        <div className="dj-write-review">
-          <div className="dj-write-review-title">
-            ✍️ Write a Review
-          </div>
-          {submitted && (
-            <div style={{
-              background:"#22c55e",
-              color:"#fff",
-              padding:"12px 16px",
-              borderRadius:"8px",
-              marginBottom:"16px",
-              fontSize:"0.9rem",
-              fontWeight:600,
-            }}>
-              ✅ Thank you for your review!
-            </div>
-          )}
-          <form
-            className="dj-review-form"
-            onSubmit={handleReviewSubmit}
+        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
+          <ProductOnboardingCta />
+          <Suspense
+            fallback={
+              <ProductActions
+                disabled={true}
+                product={product}
+                region={region}
+              />
+            }
           >
-            <div className="dj-form-group">
-              <label className="dj-form-label">Your Name</label>
-              <input
-                className="dj-form-input"
-                type="text"
-                placeholder="e.g. Sarah M."
-                value={reviewName}
-                onChange={(e) => setReviewName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="dj-form-group">
-              <label className="dj-form-label">Rating</label>
-              <div className="dj-star-select">
-                {[1,2,3,4,5].map((star) => (
-                  <span
-                    key={star}
-                    className="dj-star-option"
-                    style={{
-                      color: star <= (hoverRating || reviewRating)
-                        ? "#f5a623"
-                        : "#ddd",
-                      cursor:"pointer",
-                    }}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    onClick={() => setReviewRating(star)}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div className="dj-form-group">
-              <label className="dj-form-label">Your Review</label>
-              <textarea
-                className="dj-form-textarea"
-                placeholder="Tell us what you think..."
-                rows={4}
-                value={reviewText}
-                onChange={(e) => setReviewText(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="dj-submit-review">
-              Submit Review
-            </button>
-          </form>
+            <ProductActionsWrapper id={product.id} region={region} />
+          </Suspense>
         </div>
-
-        {/* Customer Reviews List */}
-        {reviews.length === 0 ? (
-          <div style={{
-            textAlign:"center",
-            padding:"32px 20px",
-            color:"#999",
-            fontSize:"0.9rem",
-          }}>
-            No reviews yet. Be the first to review this product! ⭐
-          </div>
-        ) : (
-          <>
-            <div className="dj-reviews-summary">
-              <div className="dj-reviews-avg">
-                {(reviews.reduce((a,r) => a + r.rating, 0) / reviews.length).toFixed(1)}
-              </div>
-              <div>
-                <div className="dj-reviews-stars">
-                  {"★".repeat(Math.round(
-                    reviews.reduce((a,r) => a + r.rating, 0) / reviews.length
-                  ))}
-                </div>
-                <div className="dj-reviews-count">
-                  Based on {reviews.length} review{reviews.length !== 1 ? "s" : ""}
-                </div>
-              </div>
-            </div>
-            {reviews.map((review, i) => (
-              <div key={i} className="dj-review-item">
-                <div className="dj-review-header">
-                  <span className="dj-reviewer-name">{review.name}</span>
-                  <span className="dj-review-date">{review.date}</span>
-                </div>
-                <div style={{
-                  color:"#f5a623",
-                  fontSize:"0.85rem",
-                  marginBottom:"6px",
-                }}>
-                  {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                </div>
-                <div className="dj-review-body">{review.text}</div>
-              </div>
-            ))}
-          </>
-        )}
       </div>
-
-      {/* YOU MAY ALSO LIKE */}
-      <div style={{
-        padding:"24px 20px",
-        background:"#fff",
-        borderTop:"8px solid #f5f5f5",
-      }}>
-        <div className="dj-section-title">You May Also Like</div>
+      <div
+        className="content-container my-16 small:my-32"
+        data-testid="related-products-container"
+      >
         <Suspense fallback={<SkeletonRelatedProducts />}>
-          <RelatedProducts
-            product={product}
-            countryCode={countryCode}
-          />
+          <RelatedProducts product={product} countryCode={countryCode} />
         </Suspense>
       </div>
     </>
