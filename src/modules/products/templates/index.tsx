@@ -2,9 +2,15 @@
 import React, { Suspense, useState } from "react"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
-import ProductActionsWrapper from "./product-actions-wrapper"
+import ImageGallery from "@modules/products/components/image-gallery"
+import ProductActions from "@modules/products/components/product-actions"
+import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
+import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
+import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
+import { notFound as nextNotFound } from "next/navigation"
+import ProductActionsWrapper from "./product-actions-wrapper"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -23,84 +29,38 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
-  const [activeImg, setActiveImg] = useState(0)
   const [openAccordion, setOpenAccordion] = useState<string | null>(null)
-
-  const productImages = images?.length > 0 ? images : 
-    product.images?.length > 0 ? product.images : []
-
-  const price = product.variants?.[0]?.calculated_price
-  const originalPrice = (price as any)?.original_amount
-  const salePrice = (price as any)?.calculated_amount
 
   return (
     <>
-      {/* ===== IMAGE SLIDER ===== */}
+      {/* ===== IMAGE GALLERY - Keep Original ===== */}
       <div className="dj-image-slider">
-        <div className="dj-slides">
-          {productImages.length > 0 ? (
-            productImages.map((img: any, i: number) => (
-              <div key={i} className="dj-slide">
-                <img
-                  src={img.url}
-                  alt={product.title || "Product image"}
-                />
-              </div>
-            ))
-          ) : (
-            <div className="dj-slide" style={{background:'#f5f5f5',display:'flex',alignItems:'center',justifyContent:'center'}}>
-              <span style={{fontSize:'4rem'}}>👟</span>
-            </div>
-          )}
-        </div>
-        {productImages.length > 1 && (
-          <div className="dj-dots">
-            {productImages.map((_: any, i: number) => (
-              <div
-                key={i}
-                className={`dj-dot ${i === activeImg ? 'active' : ''}`}
-              />
-            ))}
-          </div>
-        )}
+        <ImageGallery images={images ?? []} />
       </div>
 
       {/* ===== PRODUCT INFO ===== */}
       <div className="dj-product-info">
-        <div className="dj-rating-row">
-          <span className="dj-stars">★★★★★</span>
-          <span className="dj-rating-count">(47)</span>
-        </div>
+        {/* Product Title */}
         <div className="dj-product-title">{product.title}</div>
-        <div className="dj-price-row">
-          <span className="dj-price-sale">
-            £{salePrice ? (salePrice / 100).toFixed(2) : "0.00"}
-          </span>
-          {originalPrice && originalPrice !== salePrice && (
-            <span className="dj-price-original">
-              £{(originalPrice / 100).toFixed(2)}
-            </span>
-          )}
-        </div>
+
+        {/* Promo Tag */}
         <div className="dj-promo-tag">
-          🏷️ Use Code: DJNV20
+          🏷️ Use Code: DJNV20 for 20% off
         </div>
       </div>
 
-      {/* ===== SIZE SELECTOR ===== */}
+      {/* ===== PRODUCT ACTIONS - Keep Original (Price + Size + Add to Cart) ===== */}
       <div className="dj-size-section">
-        <div className="dj-size-header">
-          <span className="dj-size-label">Size</span>
-          <span style={{color:'#999'}}>|</span>
-          <span className="dj-size-guide">View Size Guide</span>
-        </div>
-        <Suspense fallback={
-          <div className="dj-size-grid">
-            {['XS','S','M','L','XL'].map(s => (
-              <div key={s} className="dj-size-pill">{s}</div>
-            ))}
-          </div>
-        }>
+        <ProductOnboardingCta />
+        <Suspense
+          fallback={
+            <ProductActions
+              disabled={true}
+              product={product}
+              region={region}
+            />
+          }
+        >
           <ProductActionsWrapper
             id={product.id}
             region={region}
@@ -132,35 +92,40 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
 
-      {/* ===== ACCORDIONS ===== */}
+      {/* ===== ACCORDIONS - Uses Real Product Data ===== */}
       <div className="dj-accordion">
         {[
           {
-            id: 'details',
-            title: '🧥 Product Details',
-            content: product.description || 'Premium quality product from DJONOVA SS26 collection. Designed for those who move with intention.'
+            id: "details",
+            title: "🧥 Product Details",
+            content: product.description ||
+              "Premium quality product from DJONOVA SS26 collection.",
           },
           {
-            id: 'material',
-            title: '🧵 Material & Care',
-            content: product.material || '100% ethically sourced materials. Machine wash cold. Do not tumble dry. Iron on low heat.'
+            id: "material",
+            title: "🧵 Material & Care",
+            content: product.material ||
+              "100% ethically sourced materials. Machine wash cold.",
           },
           {
-            id: 'sizing',
-            title: '📏 Sizing Info',
-            content: 'This style runs true to size. Model is 5\'8" wearing size S. Check our size guide for detailed measurements.'
+            id: "sizing",
+            title: "📏 Sizing Info",
+            content:
+              "This style runs true to size. Check our size guide for detailed measurements.",
           },
-        ].map(item => (
+        ].map((item) => (
           <div key={item.id} className="dj-accordion-item">
             <div
               className="dj-accordion-header"
-              onClick={() => setOpenAccordion(
-                openAccordion === item.id ? null : item.id
-              )}
+              onClick={() =>
+                setOpenAccordion(
+                  openAccordion === item.id ? null : item.id
+                )
+              }
             >
               {item.title}
               <span className="dj-accordion-icon">
-                {openAccordion === item.id ? '∧' : '∨'}
+                {openAccordion === item.id ? "∧" : "∨"}
               </span>
             </div>
             {openAccordion === item.id && (
@@ -172,25 +137,29 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         ))}
       </div>
 
-      {/* ===== COMPLETE THE LOOK ===== */}
+      {/* ===== STYLE IT WITH SECTION ===== */}
       <div className="dj-complete-look">
-        <div className="dj-section-title">Complete The Look</div>
+        <div className="dj-section-title">✦ Style It With</div>
         <div className="dj-look-grid">
           {[
-            {name: 'AURA Low Pro', price: '£189', emoji: '👟'},
-            {name: 'NOVA Field Jacket', price: '£245', emoji: '🧥'},
-            {name: 'GRID Tech Bag', price: '£195', emoji: '🎒'},
-            {name: 'PULSE Pro Buds', price: '£129', emoji: '🎧'},
+            { name: "AURA Low Pro", price: "£189", emoji: "👟" },
+            { name: "NOVA Field Jacket", price: "£245", emoji: "🧥" },
+            { name: "GRID Tech Bag", price: "£195", emoji: "🎒" },
+            { name: "PULSE Pro Buds", price: "£129", emoji: "🎧" },
           ].map((item, i) => (
             <div key={i} className="dj-look-item">
               <div className="dj-look-img">
-                <div style={{
-                  width:'100%',height:'100%',
-                  display:'flex',alignItems:'center',
-                  justifyContent:'center',
-                  fontSize:'2.5rem',
-                  background:'#f5f5f5'
-                }}>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "2.5rem",
+                    background: "#f5f5f5",
+                  }}
+                >
                   {item.emoji}
                 </div>
                 <button className="dj-look-add">🛍️</button>
@@ -202,54 +171,118 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
       </div>
 
-      {/* ===== REVIEWS ===== */}
+      {/* ===== CUSTOMER REVIEWS ===== */}
       <div className="dj-reviews">
-        <div className="dj-reviews-title">Reviews</div>
-        <div className="dj-reviews-summary">
-          <div className="dj-reviews-avg">4.9</div>
-          <div>
-            <div className="dj-reviews-stars">★★★★★</div>
-            <div className="dj-reviews-count">(47 reviews)</div>
-          </div>
+        <div className="dj-reviews-title">Customer Reviews</div>
+
+        {/* Write a Review Form */}
+        <div className="dj-write-review">
+          <div className="dj-write-review-title">✍️ Write a Review</div>
+          <form
+            className="dj-review-form"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <div className="dj-form-group">
+              <label className="dj-form-label">Your Name</label>
+              <input
+                className="dj-form-input"
+                type="text"
+                placeholder="e.g. Sarah M."
+              />
+            </div>
+            <div className="dj-form-group">
+              <label className="dj-form-label">Rating</label>
+              <div className="dj-star-select">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    className="dj-star-option"
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="dj-form-group">
+              <label className="dj-form-label">Your Review</label>
+              <textarea
+                className="dj-form-textarea"
+                placeholder="Tell us what you think about this product..."
+                rows={4}
+              />
+            </div>
+            <button
+              type="submit"
+              className="dj-submit-review"
+            >
+              Submit Review
+            </button>
+          </form>
         </div>
-        {[
-          {
-            name: 'Amara O.',
-            date: '2 days ago',
-            stars: '★★★★★',
-            text: 'Absolutely love this! The quality is amazing and it fits perfectly. Will definitely order again!'
-          },
-          {
-            name: 'Marcus T.',
-            date: '1 week ago',
-            stars: '★★★★★',
-            text: 'Fast shipping, beautiful packaging. Exactly as described. DJONOVA never disappoints!'
-          },
-          {
-            name: 'Priya K.',
-            date: '2 weeks ago',
-            stars: '★★★★★',
-            text: 'The material is so soft and comfortable. Got so many compliments wearing this!'
-          },
-        ].map((review, i) => (
-          <div key={i} className="dj-review-item">
-            <div className="dj-review-header">
-              <span className="dj-reviewer-name">{review.name}</span>
-              <span className="dj-review-date">{review.date}</span>
+
+        {/* Existing Reviews */}
+        <div style={{ marginTop: "24px" }}>
+          <div className="dj-reviews-summary">
+            <div className="dj-reviews-avg">4.9</div>
+            <div>
+              <div className="dj-reviews-stars">★★★★★</div>
+              <div className="dj-reviews-count">Based on 47 reviews</div>
             </div>
-            <div style={{color:'#f5a623',fontSize:'0.85rem',marginBottom:'6px'}}>
-              {review.stars}
-            </div>
-            <div className="dj-review-body">{review.text}</div>
           </div>
-        ))}
+          {[
+            {
+              name: "Amara O.",
+              date: "2 days ago",
+              stars: "★★★★★",
+              text: "Absolutely love this! The quality is amazing and it fits perfectly.",
+            },
+            {
+              name: "Marcus T.",
+              date: "1 week ago",
+              stars: "★★★★★",
+              text: "Fast shipping, beautiful packaging. Exactly as described!",
+            },
+            {
+              name: "Priya K.",
+              date: "2 weeks ago",
+              stars: "★★★★★",
+              text: "The material is so soft and comfortable. Got so many compliments!",
+            },
+          ].map((review, i) => (
+            <div key={i} className="dj-review-item">
+              <div className="dj-review-header">
+                <span className="dj-reviewer-name">{review.name}</span>
+                <span className="dj-review-date">{review.date}</span>
+              </div>
+              <div
+                style={{
+                  color: "#f5a623",
+                  fontSize: "0.85rem",
+                  marginBottom: "6px",
+                }}
+              >
+                {review.stars}
+              </div>
+              <div className="dj-review-body">{review.text}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* ===== RELATED PRODUCTS ===== */}
-      <div style={{padding:'24px 20px',background:'#fff',borderTop:'8px solid #f5f5f5'}}>
+      {/* ===== YOU MAY ALSO LIKE ===== */}
+      <div
+        style={{
+          padding: "24px 20px",
+          background: "#fff",
+          borderTop: "8px solid #f5f5f5",
+        }}
+      >
         <div className="dj-section-title">You May Also Like</div>
         <Suspense fallback={<SkeletonRelatedProducts />}>
-          <RelatedProducts product={product} countryCode={countryCode} />
+          <RelatedProducts
+            product={product}
+            countryCode={countryCode}
+          />
         </Suspense>
       </div>
     </>
