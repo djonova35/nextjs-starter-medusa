@@ -46,7 +46,7 @@ export default function ProductActions({
       const variantOptions = optionsAsKeymap(product.variants[0].options)
       setOptions(variantOptions ?? {})
     }
-  }, [product.variants])
+  }, [])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
