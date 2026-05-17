@@ -42,7 +42,7 @@ export default function ProductActions({
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
-    if (product.variants?.length === 1) {
+    if (product.variants?.length >= 1) {
       const variantOptions = optionsAsKeymap(product.variants[0].options)
       setOptions(variantOptions ?? {})
     }
