@@ -18,78 +18,124 @@ export default async function Nav() {
   return (
     <div className="sticky top-0 inset-x-0 z-50 group">
       <header className="relative mx-auto border-b duration-200 bg-white border-ui-border-base">
+  <nav className="content-container flex items-center justify-between w-full h-12 text-small-regular">
+    
+    {/* LEFT — hamburger */}
+    <div className="flex items-center">
+      <SideMenu regions={regions} locales={locales} currentLocale={currentLocale} />
+    </div>
 
-        {/* ── TOP ROW ── */}
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-16 text-small-regular">
+    {/* CENTER — logo pushed left like boohoo */}
+    <div className="absolute left-1/2 -translate-x-1/2 small:static small:translate-x-0 small:left-auto">
+      <LocalizedClientLink
+        href="/"
+        data-testid="nav-store-link"
+        style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: "18px",
+          fontWeight: "300",
+          letterSpacing: "8px",
+          textTransform: "uppercase",
+          color: "#2A1F4A",
+          textDecoration: "none",
+        }}
+      >
+        DJONOVA
+      </LocalizedClientLink>
+    </div>
 
-          {/* LEFT — MENU */}
-          <div className="flex-1 basis-0 h-full flex items-center">
-            <div className="h-full">
-              <SideMenu
-                regions={regions}
-                locales={locales}
-                currentLocale={currentLocale}
-              />
-            </div>
-          </div>
+    {/* RIGHT — icons tight together */}
+    <div className="flex items-center gap-x-3 h-full">
 
-          {/* CENTER — LOGO */}
-          <div className="flex items-center h-full">
-            <LocalizedClientLink
-              href="/"
-              data-testid="nav-store-link"
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "24px",
-                fontWeight: "300",
-                letterSpacing: "10px",
-                textTransform: "uppercase",
-                color: "#2A1F4A",
-                textDecoration: "none",
-              }}
-            >
-              DJONOVA
-            </LocalizedClientLink>
-          </div>
+      {/* SEARCH */}
+      <button
+        onClick={() => document.getElementById("dj-search-overlay")?.classList.remove("hidden")}
+        className="hover:text-purple-500 transition-colors p-1"
+        title="Search"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
 
-          {/* RIGHT — ICONS */}
-         <div className="flex items-center gap-x-4 small:gap-x-6 h-full flex-1 basis-0 justify-end">
-  
-  {/* SEARCH */}
-  <LocalizedClientLink href="/store" className="hover:text-purple-500 transition-colors p-1" title="Search">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-  </LocalizedClientLink>
-
-  {/* ACCOUNT */}
-  <LocalizedClientLink href="/account" className="hover:text-purple-500 transition-colors p-1" title="Account" data-testid="nav-account-link">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-  </LocalizedClientLink>
-
-  {/* WISHLIST */}
-  <LocalizedClientLink href="/wishlist" className="hover:text-purple-500 transition-colors p-1" title="Wishlist">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-    </svg>
-  </LocalizedClientLink>
-
-  {/* CART */}
-  <Suspense
-    fallback={
-      <LocalizedClientLink className="hover:text-purple-500 transition-colors p-1" href="/cart" data-testid="nav-cart-link">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+      {/* ACCOUNT */}
+      <LocalizedClientLink href="/account" className="hover:text-purple-500 transition-colors p-1" title="Account" data-testid="nav-account-link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
         </svg>
       </LocalizedClientLink>
-    }
-  >
-    <CartButton />
-  </Suspense>
 
+      {/* WISHLIST */}
+      <LocalizedClientLink href="/wishlist" className="hover:text-purple-500 transition-colors p-1" title="Wishlist">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </LocalizedClientLink>
+
+      {/* CART */}
+      <Suspense
+        fallback={
+          <LocalizedClientLink className="hover:text-purple-500 transition-colors p-1" href="/cart" data-testid="nav-cart-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+          </LocalizedClientLink>
+        }
+      >
+        <CartButton />
+      </Suspense>
+
+    </div>
+  </nav>
+</header>
+
+{/* SEARCH OVERLAY */}
+<div id="dj-search-overlay" className="hidden fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
+  <div className="bg-white w-full max-w-2xl shadow-2xl">
+    <div className="flex items-center border-b border-gray-100 px-4">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B7FE8" strokeWidth="1.5" className="flex-shrink-0">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        id="dj-search-input"
+        type="text"
+        placeholder="Search products, categories..."
+        autoComplete="off"
+        style={{ flex: 1, padding: "16px 12px", fontSize: "14px", border: "none", outline: "none", color: "#2A1F4A" }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            const val = (e.target as HTMLInputElement).value.trim()
+            if (val) window.location.href = `/store?q=${encodeURIComponent(val)}`
+          }
+          if (e.key === "Escape") {
+            document.getElementById("dj-search-overlay")?.classList.add("hidden")
+          }
+        }}
+      />
+      <button
+        onClick={() => document.getElementById("dj-search-overlay")?.classList.add("hidden")}
+        style={{ padding: "8px", color: "#9B95B8", background: "none", border: "none", cursor: "pointer", fontSize: "20px" }}
+      >
+        ✕
+      </button>
+    </div>
+    <div style={{ padding: "16px 20px" }}>
+      <p style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#9B95B8", marginBottom: "12px" }}>Popular</p>
+      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        {["Dresses", "Shoes", "Jackets", "Tech", "Accessories"].map(term => (
+          <button
+            key={term}
+            onClick={() => window.location.href = `/store?q=${term}`}
+            style={{ padding: "6px 14px", fontSize: "11px", border: "1px solid #EDE8FA", background: "transparent", color: "#2A1F4A", cursor: "pointer", borderRadius: "20px", transition: "all 0.2s" }}
+          >
+            {term}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
 </div>
+        
         </nav>
 
         {/* ── CATEGORY NAV ROW ── */}
