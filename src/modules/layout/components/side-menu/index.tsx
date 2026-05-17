@@ -1,22 +1,15 @@
 "use client"
 
 import { Popover, PopoverPanel, Transition } from "@headlessui/react"
-import { ArrowRightMini, XMark } from "@medusajs/icons"
+import { XMark, ArrowRightMini } from "@medusajs/icons"
 import { Text, clx, useToggleState } from "@medusajs/ui"
-import { Fragment } from "react"
+import { Fragment, useState } from "react"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
 import { HttpTypes } from "@medusajs/types"
 import { Locale } from "@lib/data/locales"
-
-const SideMenuItems = {
-  Home: "/",
-  Store: "/store",
-  Account: "/account",
-  Cart: "/cart",
-}
 
 type SideMenuProps = {
   regions: HttpTypes.StoreRegion[] | null
@@ -27,6 +20,11 @@ type SideMenuProps = {
 const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
   const countryToggleState = useToggleState()
   const languageToggleState = useToggleState()
+  const [openCategory, setOpenCategory] = useState<string | null>(null)
+
+  const toggleCategory = (cat: string) => {
+    setOpenCategory(openCategory === cat ? null : cat)
+  }
 
   return (
     <div className="h-full">
@@ -39,97 +37,159 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                   data-testid="nav-menu-button"
                   className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base"
                 >
-                  Menu
+                  <span className="flex flex-col gap-1">
+                    <span style={{display:"block",width:"20px",height:"1.5px",background:"currentColor"}}/>
+                    <span style={{display:"block",width:"14px",height:"1.5px",background:"currentColor"}}/>
+                    <span style={{display:"block",width:"20px",height:"1.5px",background:"currentColor"}}/>
+                  </span>
                 </Popover.Button>
               </div>
 
               {open && (
                 <div
-                  className="fixed inset-0 z-[50] bg-black/0 pointer-events-auto"
+                  className="fixed inset-0 z-[50] bg-black/20 pointer-events-auto"
                   onClick={close}
-                  data-testid="side-menu-backdrop"
                 />
               )}
 
               <Transition
                 show={open}
                 as={Fragment}
-                enter="transition ease-out duration-150"
-                enterFrom="opacity-0"
-                enterTo="opacity-100 backdrop-blur-2xl"
+                enter="transition ease-out duration-200"
+                enterFrom="opacity-0 -translate-x-4"
+                enterTo="opacity-100 translate-x-0"
                 leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 backdrop-blur-2xl"
-                leaveTo="opacity-0"
+                leaveFrom="opacity-100 translate-x-0"
+                leaveTo="opacity-0 -translate-x-4"
               >
-                <PopoverPanel className="flex flex-col absolute w-full pr-4 sm:pr-0 sm:w-1/3 2xl:w-1/4 sm:min-w-min h-[calc(100vh-1rem)] z-[51] inset-x-0 text-sm text-ui-fg-on-color m-2 backdrop-blur-2xl">
-                  <div
-                    data-testid="nav-menu-popup"
-                    className="flex flex-col h-full bg-[rgba(3,7,18,0.5)] rounded-rounded justify-between p-6"
-                  >
-                    <div className="flex justify-end" id="xmark">
-                      <button data-testid="close-menu-button" onClick={close}>
-                        <XMark />
-                      </button>
+                <PopoverPanel className="flex flex-col absolute w-full sm:w-80 h-screen z-[51] inset-x-0 top-0">
+                  <div className="flex flex-col h-full bg-white shadow-2xl justify-between overflow-y-auto">
+
+                    {/* HEADER */}
+                    <div>
+                      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+                        <span style={{fontFamily:"'Cormorant Garamond',serif", fontSize:"22px", fontWeight:"300", letterSpacing:"6px", color:"#2A1F4A"}}>DJONOVA</span>
+                        <button onClick={close} className="text-gray-400 hover:text-gray-600">
+                          <XMark />
+                        </button>
+                      </div>
+
+                      {/* MAIN LINKS */}
+                      <ul className="px-6 py-4 flex flex-col gap-1">
+                        <li>
+                          <LocalizedClientLink href="/" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                            Home
+                          </LocalizedClientLink>
+                        </li>
+                        <li>
+                          <LocalizedClientLink href="/store" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                            All Products
+                          </LocalizedClientLink>
+                        </li>
+                      </ul>
+
+                      <div className="border-t border-gray-100 mx-6" />
+
+                      {/* CATEGORIES */}
+                      <ul className="px-6 py-4 flex flex-col gap-1">
+
+                        {/* Fashion */}
+                        <li>
+                          <button
+                            onClick={() => toggleCategory("fashion")}
+                            className="flex items-center justify-between w-full py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium"
+                          >
+                            Fashion
+                            <span style={{transition:"transform 0.2s", transform: openCategory === "fashion" ? "rotate(90deg)" : "rotate(0deg)", fontSize:"16px", color:"#9B7FE8"}}>›</span>
+                          </button>
+                          {openCategory === "fashion" && (
+                            <ul className="pl-4 flex flex-col gap-1 pb-2">
+                              <li><LocalizedClientLink href="/categories/fashion/womenwear" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Women & Teens</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/fashion/menswear" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Men & Teens</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/fashion/kidswear" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Kids & Toddler</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/fashion/accessories" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Accessories</LocalizedClientLink></li>
+                            </ul>
+                          )}
+                        </li>
+
+                        {/* Shoes */}
+                        <li>
+                          <button
+                            onClick={() => toggleCategory("shoes")}
+                            className="flex items-center justify-between w-full py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium"
+                          >
+                            Shoes
+                            <span style={{transition:"transform 0.2s", transform: openCategory === "shoes" ? "rotate(90deg)" : "rotate(0deg)", fontSize:"16px", color:"#9B7FE8"}}>›</span>
+                          </button>
+                          {openCategory === "shoes" && (
+                            <ul className="pl-4 flex flex-col gap-1 pb-2">
+                              <li><LocalizedClientLink href="/categories/shoes/womenshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Women Shoes</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/shoes/menshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Men Shoes</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/shoes/casualshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Casual</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/shoes/formalshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Formal</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/shoes/sportshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Sports</LocalizedClientLink></li>
+                            </ul>
+                          )}
+                        </li>
+
+                        {/* Tech */}
+                        <li>
+                          <button
+                            onClick={() => toggleCategory("tech")}
+                            className="flex items-center justify-between w-full py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium"
+                          >
+                            Tech Essentials
+                            <span style={{transition:"transform 0.2s", transform: openCategory === "tech" ? "rotate(90deg)" : "rotate(0deg)", fontSize:"16px", color:"#9B7FE8"}}>›</span>
+                          </button>
+                          {openCategory === "tech" && (
+                            <ul className="pl-4 flex flex-col gap-1 pb-2">
+                              <li><LocalizedClientLink href="/categories/tech/phones" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Phones</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/tech/gadget" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Gadgets</LocalizedClientLink></li>
+                            </ul>
+                          )}
+                        </li>
+
+                      </ul>
+
+                      <div className="border-t border-gray-100 mx-6" />
+
+                      {/* ACCOUNT LINKS */}
+                      <ul className="px-6 py-4 flex flex-col gap-1">
+                        <li>
+                          <LocalizedClientLink href="/account" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                            My Account
+                          </LocalizedClientLink>
+                        </li>
+                        <li>
+                          <LocalizedClientLink href="/account/wishlist" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                            Wishlist
+                          </LocalizedClientLink>
+                        </li>
+                        <li>
+                          <LocalizedClientLink href="/cart" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                            My Bag
+                          </LocalizedClientLink>
+                        </li>
+                      </ul>
                     </div>
-                    <ul className="flex flex-col gap-6 items-start justify-start">
-                      {Object.entries(SideMenuItems).map(([name, href]) => {
-                        return (
-                          <li key={name}>
-                            <LocalizedClientLink
-                              href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
-                              onClick={close}
-                              data-testid={`${name.toLowerCase()}-link`}
-                            >
-                              {name}
-                            </LocalizedClientLink>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                    <div className="flex flex-col gap-y-6">
+
+                    {/* FOOTER */}
+                    <div className="px-6 py-4 border-t border-gray-100 flex flex-col gap-4">
                       {!!locales?.length && (
-                        <div
-                          className="flex justify-between"
-                          onMouseEnter={languageToggleState.open}
-                          onMouseLeave={languageToggleState.close}
-                        >
-                          <LanguageSelect
-                            toggleState={languageToggleState}
-                            locales={locales}
-                            currentLocale={currentLocale}
-                          />
-                          <ArrowRightMini
-                            className={clx(
-                              "transition-transform duration-150",
-                              languageToggleState.state ? "-rotate-90" : ""
-                            )}
-                          />
+                        <div className="flex justify-between items-center" onMouseEnter={languageToggleState.open} onMouseLeave={languageToggleState.close}>
+                          <LanguageSelect toggleState={languageToggleState} locales={locales} currentLocale={currentLocale} />
+                          <ArrowRightMini className={clx("transition-transform duration-150", languageToggleState.state ? "-rotate-90" : "")} />
                         </div>
                       )}
-                      <div
-                        className="flex justify-between"
-                        onMouseEnter={countryToggleState.open}
-                        onMouseLeave={countryToggleState.close}
-                      >
-                        {regions && (
-                          <CountrySelect
-                            toggleState={countryToggleState}
-                            regions={regions}
-                          />
-                        )}
-                        <ArrowRightMini
-                          className={clx(
-                            "transition-transform duration-150",
-                            countryToggleState.state ? "-rotate-90" : ""
-                          )}
-                        />
+                      <div className="flex justify-between items-center" onMouseEnter={countryToggleState.open} onMouseLeave={countryToggleState.close}>
+                        {regions && <CountrySelect toggleState={countryToggleState} regions={regions} />}
+                        <ArrowRightMini className={clx("transition-transform duration-150", countryToggleState.state ? "-rotate-90" : "")} />
                       </div>
-                      <Text className="flex justify-between txt-compact-small">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
+                      <Text className="txt-compact-small text-gray-400">
+                        © {new Date().getFullYear()} DJONOVA. All rights reserved.
                       </Text>
                     </div>
+
                   </div>
                 </PopoverPanel>
               </Transition>
