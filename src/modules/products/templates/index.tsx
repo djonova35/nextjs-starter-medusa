@@ -82,7 +82,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             <div>
               <div className="dj-delivery-title">UK Standard Delivery</div>
               <div className="dj-delivery-sub">
-                3 days processing · 2–7 days shipping
+                 2–7 days shipping
               </div>
               <div className="dj-delivery-free">
                 Free on orders over £40
@@ -95,7 +95,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             <div>
               <div className="dj-delivery-title">International Delivery</div>
               <div className="dj-delivery-sub">
-                5 days processing · 7–14 days shipping
+                 7–14 days shipping
               </div>
             </div>
           </div>
@@ -187,10 +187,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
       {/* ── 7. RELATED PRODUCTS ── */}
       <div className="dj-related-section">
-        <div className="dj-section-header">
-          <div className="dj-section-eyebrow">Style It With</div>
-          <h2 className="dj-section-title">Complete the Look</h2>
-        </div>
         <Suspense fallback={<SkeletonRelatedProducts />}>
           <RelatedProducts product={product} countryCode={countryCode} />
         </Suspense>
