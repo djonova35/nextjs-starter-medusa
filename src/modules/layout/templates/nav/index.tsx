@@ -33,7 +33,20 @@ export default async function Nav() {
               className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase tracking-widest"
               data-testid="nav-store-link"
             >
-              DJONOVA
+              <LocalizedClientLink
+  href="/"
+  data-testid="nav-store-link"
+  style={{
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: "24px",
+    fontWeight: "300",
+    letterSpacing: "10px",
+    textTransform: "uppercase",
+    color: "#2A1F4A",
+    textDecoration: "none"
+  }}
+>
+  DJONOVA
             </LocalizedClientLink>
           </div>
           
