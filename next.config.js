@@ -46,6 +46,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
+      {
+  protocol: "https",
+  hostname: "pub-614ab20909ea44b09f72f19c25c4f7ff.r2.dev",
+},
       ...(S3_HOSTNAME && S3_PATHNAME
         ? [
             {
