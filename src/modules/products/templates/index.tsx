@@ -11,6 +11,7 @@ import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
+import WishlistButton from "@modules/products/components/wishlist-button"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -64,8 +65,8 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             }
           >
             <ProductActionsWrapper id={product.id} region={region} />
+             <WishlistButton productId={product.id!} />
           </Suspense>
-           <WishlistButton productId={product.id!} />
         </div>
 
         {/* ── 4. PROMO BANNER ── */}
