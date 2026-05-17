@@ -4,7 +4,8 @@ import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
 import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import RelatedProducts from "@modules/products/components/related-products"
-import ProductInfo from "@modules/products/templates/product-info"
+// ProductInfo is no longer needed here as we will render title/subtitle directly
+// import ProductInfo from "@modules/products/templates/product-info" // Removed this import
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
@@ -39,9 +40,12 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       {/* ── MAIN CONTENT ── */}
       <div className="dj-product-content">
 
-        {/* ── 2. PRODUCT NAME + RATING ── */}
+        {/* ── 2. PRODUCT TITLE + SUBTITLE + RATING ── */}
         <div className="dj-name-section">
-          <ProductInfo product={product} />
+          <h1 className="dj-product-title">{product.title}</h1>
+          {product.subtitle && (
+            <p className="dj-product-subtitle">{product.subtitle}</p>
+          )}
           <div className="dj-rating-row">
             <span className="dj-stars">★★★★★</span>
             <span className="dj-rating-count">Be the first to review</span>
@@ -121,14 +125,12 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
             </summary>
             <div className="dj-accordion-body">
               {product.description ? (
-                <p className="dj-description-text">
-                  {product.description.split("\n").map((line, i) => (
-                    <React.Fragment key={i}>
-                      {line}
-                      <br />
-                    </React.Fragment>
-                  ))}
-                </p>
+                // Changed to use p tags for each line, separated by br, for better semantics
+                product.description.split("\n").map((line, i) => (
+                  <p key={i} className="dj-description-text">
+                    {line}
+                  </p>
+                ))
               ) : (
                 <p className="dj-description-text">
                   No description available.
@@ -249,6 +251,19 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           margin-bottom: 20px;
           padding-bottom: 20px;
           border-bottom: 1px solid #EDE8FA;
+        }
+        .dj-product-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(28px, 6vw, 36px);
+          font-weight: 500;
+          color: #2A1F4A;
+          line-height: 1.1;
+          margin: 0 0 8px 0;
+        }
+        .dj-product-subtitle {
+          font-size: 14px;
+          color: #6C6285;
+          margin: 0 0 12px 0;
         }
         .dj-rating-row {
           display: flex;
@@ -395,10 +410,14 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           font-size: 14px;
           line-height: 1.9;
           color: #4A4066;
-          margin: 0;
-          white-space: pre-wrap;
+          margin-bottom: 10px; /* Add some space between paragraphs */
+          white-space: pre-wrap; /* Preserve whitespace including newlines */
           word-break: break-word;
         }
+        .dj-description-text:last-child {
+            margin-bottom: 0; /* No margin on the last paragraph */
+        }
+
         .dj-accordion-list {
           list-style: none;
           padding: 0;
