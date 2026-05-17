@@ -53,92 +53,43 @@ export default async function Nav() {
           </div>
 
           {/* RIGHT — ICONS */}
-          <div className="flex items-center gap-x-5 h-full flex-1 basis-0 justify-end">
+         <div className="flex items-center gap-x-4 small:gap-x-6 h-full flex-1 basis-0 justify-end">
+  
+  {/* SEARCH */}
+  <LocalizedClientLink href="/store" className="hover:text-purple-500 transition-colors p-1" title="Search">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+  </LocalizedClientLink>
 
-            {/* SEARCH */}
-            <LocalizedClientLink
-              href="/store"
-              className="hover:text-purple-500 transition-colors"
-              title="Search"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
-            </LocalizedClientLink>
+  {/* ACCOUNT */}
+  <LocalizedClientLink href="/account" className="hover:text-purple-500 transition-colors p-1" title="Account" data-testid="nav-account-link">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+    </svg>
+  </LocalizedClientLink>
 
-            {/* ACCOUNT */}
-            <LocalizedClientLink
-              href="/account"
-              className="hover:text-purple-500 transition-colors"
-              title="Account"
-              data-testid="nav-account-link"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </LocalizedClientLink>
+  {/* WISHLIST */}
+  <LocalizedClientLink href="/wishlist" className="hover:text-purple-500 transition-colors p-1" title="Wishlist">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </LocalizedClientLink>
 
-            {/* WISHLIST */}
-            <LocalizedClientLink
-              href="/account/wishlist"
-              className="hover:text-purple-500 transition-colors hidden small:block"
-              title="Wishlist"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </LocalizedClientLink>
+  {/* CART */}
+  <Suspense
+    fallback={
+      <LocalizedClientLink className="hover:text-purple-500 transition-colors p-1" href="/cart" data-testid="nav-cart-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </LocalizedClientLink>
+    }
+  >
+    <CartButton />
+  </Suspense>
 
-            {/* CART */}
-            <Suspense
-              fallback={
-                <LocalizedClientLink
-                  href="/cart"
-                  className="hover:text-purple-500 transition-colors flex gap-1 items-center"
-                  data-testid="nav-cart-link"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <path d="M16 10a4 4 0 0 1-8 0" />
-                  </svg>
-                </LocalizedClientLink>
-              }
-            >
-              <CartButton />
-            </Suspense>
-
-          </div>
+</div>
         </nav>
 
         {/* ── CATEGORY NAV ROW ── */}
