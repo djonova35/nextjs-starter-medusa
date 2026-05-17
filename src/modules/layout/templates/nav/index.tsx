@@ -21,78 +21,131 @@ export default async function Nav() {
 
         {/* ── TOP ROW ── */}
         <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-16 text-small-regular">
+
+          {/* LEFT — MENU */}
           <div className="flex-1 basis-0 h-full flex items-center">
             <div className="h-full">
-              <SideMenu regions={regions} locales={locales} currentLocale={currentLocale} />
+              <SideMenu
+                regions={regions}
+                locales={locales}
+                currentLocale={currentLocale}
+              />
             </div>
           </div>
 
+          {/* CENTER — LOGO */}
           <div className="flex items-center h-full">
             <LocalizedClientLink
               href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase tracking-widest"
               data-testid="nav-store-link"
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "24px",
+                fontWeight: "300",
+                letterSpacing: "10px",
+                textTransform: "uppercase",
+                color: "#2A1F4A",
+                textDecoration: "none",
+              }}
             >
-              <LocalizedClientLink
-  href="/"
-  data-testid="nav-store-link"
-  style={{
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "24px",
-    fontWeight: "300",
-    letterSpacing: "10px",
-    textTransform: "uppercase",
-    color: "#2A1F4A",
-    textDecoration: "none"
-  }}
->
-  DJONOVA
+              DJONOVA
             </LocalizedClientLink>
           </div>
-          
-<div className="flex items-center gap-x-5 h-full flex-1 basis-0 justify-end">
-  
-  {/* SEARCH */}
-  <LocalizedClientLink href="/store" className="hover:text-purple-500 transition-colors" title="Search">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-  </LocalizedClientLink>
 
-  {/* ACCOUNT */}
-  <LocalizedClientLink href="/account" className="hover:text-purple-500 transition-colors" title="Account" data-testid="nav-account-link">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-  </LocalizedClientLink>
+          {/* RIGHT — ICONS */}
+          <div className="flex items-center gap-x-5 h-full flex-1 basis-0 justify-end">
 
-  {/* WISHLIST */}
-  <LocalizedClientLink href="/account/wishlist" className="hover:text-purple-500 transition-colors hidden small:block" title="Wishlist">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-    </svg>
-  </LocalizedClientLink>
+            {/* SEARCH */}
+            <LocalizedClientLink
+              href="/store"
+              className="hover:text-purple-500 transition-colors"
+              title="Search"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </LocalizedClientLink>
 
-  {/* CART */}
-  <Suspense
-    fallback={
-      <LocalizedClientLink className="hover:text-purple-500 transition-colors flex gap-1 items-center" href="/cart" data-testid="nav-cart-link">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-        </svg>
-      </LocalizedClientLink>
-    }
-  >
-    <CartButton />
-  </Suspense>
+            {/* ACCOUNT */}
+            <LocalizedClientLink
+              href="/account"
+              className="hover:text-purple-500 transition-colors"
+              title="Account"
+              data-testid="nav-account-link"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </LocalizedClientLink>
 
-</div>         
-      </nav>
+            {/* WISHLIST */}
+            <LocalizedClientLink
+              href="/account/wishlist"
+              className="hover:text-purple-500 transition-colors hidden small:block"
+              title="Wishlist"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+              </svg>
+            </LocalizedClientLink>
+
+            {/* CART */}
+            <Suspense
+              fallback={
+                <LocalizedClientLink
+                  href="/cart"
+                  className="hover:text-purple-500 transition-colors flex gap-1 items-center"
+                  data-testid="nav-cart-link"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
+                </LocalizedClientLink>
+              }
+            >
+              <CartButton />
+            </Suspense>
+
+          </div>
+        </nav>
 
         {/* ── CATEGORY NAV ROW ── */}
         <div className="hidden small:block border-t border-ui-border-base">
           <div className="content-container flex items-center justify-center gap-x-8 h-10">
 
+            {/* FASHION */}
             <div className="relative group/cat">
               <LocalizedClientLink
                 href="/categories/fashion"
@@ -101,13 +154,22 @@ export default async function Nav() {
                 Fashion
               </LocalizedClientLink>
               <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-ui-border-base shadow-lg opacity-0 invisible group-hover/cat:opacity-100 group-hover/cat:visible transition-all duration-200 z-50 min-w-[160px]">
-                <LocalizedClientLink href="/categories/fashion/womenwear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Women & Teens</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/fashion/menswear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Men & Teens</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/fashion/kidswear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Kids & Toddler</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/fashion/accessories" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Accessories</LocalizedClientLink>
+                <LocalizedClientLink href="/categories/fashion/womenwear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Women &amp; Teens
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/fashion/menswear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Men &amp; Teens
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/fashion/kidswear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Kids &amp; Toddler
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/fashion/accessories" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Accessories
+                </LocalizedClientLink>
               </div>
             </div>
 
+            {/* SHOES */}
             <div className="relative group/cat">
               <LocalizedClientLink
                 href="/categories/shoes"
@@ -116,14 +178,25 @@ export default async function Nav() {
                 Shoes
               </LocalizedClientLink>
               <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-ui-border-base shadow-lg opacity-0 invisible group-hover/cat:opacity-100 group-hover/cat:visible transition-all duration-200 z-50 min-w-[160px]">
-                <LocalizedClientLink href="/categories/shoes/womenshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Women Shoes</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/shoes/menshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Men Shoes</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/shoes/casualshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Casual</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/shoes/formalshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Formal</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/shoes/sportshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Sports</LocalizedClientLink>
+                <LocalizedClientLink href="/categories/shoes/womenshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Women Shoes
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/shoes/menshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Men Shoes
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/shoes/casualshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Casual
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/shoes/formalshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Formal
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/shoes/sportshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Sports
+                </LocalizedClientLink>
               </div>
             </div>
 
+            {/* TECH */}
             <div className="relative group/cat">
               <LocalizedClientLink
                 href="/categories/tech"
@@ -132,11 +205,16 @@ export default async function Nav() {
                 Tech
               </LocalizedClientLink>
               <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-ui-border-base shadow-lg opacity-0 invisible group-hover/cat:opacity-100 group-hover/cat:visible transition-all duration-200 z-50 min-w-[160px]">
-                <LocalizedClientLink href="/categories/tech/phones" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Phones</LocalizedClientLink>
-                <LocalizedClientLink href="/categories/tech/gadget" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">Gadgets</LocalizedClientLink>
+                <LocalizedClientLink href="/categories/tech/phones" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Phones
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/tech/gadget" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Gadgets
+                </LocalizedClientLink>
               </div>
             </div>
 
+            {/* ALL PRODUCTS */}
             <LocalizedClientLink
               href="/store"
               className="text-xs uppercase tracking-widest text-ui-fg-subtle hover:text-ui-fg-base transition-colors py-2 inline-block"
