@@ -65,6 +65,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           >
             <ProductActionsWrapper id={product.id} region={region} />
           </Suspense>
+           <WishlistButton productId={product.id!} />
         </div>
 
         {/* ── 4. PROMO BANNER ── */}
