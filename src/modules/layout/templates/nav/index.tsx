@@ -1,3 +1,4 @@
+import SearchOverlay from "@modules/layout/components/search-overlay"
 import { Suspense } from "react"
 import { listRegions } from "@lib/data/regions"
 import { listLocales } from "@lib/data/locales"
