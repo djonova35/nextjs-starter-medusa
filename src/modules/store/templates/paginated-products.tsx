@@ -12,6 +12,7 @@ type PaginatedProductsParams = {
   category_id?: string[]
   id?: string[]
   order?: string
+  q?: string
 }
 
 export default async function PaginatedProducts({
@@ -21,6 +22,7 @@ export default async function PaginatedProducts({
   categoryId,
   productsIds,
   countryCode,
+  searchQuery,
 }: {
   sortBy?: SortOptions
   page: number
@@ -28,6 +30,7 @@ export default async function PaginatedProducts({
   categoryId?: string
   productsIds?: string[]
   countryCode: string
+  searchQuery?: string
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -49,6 +52,10 @@ export default async function PaginatedProducts({
     queryParams["order"] = "created_at"
   }
 
+  if (searchQuery) {
+    queryParams["q"] = searchQuery
+  }
+
   const region = await getRegion(countryCode)
 
   if (!region) {
@@ -68,17 +75,26 @@ export default async function PaginatedProducts({
 
   return (
     <>
+      {products.length === 0 && (
+        <div style={{ textAlign: "center", padding: "60px 20px" }}>
+          <div style={{ fontSize: "40px", marginBottom: "16px" }}>🔍</div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: "300", color: "#2A1F4A", marginBottom: "10px" }}>
+            No results found
+          </h2>
+          <p style={{ fontSize: "13px", color: "#9B95B8", lineHeight: "1.7" }}>
+            Try searching with different keywords or browse our categories.
+          </p>
+        </div>
+      )}
       <ul
         className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
         data-testid="products-list"
       >
-        {products.map((p) => {
-          return (
-            <li key={p.id}>
-              <ProductPreview product={p} region={region} />
-            </li>
-          )
-        })}
+        {products.map((p) => (
+          <li key={p.id}>
+            <ProductPreview product={p} region={region} />
+          </li>
+        ))}
       </ul>
       {totalPages > 1 && (
         <Pagination
