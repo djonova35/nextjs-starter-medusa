@@ -386,67 +386,72 @@ export default function ShoesPage() {
           border: 1px solid rgba(255,255,255,0.18);
         }
         .sh-btn--ghost:hover { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.3); }
-
+       
         /* ── STICKY NAV ── */
-        .sh-nav {
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          background: rgba(244,242,250,0.92);
-          backdrop-filter: blur(16px) saturate(180%);
-          -webkit-backdrop-filter: blur(16px) saturate(180%);
-          border-bottom: 1px solid var(--sh-line);
-          transition: box-shadow 0.3s ease;
-        }
-        .sh-nav--scrolled { box-shadow: 0 4px 24px rgba(22,14,43,0.08); }
-        .sh-nav__inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 60px;
-          gap: 8px;
-        }
-        .sh-nav__logo {
-          font-family: 'Cormorant Garamond', serif;
-          font-weight: 600;
-          font-size: 20px;
-          letter-spacing: 0.12em;
-          color: var(--sh-ink);
-          text-decoration: none;
-          white-space: nowrap;
-          flex-shrink: 0;
-        }
-        .sh-nav__tabs {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          overflow-x: auto;
-          scrollbar-width: none;
-          flex: 1;
-          justify-content: center;
-        }
-        .sh-nav__tabs::-webkit-scrollbar { display: none; }
-        .sh-nav__tab {
-          font-family: 'Space Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: var(--sh-gray);
-          text-decoration: none;
-          padding: 8px 16px;
-          border-radius: 999px;
-          white-space: nowrap;
-          transition: color 0.2s ease, background 0.2s ease;
-          cursor: pointer;
-          background: none;
-          border: none;
-        }
-        .sh-nav__tab:hover   { color: var(--sh-ink); background: var(--sh-line); }
-        .sh-nav__tab--active { color: #fff; background: var(--sh-accent); }
-        @media (max-width: 640px) {
-          .sh-nav__logo { font-size: 16px; }
-          .sh-nav__tab  { font-size: 9px; padding: 7px 10px; letter-spacing: 0.08em; }
-        }
+.sh-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  gap: 8px;
+}
+
+/* Hide logo on mobile to give tabs full width */
+.sh-nav__logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  color: var(--sh-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: none; /* ← hidden on mobile */
+}
+@media (min-width: 768px) {
+  .sh-nav__logo { display: block; } /* ← show on tablet and above */
+}
+
+/* Tabs take full width on mobile */
+.sh-nav__tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex: 1;
+  justify-content: flex-start; /* ← left-aligned so tabs don't crowd */
+}
+.sh-nav__tabs::-webkit-scrollbar { display: none; }
+
+.sh-nav__tab {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sh-gray);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  white-space: nowrap; /* ← prevents wrapping or cutting */
+  transition: color 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  flex-shrink: 0; /* ← prevents tabs from being squished */
+}
+.sh-nav__tab:hover   { color: var(--sh-ink); background: var(--sh-line); }
+.sh-nav__tab--active { color: #fff; background: var(--sh-accent); }
+
+/* Mobile: smaller tabs, full scroll row */
+@media (max-width: 640px) {
+  .sh-nav__tab {
+    font-size: 9px;
+    padding: 7px 12px;
+    letter-spacing: 0.06em;
+  }
+}
 
         /* ── CATEGORY STRIP ── */
         .sh-cat-strip {
