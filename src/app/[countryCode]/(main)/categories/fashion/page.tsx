@@ -188,7 +188,8 @@ export default function FashionPage() {
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          justify-content: flex-end;
+          justify-content: flex-start;
+          padding-top: 48px;
           padding-bottom: 80px;
         }
         .fh-hero__bg {
