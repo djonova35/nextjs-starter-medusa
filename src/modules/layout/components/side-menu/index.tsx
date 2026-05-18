@@ -164,7 +164,7 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                           </LocalizedClientLink>
                         </li>
                         <li>
-                          <LocalizedClientLink href="/account/wishlist" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                          <LocalizedClientLink href="/wishlist" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
                             Wishlist
                           </LocalizedClientLink>
                         </li>
