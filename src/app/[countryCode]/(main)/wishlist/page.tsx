@@ -2,19 +2,63 @@
 
 import { useWishlist } from "@lib/context/wishlist-context"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 import { useEffect, useState } from "react"
+
+type Product = {
+  id: string
+  title: string
+  handle: string
+  thumbnail: string | null
+  variants?: any[]
+}
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist } = useWishlist()
   const [mounted, setMounted] = useState(false)
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
+
+  useEffect(() => {
+    if (!mounted || wishlist.length === 0) {
+      setProducts([])
+      return
+    }
+
+    const fetchProducts = async () => {
+      setLoading(true)
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
+        const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+        const ids = wishlist.join(",")
+        const res = await fetch(
+          `${backendUrl}/store/products?id[]=${wishlist.map(id => `${id}`).join("&id[]=")}&&fields=id,title,handle,thumbnail,variants`,
+          {
+            headers: {
+              "x-publishable-api-key": publishableKey || "",
+            },
+          }
+        )
+        const data = await res.json()
+        setProducts(data.products || [])
+      } catch (err) {
+        console.error("Failed to fetch wishlist products", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [mounted, wishlist])
 
   if (!mounted) return null
 
   return (
     <div style={{ minHeight: "100vh", background: "#FEFCFF" }}>
-      
+
       {/* HEADER */}
       <div style={{ textAlign: "center", padding: "60px 20px 40px", borderBottom: "1px solid #EDE8FA" }}>
         <p style={{ fontSize: "10px", letterSpacing: "4px", textTransform: "uppercase", color: "#9B7FE8", marginBottom: "12px", fontWeight: "300" }}>
@@ -36,43 +80,69 @@ export default function WishlistPage() {
             Your wishlist is empty
           </h2>
           <p style={{ fontSize: "13px", color: "#9B95B8", lineHeight: "1.7", marginBottom: "32px" }}>
-            Save items you love by clicking the heart icon on any product card or product page.
+            Save items you love by clicking the heart icon on any product.
           </p>
           <LocalizedClientLink
             href="/store"
-            style={{ background: "#2A1F4A", color: "white", padding: "14px 36px", fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase", textDecoration: "none", display: "inline-block", transition: "background 0.3s" }}
+            style={{ background: "#2A1F4A", color: "white", padding: "14px 36px", fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase", textDecoration: "none", display: "inline-block" }}
           >
             Start Shopping
           </LocalizedClientLink>
         </div>
       )}
 
-      {/* SAVED PRODUCTS */}
-      {wishlist.length > 0 && (
+      {/* LOADING */}
+      {loading && wishlist.length > 0 && (
+        <div style={{ textAlign: "center", padding: "60px 20px", color: "#9B95B8", fontSize: "13px" }}>
+          Loading your saved items...
+        </div>
+      )}
+
+      {/* PRODUCT GRID */}
+      {!loading && products.length > 0 && (
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "24px" }}>
-            {wishlist.map((productId) => (
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+            gap: "24px"
+          }}>
+            {products.map((product) => (
               <WishlistCard
-                key={productId}
-                productId={productId}
-                onRemove={() => removeFromWishlist(productId)}
+                key={product.id}
+                product={product}
+                onRemove={() => removeFromWishlist(product.id)}
               />
             ))}
           </div>
         </div>
       )}
+
     </div>
   )
 }
 
-function WishlistCard({ productId, onRemove }: { productId: string, onRemove: () => void }) {
+function WishlistCard({
+  product,
+  onRemove,
+}: {
+  product: Product
+  onRemove: () => void
+}) {
+  const price = product.variants?.[0]?.calculated_price?.calculated_amount
+
   return (
-    <div style={{ position: "relative", background: "white", border: "1px solid #EDE8FA", borderRadius: "4px", overflow: "hidden" }}>
-      
-      {/* REMOVE BUTTON */}
+    <div style={{ position: "relative", background: "white", border: "1px solid #EDE8FA", overflow: "hidden" }}>
+
+      {/* HEART REMOVE BUTTON */}
       <button
         onClick={onRemove}
-        style={{ position: "absolute", top: "8px", right: "8px", zIndex: 10, width: "32px", height: "32px", background: "white", border: "none", borderRadius: "50%", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
+        style={{
+          position: "absolute", top: "8px", right: "8px", zIndex: 10,
+          width: "32px", height: "32px", background: "white", border: "none",
+          borderRadius: "50%", cursor: "pointer", display: "flex",
+          alignItems: "center", justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+        }}
         title="Remove from wishlist"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#9B7FE8" stroke="#9B7FE8" strokeWidth="1.5">
@@ -80,23 +150,58 @@ function WishlistCard({ productId, onRemove }: { productId: string, onRemove: ()
         </svg>
       </button>
 
-      {/* PRODUCT IMAGE PLACEHOLDER */}
-      <div style={{ aspectRatio: "3/4", background: "#F8F4FC", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontSize: "32px", opacity: 0.3 }}>👗</span>
-      </div>
+      {/* IMAGE */}
+      <LocalizedClientLink href={`/products/${product.handle}`}>
+        <div style={{ aspectRatio: "3/4", background: "#F8F4FC", position: "relative", overflow: "hidden" }}>
+          {product.thumbnail ? (
+            <Image
+              src={product.thumbnail}
+              alt={product.title}
+              fill
+              sizes="(max-width: 768px) 50vw, 200px"
+              style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
+              className="hover:scale-105"
+            />
+          ) : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", opacity: 0.3 }}>
+              👗
+            </div>
+          )}
+        </div>
+      </LocalizedClientLink>
 
-      {/* PRODUCT INFO */}
+      {/* INFO */}
       <div style={{ padding: "12px" }}>
-        <p style={{ fontSize: "11px", color: "#9B95B8", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "1px" }}>Saved item</p>
+        <LocalizedClientLink href={`/products/${product.handle}`} style={{ textDecoration: "none" }}>
+          <p style={{ fontSize: "13px", color: "#2A1F4A", fontWeight: "500", marginBottom: "4px", lineHeight: "1.3" }}>
+            {product.title}
+          </p>
+        </LocalizedClientLink>
+        {price && (
+          <p style={{ fontSize: "13px", color: "#9B7FE8", fontWeight: "400", marginBottom: "10px" }}>
+            £{(price / 100).toFixed(2)}
+          </p>
+        )}
         <LocalizedClientLink
-          href={`/store`}
-          style={{ fontSize: "12px", color: "#2A1F4A", textDecoration: "none", fontWeight: "500", display: "block", marginBottom: "10px" }}
+          href={`/products/${product.handle}`}
+          style={{
+            display: "block", textAlign: "center", padding: "9px",
+            background: "#2A1F4A", color: "white", fontSize: "10px",
+            letterSpacing: "1.5px", textTransform: "uppercase",
+            textDecoration: "none", marginBottom: "6px",
+            transition: "background 0.3s"
+          }}
         >
-          View Product →
+          View Product
         </LocalizedClientLink>
         <button
           onClick={onRemove}
-          style={{ width: "100%", padding: "8px", fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase", background: "transparent", border: "1px solid #EDE8FA", color: "#9B95B8", cursor: "pointer" }}
+          style={{
+            width: "100%", padding: "8px", fontSize: "10px",
+            letterSpacing: "1.5px", textTransform: "uppercase",
+            background: "transparent", border: "1px solid #EDE8FA",
+            color: "#9B95B8", cursor: "pointer"
+          }}
         >
           Remove
         </button>
