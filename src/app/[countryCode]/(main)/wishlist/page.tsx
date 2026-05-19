@@ -48,7 +48,7 @@ export default function WishlistPage() {
         }
 
         const params = new URLSearchParams()
-        wishlist.forEach((id) => params.append("id[]", id))
+        wishlist.forEach((id) => params.append("id", id))
 
         const url = `${backendUrl}/store/products?${params.toString()}`
 
