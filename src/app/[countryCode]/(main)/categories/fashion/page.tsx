@@ -329,7 +329,7 @@ export default function FashionPage() {
 .fh-nav {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 10;
   background: rgba(244,242,250,0.92);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
