@@ -47,6 +47,7 @@ export default function WishlistPage() {
           return
         }
 
+       console.log("wishlist:", wishlist)
         const params = new URLSearchParams()
         wishlist.forEach((id) => params.append("id", id))
 
