@@ -504,10 +504,10 @@ export default function TechPage() {
         }
         .tc-cat-strip__grid {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: 1fr;
           gap: 20px;
         }
-        @media (min-width: 768px) { .tc-cat-strip__grid { gap: 28px; } }
+        @media (min-width: 768px)  { .tc-cat-strip__grid { grid-template-columns: repeat(2, 1fr); gap: 28px; } }
         @media (min-width: 1024px) { .tc-cat-strip__grid { grid-template-columns: repeat(2, 1fr); gap: 32px; } }
 
         .tc-cat-strip__card {
@@ -981,54 +981,6 @@ export default function TechPage() {
           color: rgba(255,255,255,0.55);
         }
 
-        /* ── STATS STRIP ── */
-        .tc-stats-strip {
-          background: #fff;
-          border-top: 1px solid var(--tc-line);
-          border-bottom: 1px solid var(--tc-line);
-          padding: 48px 0;
-        }
-        .tc-stats-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
-        }
-        @media (min-width: 768px) { .tc-stats-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
-        .tc-stat-card {
-          border-radius: 16px;
-          padding: 24px 20px;
-          background: linear-gradient(135deg, var(--tc-deep) 0%, #2A1A5E 100%);
-          border: 1px solid rgba(107,78,230,0.2);
-          text-align: center;
-          position: relative;
-          overflow: hidden;
-        }
-        .tc-stat-card::before {
-          content: '';
-          position: absolute;
-          top: -20px; right: -20px;
-          width: 80px; height: 80px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(107,78,230,0.25) 0%, transparent 70%);
-        }
-        .tc-stat-card__icon { font-size: 24px; margin-bottom: 10px; display: block; }
-        .tc-stat-card__num {
-          font-family: 'Cormorant Garamond', serif;
-          font-weight: 300;
-          font-size: 32px;
-          color: #fff;
-          line-height: 1;
-          margin-bottom: 6px;
-        }
-        .tc-stat-card__num span { font-size: 18px; color: var(--tc-accent); }
-        .tc-stat-card__label {
-          font-family: 'Space Mono', monospace;
-          font-size: 9px;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.4);
-        }
-
         /* ── SCROLL REVEAL ── */
         .tc-reveal {
           opacity: 0;
@@ -1125,26 +1077,6 @@ export default function TechPage() {
                   <div className="tc-cat-strip__label-count">{item.count}</div>
                 </div>
               </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── STATS STRIP ── */}
-      <div className="tc-stats-strip tc-reveal">
-        <div className="tc-container">
-          <div className="tc-stats-grid">
-            {[
-              { icon: "🛡️", num: "2",   sup: "yr",  label: "Warranty" },
-              { icon: "⚡", num: "24",  sup: "hr",  label: "Dispatch" },
-              { icon: "🌱", num: "30",  sup: "%",   label: "Eco Packaging" },
-              { icon: "⭐", num: "4.9", sup: "★",   label: "Average Rating" },
-            ].map((s) => (
-              <div className="tc-stat-card" key={s.label}>
-                <span className="tc-stat-card__icon">{s.icon}</span>
-                <div className="tc-stat-card__num">{s.num}<span>{s.sup}</span></div>
-                <div className="tc-stat-card__label">{s.label}</div>
-              </div>
             ))}
           </div>
         </div>
@@ -1406,4 +1338,4 @@ export default function TechPage() {
       </section>
     </>
   )
-      }
+}
