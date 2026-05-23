@@ -18,22 +18,32 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  // Simple params - no extra fields that might break
-  const params = new URLSearchParams()
-  ids.forEach((id) => params.append("id", id))
-
-  const fullUrl = `${backendUrl}/store/products?${params.toString()}`
-
-  console.log("Fetching:", fullUrl)
-
   try {
-    const res = await fetch(fullUrl, {
-      headers: {
-        "x-publishable-api-key": publishableKey,
-      },
+    // Step 1: Get the first available region
+    const regionRes = await fetch(`${backendUrl}/store/regions`, {
+      headers: { "x-publishable-api-key": publishableKey },
     })
 
-    // Log the raw error from Medusa
+    let regionId: string | null = null
+
+    if (regionRes.ok) {
+      const regionData = await regionRes.json()
+      regionId = regionData.regions?.[0]?.id || null
+      console.log("Using region:", regionId)
+    }
+
+    // Step 2: Fetch products with region for pricing
+    const params = new URLSearchParams()
+    ids.forEach((id) => params.append("id", id))
+    if (regionId) params.append("region_id", regionId)
+
+    const res = await fetch(
+      `${backendUrl}/store/products?${params.toString()}`,
+      {
+        headers: { "x-publishable-api-key": publishableKey },
+      }
+    )
+
     if (!res.ok) {
       const errorText = await res.text()
       console.error("Medusa error:", res.status, errorText)
@@ -44,43 +54,13 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await res.json()
+    // Pass region back so client can use it for cart
+    return NextResponse.json({ ...data, region_id: regionId })
 
-    // Now try to get variants with pricing separately
-    const productIds = (data.products || []).map((p: any) => p.id)
-
-    if (productIds.length === 0) {
-      return NextResponse.json({ products: [] })
-    }
-
-    // Try fetching with pricing fields
-    const pricedParams = new URLSearchParams()
-    productIds.forEach((id: string) => pricedParams.append("id", id))
-    pricedParams.append(
-      "fields",
-      "id,title,handle,thumbnail,variants.id,variants.title,variants.inventory_quantity,variants.calculated_price"
-    )
-
-    const pricedRes = await fetch(
-      `${backendUrl}/store/products?${pricedParams.toString()}`,
-      {
-        headers: {
-          "x-publishable-api-key": publishableKey,
-        },
-      }
-    )
-
-    if (!pricedRes.ok) {
-      // If priced fetch fails, just return basic product data
-      console.warn("Priced fetch failed, returning basic data")
-      return NextResponse.json(data)
-    }
-
-    const pricedData = await pricedRes.json()
-    return NextResponse.json(pricedData)
-  } catch (err) {
+  } catch (err: any) {
     console.error("Fetch error:", err)
     return NextResponse.json(
-      { error: "Failed to fetch products" },
+      { error: "Failed to fetch products", detail: err.message },
       { status: 500 }
     )
   }
