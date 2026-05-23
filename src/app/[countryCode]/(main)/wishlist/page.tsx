@@ -34,19 +34,6 @@ export default function WishlistPage() {
       return
     }
 
-    const fetchProducts = async () => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
-        const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-
-        if (!backendUrl || !publishableKey) {
-          setError("Store configuration missing")
-          return
-        }
-
        console.log("wishlist:", wishlist)
         const params = new URLSearchParams()
         wishlist.forEach((id) => params.append("id", id))
