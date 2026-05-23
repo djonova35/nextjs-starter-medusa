@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const ids = searchParams.getAll("id")
-  const regionId = searchParams.get("region_id") || "reg_01"
 
   if (!ids.length) {
     return NextResponse.json({ products: [] })
@@ -19,14 +18,50 @@ export async function GET(req: NextRequest) {
     )
   }
 
+  // Simple params - no extra fields that might break
   const params = new URLSearchParams()
   ids.forEach((id) => params.append("id", id))
-  params.append("region_id", regionId)
-  params.append("fields", "*variants,*variants.calculated_price,*variants.options,*options")
+
+  const fullUrl = `${backendUrl}/store/products?${params.toString()}`
+
+  console.log("Fetching:", fullUrl)
 
   try {
-    const res = await fetch(
-      `${backendUrl}/store/products?${params.toString()}`,
+    const res = await fetch(fullUrl, {
+      headers: {
+        "x-publishable-api-key": publishableKey,
+      },
+    })
+
+    // Log the raw error from Medusa
+    if (!res.ok) {
+      const errorText = await res.text()
+      console.error("Medusa error:", res.status, errorText)
+      return NextResponse.json(
+        { error: `Backend error: ${res.status}`, detail: errorText },
+        { status: res.status }
+      )
+    }
+
+    const data = await res.json()
+
+    // Now try to get variants with pricing separately
+    const productIds = (data.products || []).map((p: any) => p.id)
+
+    if (productIds.length === 0) {
+      return NextResponse.json({ products: [] })
+    }
+
+    // Try fetching with pricing fields
+    const pricedParams = new URLSearchParams()
+    productIds.forEach((id: string) => pricedParams.append("id", id))
+    pricedParams.append(
+      "fields",
+      "id,title,handle,thumbnail,variants.id,variants.title,variants.inventory_quantity,variants.calculated_price"
+    )
+
+    const pricedRes = await fetch(
+      `${backendUrl}/store/products?${pricedParams.toString()}`,
       {
         headers: {
           "x-publishable-api-key": publishableKey,
@@ -34,16 +69,16 @@ export async function GET(req: NextRequest) {
       }
     )
 
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: `Backend error: ${res.status}` },
-        { status: res.status }
-      )
+    if (!pricedRes.ok) {
+      // If priced fetch fails, just return basic product data
+      console.warn("Priced fetch failed, returning basic data")
+      return NextResponse.json(data)
     }
 
-    const data = await res.json()
-    return NextResponse.json(data)
+    const pricedData = await pricedRes.json()
+    return NextResponse.json(pricedData)
   } catch (err) {
+    console.error("Fetch error:", err)
     return NextResponse.json(
       { error: "Failed to fetch products" },
       { status: 500 }
