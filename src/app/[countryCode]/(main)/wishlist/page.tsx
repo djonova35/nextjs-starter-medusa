@@ -297,7 +297,7 @@ function WishlistCard({
   const formatPrice = (amount: number) => {
     // If amount is less than 100, it might already be in major units
     // Medusa v2 always returns minor units (pence) so divide by 100
-    return `£${(amount.toFixed(2)}`
+    return `£${amount.toFixed(2)}`
   }
 
   const handleAddToBag = async () => {
