@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const ids = searchParams.getAll("id")
+  const countryCode = searchParams.get("country_code") || "gb"
 
   if (!ids.length) {
     return NextResponse.json({ products: [] })
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Step 1: Get the first available region
+    // Step 1: Get region by country code (same way your store does it)
     const regionRes = await fetch(`${backendUrl}/store/regions`, {
       headers: { "x-publishable-api-key": publishableKey },
     })
@@ -28,11 +29,31 @@ export async function GET(req: NextRequest) {
 
     if (regionRes.ok) {
       const regionData = await regionRes.json()
-      regionId = regionData.regions?.[0]?.id || null
-      console.log("Using region:", regionId)
+      const regions = regionData.regions || []
+
+      // Match region by country code exactly like your getRegion() does
+      for (const region of regions) {
+        const match = region.countries?.find(
+          (c: any) => c.iso_2?.toLowerCase() === countryCode.toLowerCase()
+        )
+        if (match) {
+          regionId = region.id
+          break
+        }
+      }
+
+      // Fallback to first region if no match
+      if (!regionId && regions.length > 0) {
+        regionId = regions[0].id
+      }
+
+      console.log(
+        "Country:", countryCode,
+        "| Region ID:", regionId
+      )
     }
 
-    // Step 2: Fetch products with region for pricing
+    // Step 2: Fetch products with region_id for correct pricing
     const params = new URLSearchParams()
     ids.forEach((id) => params.append("id", id))
     if (regionId) params.append("region_id", regionId)
@@ -46,7 +67,7 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const errorText = await res.text()
-      console.error("Medusa error:", res.status, errorText)
+      console.error("Products fetch error:", res.status, errorText)
       return NextResponse.json(
         { error: `Backend error: ${res.status}`, detail: errorText },
         { status: res.status }
@@ -54,11 +75,13 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await res.json()
-    // Pass region back so client can use it for cart
-    return NextResponse.json({ ...data, region_id: regionId })
 
+    return NextResponse.json({
+      ...data,
+      region_id: regionId,
+    })
   } catch (err: any) {
-    console.error("Fetch error:", err)
+    console.error("Wishlist fetch error:", err)
     return NextResponse.json(
       { error: "Failed to fetch products", detail: err.message },
       { status: 500 }
