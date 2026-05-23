@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Step 1: Get region by country code (same way your store does it)
+    // Step 1: Get region by country code
     const regionRes = await fetch(`${backendUrl}/store/regions`, {
       headers: { "x-publishable-api-key": publishableKey },
     })
@@ -31,7 +31,6 @@ export async function GET(req: NextRequest) {
       const regionData = await regionRes.json()
       const regions = regionData.regions || []
 
-      // Match region by country code exactly like your getRegion() does
       for (const region of regions) {
         const match = region.countries?.find(
           (c: any) => c.iso_2?.toLowerCase() === countryCode.toLowerCase()
@@ -42,18 +41,14 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Fallback to first region if no match
       if (!regionId && regions.length > 0) {
         regionId = regions[0].id
       }
 
-      console.log(
-        "Country:", countryCode,
-        "| Region ID:", regionId
-      )
+      console.log("Country:", countryCode, "| Region ID:", regionId)
     }
 
-    // Step 2: Fetch products with region_id for correct pricing
+    // Step 2: Fetch products with region_id
     const params = new URLSearchParams()
     ids.forEach((id) => params.append("id", id))
     if (regionId) params.append("region_id", regionId)
@@ -67,7 +62,6 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const errorText = await res.text()
-      console.error("Products fetch error:", res.status, errorText)
       return NextResponse.json(
         { error: `Backend error: ${res.status}`, detail: errorText },
         { status: res.status }
@@ -75,6 +69,18 @@ export async function GET(req: NextRequest) {
     }
 
     const data = await res.json()
+
+    // Step 3: Log what prices actually came back so we can debug
+    console.log("=== PRICE DEBUG ===")
+    data.products?.forEach((p: any) => {
+      console.log("Product:", p.title)
+      p.variants?.forEach((v: any) => {
+        console.log("  Variant:", v.title)
+        console.log("  calculated_price:", JSON.stringify(v.calculated_price))
+        console.log("  prices:", JSON.stringify(v.prices))
+      })
+    })
+    console.log("===================")
 
     return NextResponse.json({
       ...data,
