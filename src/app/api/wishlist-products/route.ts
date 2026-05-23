@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const ids = searchParams.getAll("id")
+  const regionId = searchParams.get("region_id") || "reg_01"
 
   if (!ids.length) {
     return NextResponse.json({ products: [] })
@@ -20,15 +21,18 @@ export async function GET(req: NextRequest) {
 
   const params = new URLSearchParams()
   ids.forEach((id) => params.append("id", id))
+  params.append("region_id", regionId)
+  params.append("fields", "*variants,*variants.calculated_price,*variants.options,*options")
 
   try {
-    const res = await fetch(`${backendUrl}/store/products?${params.toString()}`, {
-      headers: {
-        "x-publishable-api-key": publishableKey,
-      },
-      // Cache for 60 seconds
-      next: { revalidate: 60 },
-    })
+    const res = await fetch(
+      `${backendUrl}/store/products?${params.toString()}`,
+      {
+        headers: {
+          "x-publishable-api-key": publishableKey,
+        },
+      }
+    )
 
     if (!res.ok) {
       return NextResponse.json(
