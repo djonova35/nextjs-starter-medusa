@@ -51,13 +51,10 @@ export default function WishlistPage() {
         const params = new URLSearchParams()
         wishlist.forEach((id) => params.append("id", id))
 
-        const url = `${backendUrl}/store/products?${params.toString()}`
+       const params = new URLSearchParams()
+wishlist.forEach((id) => params.append("id", id))
 
-        const res = await fetch(url, {
-          headers: {
-            "x-publishable-api-key": publishableKey,
-          },
-        })
+const res = await fetch(`/api/wishlist-products?${params.toString()}`)
 
         if (!res.ok) {
           setError(`Failed to load products (${res.status})`)
