@@ -34,14 +34,17 @@ export default function WishlistPage() {
       return
     }
 
-       console.log("wishlist:", wishlist)
+    const fetchProducts = async () => {
+      setLoading(true)
+      setError(null)
+
+      try {
         const params = new URLSearchParams()
         wishlist.forEach((id) => params.append("id", id))
 
-       const params = new URLSearchParams()
-wishlist.forEach((id) => params.append("id", id))
-
-const res = await fetch(`/api/wishlist-products?${params.toString()}`)
+        const res = await fetch(
+          `/api/wishlist-products?${params.toString()}`
+        )
 
         if (!res.ok) {
           setError(`Failed to load products (${res.status})`)
@@ -131,8 +134,8 @@ const res = await fetch(`/api/wishlist-products?${params.toString()}`)
               marginBottom: "32px",
             }}
           >
-            Save items you love by clicking the heart icon on any product card
-            or product page.
+            Save items you love by clicking the heart icon on any product
+            card or product page.
           </p>
           <LocalizedClientLink
             href="/store"
@@ -208,7 +211,7 @@ const res = await fetch(`/api/wishlist-products?${params.toString()}`)
         </div>
       )}
 
-      {/* ── NO PRODUCTS FOUND (IDs saved but fetch returned nothing) ── */}
+      {/* ── NO PRODUCTS FOUND ── */}
       {!loading && !error && wishlist.length > 0 && products.length === 0 && (
         <div
           style={{
@@ -294,7 +297,10 @@ function WishlistCard({
               alt={product.title}
               fill
               sizes="(max-width: 768px) 50vw, 200px"
-              style={{ objectFit: "cover", transition: "transform 0.5s ease" }}
+              style={{
+                objectFit: "cover",
+                transition: "transform 0.5s ease",
+              }}
               className="hover:scale-105"
             />
           ) : (
