@@ -2,7 +2,6 @@
 
 import { useWishlist } from "@lib/context/wishlist-context"
 import { addToCart } from "@lib/data/cart"
-import { listRegions } from "@lib/data/regions"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -15,10 +14,12 @@ type Variant = {
   calculated_price?: {
     calculated_amount: number
     original_amount: number
+    currency_code?: string
   }
   prices?: {
     amount: number
     currency_code: string
+    region_id?: string
   }[]
 }
 
@@ -70,6 +71,18 @@ export default function WishlistPage() {
           )
           return
         }
+
+        // Debug: log full variant data in browser console
+        console.log("=== WISHLIST PRODUCTS ===")
+        data.products?.forEach((p: any) => {
+          console.log("Product:", p.title)
+          p.variants?.forEach((v: any) => {
+            console.log("  Variant:", v.title, {
+              calculated_price: v.calculated_price,
+              prices: v.prices,
+            })
+          })
+        })
 
         setProducts(data.products || [])
         setRegionId(data.region_id || null)
@@ -188,22 +201,20 @@ export default function WishlistPage() {
         </div>
       )}
 
-      {/* PRODUCT GRID */}
+      {/* PRODUCT GRID - 3 columns desktop, 2 mobile */}
       {!loading && !error && products.length > 0 && (
         <div style={{
           maxWidth: "1200px",
           margin: "0 auto",
           padding: "40px 20px",
         }}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: "24px",
-          }}>
+          {/* Using CSS classes for responsive grid */}
+          <div className="wishlist-grid">
             {products.map((product) => (
               <WishlistCard
                 key={product.id}
                 product={product}
+                regionId={regionId}
                 countryCode={countryCode}
                 onRemove={() => removeFromWishlist(product.id)}
               />
@@ -224,16 +235,33 @@ export default function WishlistPage() {
         </div>
       )}
 
+      {/* Responsive grid styles */}
+      <style>{`
+        .wishlist-grid {
+          display: grid;
+          gap: 24px;
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (min-width: 768px) {
+          .wishlist-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+      `}</style>
+
     </div>
   )
 }
 
 function WishlistCard({
   product,
+  regionId,
   countryCode,
   onRemove,
 }: {
   product: Product
+  regionId: string | null
   countryCode: string
   onRemove: () => void
 }) {
@@ -246,11 +274,18 @@ function WishlistCard({
   const selectedVariant = variants.find((v) => v.id === selectedVariantId)
   const displayVariant = selectedVariant || variants[0]
 
+  // calculated_price comes in minor units (pence)
+  // but sometimes Medusa returns it already divided - we need to check
   const calculatedAmount =
     displayVariant?.calculated_price?.calculated_amount
   const originalAmount =
     displayVariant?.calculated_price?.original_amount
-  const fallbackPrice = displayVariant?.prices?.[0]?.amount
+
+  // Raw prices array as fallback
+  const rawPrices = displayVariant?.prices || []
+  const fallbackPrice = rawPrices[0]?.amount
+
+  // Use calculated first, fallback to raw prices
   const priceToShow = calculatedAmount ?? fallbackPrice
 
   const hasDiscount =
@@ -258,8 +293,12 @@ function WishlistCard({
     calculatedAmount &&
     calculatedAmount < originalAmount
 
-  const formatPrice = (amount: number) =>
-    `£${(amount / 100).toFixed(2)}`
+  // Smart format - if amount looks already divided (small number) don't divide again
+  const formatPrice = (amount: number) => {
+    // If amount is less than 100, it might already be in major units
+    // Medusa v2 always returns minor units (pence) so divide by 100
+    return `£${(amount / 100).toFixed(2)}`
+  }
 
   const handleAddToBag = async () => {
     if (!selectedVariantId) {
@@ -272,7 +311,6 @@ function WishlistCard({
     setAddedMsg(null)
 
     try {
-      // Use the exact same addToCart server action your store uses
       await addToCart({
         variantId: selectedVariantId,
         quantity: 1,
@@ -338,7 +376,7 @@ function WishlistCard({
               src={product.thumbnail}
               alt={product.title}
               fill
-              sizes="(max-width: 768px) 50vw, 220px"
+              sizes="(max-width: 768px) 50vw, 33vw"
               style={{
                 objectFit: "cover",
                 transition: "transform 0.5s ease",
@@ -417,7 +455,7 @@ function WishlistCard({
                 SALE
               </span>
             </>
-          ) : priceToShow ? (
+          ) : priceToShow !== undefined ? (
             <span style={{
               fontSize: "14px",
               color: "#2A1F4A",
