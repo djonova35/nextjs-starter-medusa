@@ -1,9 +1,12 @@
 "use client"
 
 import { useWishlist } from "@lib/context/wishlist-context"
+import { addToCart } from "@lib/data/cart"
+import { listRegions } from "@lib/data/regions"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
 
 type Variant = {
   id: string
@@ -13,6 +16,10 @@ type Variant = {
     calculated_amount: number
     original_amount: number
   }
+  prices?: {
+    amount: number
+    currency_code: string
+  }[]
 }
 
 type Product = {
@@ -30,6 +37,8 @@ export default function WishlistPage() {
   const [regionId, setRegionId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const params = useParams()
+  const countryCode = (params?.countryCode as string) || "gb"
 
   useEffect(() => {
     setMounted(true)
@@ -46,22 +55,22 @@ export default function WishlistPage() {
       setError(null)
 
       try {
-        const params = new URLSearchParams()
-        wishlist.forEach((id) => params.append("id", id))
+        const urlParams = new URLSearchParams()
+        wishlist.forEach((id) => urlParams.append("id", id))
+        urlParams.append("country_code", countryCode)
 
         const res = await fetch(
-          `/api/wishlist-products?${params.toString()}`
+          `/api/wishlist-products?${urlParams.toString()}`
         )
         const data = await res.json()
 
         if (!res.ok) {
           setError(
-            `Error ${res.status}: ${data.detail || data.error || "Unknown error"}`
+            `Error ${res.status}: ${data.detail || data.error || "Unknown"}`
           )
           return
         }
 
-        console.log("Products:", data.products)
         setProducts(data.products || [])
         setRegionId(data.region_id || null)
       } catch (err) {
@@ -72,7 +81,7 @@ export default function WishlistPage() {
     }
 
     fetchProducts()
-  }, [mounted, wishlist])
+  }, [mounted, wishlist, countryCode])
 
   if (!mounted) return null
 
@@ -195,7 +204,7 @@ export default function WishlistPage() {
               <WishlistCard
                 key={product.id}
                 product={product}
-                regionId={regionId}
+                countryCode={countryCode}
                 onRemove={() => removeFromWishlist(product.id)}
               />
             ))}
@@ -221,11 +230,11 @@ export default function WishlistPage() {
 
 function WishlistCard({
   product,
-  regionId,
+  countryCode,
   onRemove,
 }: {
   product: Product
-  regionId: string | null
+  countryCode: string
   onRemove: () => void
 }) {
   const [selectedVariantId, setSelectedVariantId] = useState<string>("")
@@ -241,6 +250,8 @@ function WishlistCard({
     displayVariant?.calculated_price?.calculated_amount
   const originalAmount =
     displayVariant?.calculated_price?.original_amount
+  const fallbackPrice = displayVariant?.prices?.[0]?.amount
+  const priceToShow = calculatedAmount ?? fallbackPrice
 
   const hasDiscount =
     originalAmount &&
@@ -261,55 +272,18 @@ function WishlistCard({
     setAddedMsg(null)
 
     try {
-      let cartId = localStorage.getItem("_medusa_cart_id")
-
-      // Create cart if none exists
-      if (!cartId) {
-        const cartRes = await fetch("/api/cart/create", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ region_id: regionId }),
-        })
-
-        if (!cartRes.ok) {
-          const cartErr = await cartRes.json()
-          setAddError(cartErr.error || "Could not create cart")
-          return
-        }
-
-        const cartData = await cartRes.json()
-        cartId = cartData.cart?.id
-
-        if (!cartId) {
-          setAddError("Could not create cart")
-          return
-        }
-
-        localStorage.setItem("_medusa_cart_id", cartId)
-      }
-
-      // Add item to cart
-      const res = await fetch("/api/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cartId,
-          variantId: selectedVariantId,
-          quantity: 1,
-        }),
+      // Use the exact same addToCart server action your store uses
+      await addToCart({
+        variantId: selectedVariantId,
+        quantity: 1,
+        countryCode: countryCode,
       })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        setAddError(data.error || "Failed to add to bag")
-        return
-      }
 
       setAddedMsg("Added to bag! 🛍️")
       setTimeout(() => setAddedMsg(null), 3000)
-    } catch (err) {
-      setAddError("Something went wrong")
+    } catch (err: any) {
+      console.error("Add to bag error:", err)
+      setAddError(err.message || "Something went wrong")
     } finally {
       setAdding(false)
     }
@@ -344,16 +318,9 @@ function WishlistCard({
           justifyContent: "center",
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         }}
-        title="Remove from wishlist"
       >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="#9B7FE8"
-          stroke="#9B7FE8"
-          strokeWidth="1.5"
-        >
+        <svg width="16" height="16" viewBox="0 0 24 24"
+          fill="#9B7FE8" stroke="#9B7FE8" strokeWidth="1.5">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
         </svg>
       </button>
@@ -380,13 +347,10 @@ function WishlistCard({
             />
           ) : (
             <div style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
+              width: "100%", height: "100%",
+              display: "flex", alignItems: "center",
               justifyContent: "center",
-              fontSize: "40px",
-              opacity: 0.3,
+              fontSize: "40px", opacity: 0.3,
             }}>
               👗
             </div>
@@ -449,24 +413,20 @@ function WishlistCard({
                 padding: "2px 6px",
                 borderRadius: "2px",
                 fontWeight: "600",
-                letterSpacing: "0.5px",
               }}>
                 SALE
               </span>
             </>
-          ) : calculatedAmount ? (
+          ) : priceToShow ? (
             <span style={{
               fontSize: "14px",
               color: "#2A1F4A",
               fontWeight: "500",
             }}>
-              {formatPrice(calculatedAmount)}
+              {formatPrice(priceToShow)}
             </span>
           ) : (
-            <span style={{
-              fontSize: "12px",
-              color: "#9B95B8",
-            }}>
+            <span style={{ fontSize: "12px", color: "#9B95B8" }}>
               Price unavailable
             </span>
           )}
@@ -497,7 +457,6 @@ function WishlistCard({
                 appearance: "none",
                 WebkitAppearance: "none",
                 outline: "none",
-                borderRadius: "0",
               }}
             >
               <option value="">Select size / variant</option>
@@ -531,7 +490,7 @@ function WishlistCard({
           </div>
         )}
 
-        {/* ERROR / SUCCESS */}
+        {/* MESSAGES */}
         {addError && (
           <p style={{
             fontSize: "11px",
@@ -554,7 +513,7 @@ function WishlistCard({
           </p>
         )}
 
-        {/* ADD TO BAG BUTTON */}
+        {/* ADD TO BAG */}
         <button
           onClick={handleAddToBag}
           disabled={adding}
