@@ -565,7 +565,7 @@ export default async function Home({
               <ul className="tier-perks">
                 <li><span className="perk-check">✓</span>2 points per £1 spent</li>
                 <li><span className="perk-check">✓</span>Birthday 20% discount</li>
-                <li><span className="perk-check">✓</span>Free Express Shipping On All Orders</li>
+                <li><span className="perk-check">✓</span>Free Express Shipping On ALL Orders</li>
                 <li><span className="perk-check">✓</span>Exclusive Gold-only pieces</li>
                 <li><span className="perk-check">✓</span>Annual gift package</li>
                 <li><span className="perk-check">✓</span>Dedicated stylist access</li>
