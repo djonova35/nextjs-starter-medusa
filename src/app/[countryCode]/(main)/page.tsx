@@ -104,21 +104,6 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ======================== PARTNERS ======================== */}
-      <section className="partners">
-        <div className="container">
-          <p className="partners-label">Trusted by & Featured In</p>
-          <div className="partners-row">
-            <span className="partner-logo">VOGUE</span>
-            <span className="partner-logo">HYPEBEAST</span>
-            <span className="partner-logo">GQ</span>
-            <span className="partner-logo">HIGHSNOBIETY</span>
-            <span className="partner-logo">COMPLEX</span>
-            <span className="partner-logo">SSENSE</span>
-          </div>
-        </div>
-      </section>
-
       {/* ======================== CATEGORIES ======================== */}
       <section className="categories">
         <div className="container">
