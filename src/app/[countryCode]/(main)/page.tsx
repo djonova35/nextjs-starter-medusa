@@ -1,5 +1,12 @@
+import NewArrivals from "@modules/home/components/new-arrivals"
 // DJONOVA Homepage v2
-export default function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}) {
+  const { countryCode } = await params
+
   return (
     <main>
 
@@ -173,109 +180,7 @@ export default function Home() {
       </section>
 
       {/* ======================== NEW ARRIVALS ======================== */}
-      <section className="new-arrivals">
-        <div className="container">
-          <div className="arrivals-header">
-            <div>
-              <span className="section-label">Fresh In</span>
-              <h2 className="section-heading">New<br/>Arrivals</h2>
-            </div>
-            <div className="arrivals-tabs">
-              <button className="tab-pill active">All</button>
-              <button className="tab-pill">Footwear</button>
-              <button className="tab-pill">Men&apos;s</button>
-              <button className="tab-pill">Women&apos;s</button>
-              <button className="tab-pill">Tech</button>
-            </div>
-          </div>
-          <div className="product-grid">
-            <div className="product-card p1 fade-up fade-up-1">
-              <div className="product-img">
-                <div className="product-img-bg"></div>
-                <div className="product-img-icon">👟</div>
-                <span className="product-badge">New</span>
-                <div className="product-wishlist">♡</div>
-              </div>
-              <div className="product-info">
-                <div className="product-category">Footwear</div>
-                <div className="product-name">AURA Low Pro</div>
-                <div className="product-colors">
-                  <div className="color-dot active" style={{background:'#c4b5f0'}}></div>
-                  <div className="color-dot" style={{background:'#1a1a2e'}}></div>
-                  <div className="color-dot" style={{background:'#f0e8e0'}}></div>
-                </div>
-                <div className="product-price-row">
-                  <div className="product-price">£189 <span className="old">£225</span></div>
-                  <div className="product-rating"><span className="stars">★★★★★</span> 4.9</div>
-                </div>
-              </div>
-            </div>
-            <div className="product-card p2 fade-up fade-up-2">
-              <div className="product-img">
-                <div className="product-img-bg"></div>
-                <div className="product-img-icon">🧥</div>
-                <div className="product-wishlist">♡</div>
-              </div>
-              <div className="product-info">
-                <div className="product-category">Men&apos;s</div>
-                <div className="product-name">NOVA Field Jacket</div>
-                <div className="product-colors">
-                  <div className="color-dot active" style={{background:'#c8a882'}}></div>
-                  <div className="color-dot" style={{background:'#3a3028'}}></div>
-                </div>
-                <div className="product-price-row">
-                  <div className="product-price">£245</div>
-                  <div className="product-rating"><span className="stars">★★★★★</span> 4.8</div>
-                </div>
-              </div>
-            </div>
-            <div className="product-card p3 fade-up fade-up-3">
-              <div className="product-img">
-                <div className="product-img-bg"></div>
-                <div className="product-img-icon">👠</div>
-                <span className="product-badge">SS26</span>
-                <div className="product-wishlist">♡</div>
-              </div>
-              <div className="product-info">
-                <div className="product-category">Women&apos;s</div>
-                <div className="product-name">DRIFT Platform</div>
-                <div className="product-colors">
-                  <div className="color-dot active" style={{background:'#b0c8e8'}}></div>
-                  <div className="color-dot" style={{background:'#f8f4f0'}}></div>
-                  <div className="color-dot" style={{background:'#6B4EE6'}}></div>
-                </div>
-                <div className="product-price-row">
-                  <div className="product-price">£165 <span className="old">£198</span></div>
-                  <div className="product-rating"><span className="stars">★★★★★</span> 5.0</div>
-                </div>
-              </div>
-            </div>
-            <div className="product-card p4 fade-up fade-up-4">
-              <div className="product-img">
-                <div className="product-img-bg"></div>
-                <div className="product-img-icon">🎧</div>
-                <span className="product-badge">Tech</span>
-                <div className="product-wishlist">♡</div>
-              </div>
-              <div className="product-info">
-                <div className="product-category">Tech Essentials</div>
-                <div className="product-name">PULSE Pro Buds</div>
-                <div className="product-colors">
-                  <div className="color-dot active" style={{background:'#8040c0'}}></div>
-                  <div className="color-dot" style={{background:'#1a1a2e'}}></div>
-                </div>
-                <div className="product-price-row">
-                  <div className="product-price">£129</div>
-                  <div className="product-rating"><span className="stars">★★★★☆</span> 4.7</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style={{textAlign:'center',marginTop:'48px'}}>
-            <a href="/gb/store" className="btn btn-dark">View All Products →</a>
-          </div>
-        </div>
-      </section>
+      <NewArrivals countryCode={countryCode} />
 
       {/* ======================== GENDER SPLIT ======================== */}
       <section className="gender-split">
