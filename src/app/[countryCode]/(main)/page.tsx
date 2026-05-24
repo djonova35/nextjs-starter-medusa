@@ -13,14 +13,14 @@ export default async function Home({
       {/* ======================== TICKER ======================== */}
       <div className="ticker-wrap">
         <div className="ticker-track">
-          <span className="ticker-item">Free shipping on orders over £75 <span className="dot"></span></span>
+          <span className="ticker-item">Free shipping on orders over £40 <span className="dot"></span></span>
           <span className="ticker-item">SS26 Collection — Now Live <span className="dot"></span></span>
           <span className="ticker-item">Use code DJNV20 for 20% off your first order <span className="dot"></span></span>
           <span className="ticker-item">New footwear drops every Friday <span className="dot"></span></span>
           <span className="ticker-item">Join DJONOVA Members Club — Earn points on every purchase <span className="dot"></span></span>
           <span className="ticker-item">Kids & Toddlers range — now available <span className="dot"></span></span>
           <span className="ticker-item">Tech Essentials — Smart accessories for modern living <span className="dot"></span></span>
-          <span className="ticker-item">Free shipping on orders over £75 <span className="dot"></span></span>
+          <span className="ticker-item">Free shipping on orders over £40 <span className="dot"></span></span>
           <span className="ticker-item">SS26 Collection — Now Live <span className="dot"></span></span>
           <span className="ticker-item">Use code DJNV20 for 20% off your first order <span className="dot"></span></span>
           <span className="ticker-item">New footwear drops every Friday <span className="dot"></span></span>
@@ -51,20 +51,22 @@ export default async function Home({
           <span className="hero-scroll-hint">Scroll to explore</span>
         </div>
         <div className="hero-right">
-          <div className="ss26-badge">SS26 Drop</div>
-          <div className="hero-circle-wrap fade-up fade-up-3">
-            <div className="ring-outer"><div className="ring-dot"></div></div>
-            <div className="ring-inner"></div>
-            <div className="hero-product-placeholder">👟</div>
-          </div>
-          <div className="hero-tag">
-            <div className="hero-tag-icon">✦</div>
-            <div className="hero-tag-text">
-              <strong>New Season Drop</strong>
-              60+ styles — men, women, kids & tech
-            </div>
-          </div>
-        </div>
+  <div className="ss26-badge">SS26 Drop</div>
+  <div className="hero-circle-wrap fade-up fade-up-3">
+    <img
+      src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/w_800/v1779625843/1776783235326-1316d7b8-3e0f-4d43-88e5-7341cfdcc8fb_ynzpdq.png"
+      alt="DJONOVA SS26 Shoe"
+      className="hero-product-image"
+    />
+  </div>
+  <div className="hero-tag">
+    <div className="hero-tag-icon">✦</div>
+    <div className="hero-tag-text">
+      <strong>New Season Drop</strong>
+      60+ styles — men, women, kids & tech
+    </div>
+  </div>
+</div>
       </section>
 
       {/* ======================== STATS BAR ======================== */}
