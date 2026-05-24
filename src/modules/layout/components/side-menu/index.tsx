@@ -108,7 +108,6 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                               <li><LocalizedClientLink href="/categories/fashion/womenwear" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Women & Teens</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/fashion/menswear" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Men & Teens</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/fashion/kidswear" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Kids & Toddler</LocalizedClientLink></li>
-                              <li><LocalizedClientLink href="/categories/fashion/accessories" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Accessories</LocalizedClientLink></li>
                             </ul>
                           )}
                         </li>
@@ -127,6 +126,7 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                               <li><LocalizedClientLink href="/categories/shoes" onClick={close} className="block py-1.5 text-xs text-purple-500 hover:text-purple-700 transition-colors font-medium">All Shoes</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/shoes/womenshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Women Shoes</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/shoes/menshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Men Shoes</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/shoes/kidshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Kid's Shoes</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/shoes/casualshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Casual</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/shoes/formalshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Formal</LocalizedClientLink></li>
                               <li><LocalizedClientLink href="/categories/shoes/sportshoes" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Sports</LocalizedClientLink></li>
@@ -134,20 +134,21 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                           )}
                         </li>
 
-                        {/* Tech */}
+                        {/* Accessories */}
                         <li>
                           <button
                             onClick={() => toggleCategory("tech")}
                             className="flex items-center justify-between w-full py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium"
                           >
-                            Tech Essentials
+                            Accessories
                             <span style={{transition:"transform 0.2s", transform: openCategory === "tech" ? "rotate(90deg)" : "rotate(0deg)", fontSize:"16px", color:"#9B7FE8"}}>›</span>
                           </button>
                           {openCategory === "tech" && (
                             <ul className="pl-4 flex flex-col gap-1 pb-2">
-                               <li><LocalizedClientLink href="/categories/tech" onClick={close} className="block py-1.5 text-xs text-purple-500 hover:text-purple-700 transition-colors font-medium">All Tech</LocalizedClientLink></li>
-                              <li><LocalizedClientLink href="/categories/tech/phones" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Phones</LocalizedClientLink></li>
-                              <li><LocalizedClientLink href="/categories/tech/gadget" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Gadgets</LocalizedClientLink></li>
+                               <li><LocalizedClientLink href="/categories/accessories" onClick={close} className="block py-1.5 text-xs text-purple-500 hover:text-purple-700 transition-colors font-medium">All Accessories</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/accessories/tech" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Tech Essentials</LocalizedClientLink></li>
+                              <li><LocalizedClientLink href="/categories/accessories/jewelry" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Jewelry</LocalizedClientLink></li>
+                             <li><LocalizedClientLink href="/categories/accessories/bags" onClick={close} className="block py-1.5 text-xs text-gray-500 hover:text-purple-500 transition-colors">Bags</LocalizedClientLink></li>
                             </ul>
                           )}
                         </li>
