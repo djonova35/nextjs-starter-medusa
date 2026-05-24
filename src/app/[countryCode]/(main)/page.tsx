@@ -74,7 +74,7 @@ export default async function Home({
         <div className="container">
           <div className="stats-grid">
             <div className="stat-item fade-up fade-up-1">
-              <div className="stat-label">Premium Quality<span>+</span></div>
+              <div className="stat-num">Premium Quality<span>+</span></div>
               <div className="stat-label">Fair Pricing</div>
             </div>
             <div className="stat-item fade-up fade-up-2">
@@ -86,7 +86,7 @@ export default async function Home({
               <div className="stat-label">Countries Shipped</div>
             </div>
             <div className="stat-item fade-up fade-up-4">
-              <div className="stat-label">Secure Delivery<span>★</span></div>
+              <div className="stat-num">Secure Delivery<span>★</span></div>
               <div className="stat-label">Protected Delivery</div>
             </div>
           </div>
