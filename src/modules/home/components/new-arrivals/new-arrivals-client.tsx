@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -14,7 +14,10 @@ const TABS: Tab[] = [
   { key: "tech", label: "Tech", tagMatch: ["tech", "tech-essentials"] },
 ]
 
-// Heuristic to pick a category label from tags
+const WISHLIST_KEY = "djonova_wishlist"
+
+// ─────────────────────────── helpers ───────────────────────────
+
 function getCategoryLabel(product: HttpTypes.StoreProduct): string {
   const tagValues = (product.tags ?? []).map((t) => (t.value || "").toLowerCase())
   if (tagValues.some((v) => ["tech", "tech-essentials"].includes(v))) return "Tech Essentials"
@@ -25,7 +28,6 @@ function getCategoryLabel(product: HttpTypes.StoreProduct): string {
   return product.collection?.title ?? "DJONOVA"
 }
 
-// Get a fallback emoji from category
 function getEmoji(product: HttpTypes.StoreProduct): string {
   const cat = getCategoryLabel(product).toLowerCase()
   if (cat.includes("tech")) return "🎧"
@@ -36,7 +38,6 @@ function getEmoji(product: HttpTypes.StoreProduct): string {
   return "✦"
 }
 
-// Extract color swatches from variants (looks for "Color" / "Colour" option)
 function getColorSwatches(product: HttpTypes.StoreProduct): string[] {
   const colorOption = product.options?.find((o) =>
     ["color", "colour"].includes((o.title || "").toLowerCase())
@@ -48,7 +49,6 @@ function getColorSwatches(product: HttpTypes.StoreProduct): string[] {
   return Array.from(new Set(values)).slice(0, 4).map(colorNameToHex)
 }
 
-// Map common color names → hex (extend as needed)
 function colorNameToHex(name: string): string {
   const map: Record<string, string> = {
     black: "#1a1a2e",
@@ -72,27 +72,37 @@ function colorNameToHex(name: string): string {
   return map[key] ?? "#c4b5f0"
 }
 
-// Get cheapest variant price
+// Returns exact cheapest + most expensive prices + whether to show "From"
 function getPrices(product: HttpTypes.StoreProduct): {
   price: string | null
   oldPrice: string | null
+  fromLabel: boolean
 } {
   const variants = product.variants ?? []
-  let cheapest: any = null
+  const calcs: any[] = []
   for (const v of variants) {
     const cp = (v as any).calculated_price
-    if (!cp) continue
-    if (!cheapest || cp.calculated_amount < cheapest.calculated_amount) {
-      cheapest = cp
+    if (cp && typeof cp.calculated_amount === "number") {
+      calcs.push(cp)
     }
   }
-  if (!cheapest) return { price: null, oldPrice: null }
+  if (calcs.length === 0) return { price: null, oldPrice: null, fromLabel: false }
+
+  const cheapest = calcs.reduce(
+    (a, b) => (a.calculated_amount <= b.calculated_amount ? a : b),
+    calcs[0]
+  )
+  const mostExpensive = calcs.reduce(
+    (a, b) => (a.calculated_amount >= b.calculated_amount ? a : b),
+    calcs[0]
+  )
 
   const fmt = (amt: number, cur: string) =>
     new Intl.NumberFormat("en-GB", {
       style: "currency",
       currency: (cur || "GBP").toUpperCase(),
-      maximumFractionDigits: 0,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(amt)
 
   const cur = cheapest.currency_code
@@ -102,21 +112,58 @@ function getPrices(product: HttpTypes.StoreProduct): {
     cheapest.original_amount > cheapest.calculated_amount
       ? fmt(cheapest.original_amount, cur)
       : null
-  return { price, oldPrice }
+
+  const fromLabel =
+    mostExpensive.calculated_amount > cheapest.calculated_amount
+
+  return { price, oldPrice, fromLabel }
 }
 
-// Decide badge (New / Sale / Tag)
 function getBadge(product: HttpTypes.StoreProduct, hasSale: boolean): string | null {
   if (hasSale) return "Sale"
   const tagValues = (product.tags ?? []).map((t) => (t.value || "").toLowerCase())
   if (tagValues.includes("ss26")) return "SS26"
   if (tagValues.includes("tech") || tagValues.includes("tech-essentials")) return "Tech"
-  // Created within last 14 days = "New"
   const created = product.created_at ? new Date(product.created_at).getTime() : 0
   const days = (Date.now() - created) / (1000 * 60 * 60 * 24)
   if (days <= 14) return "New"
   return null
 }
+
+// ─────────────────────── wishlist hook ───────────────────────
+
+function useWishlist() {
+  const [wishlist, setWishlist] = useState<string[]>([])
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(WISHLIST_KEY)
+      if (raw) setWishlist(JSON.parse(raw))
+    } catch {}
+    setHydrated(true)
+  }, [])
+
+  const toggle = (productId: string) => {
+    setWishlist((prev) => {
+      const next = prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+      try {
+        localStorage.setItem(WISHLIST_KEY, JSON.stringify(next))
+        // Optional: dispatch a custom event so a header counter can listen
+        window.dispatchEvent(
+          new CustomEvent("djonova:wishlist-updated", { detail: next })
+        )
+      } catch {}
+      return next
+    })
+  }
+
+  return { wishlist, toggle, hydrated }
+}
+
+// ─────────────────────────── component ───────────────────────────
 
 export default function NewArrivalsClient({
   products,
@@ -126,6 +173,7 @@ export default function NewArrivalsClient({
   countryCode: string
 }) {
   const [activeTab, setActiveTab] = useState<string>("all")
+  const { wishlist, toggle, hydrated } = useWishlist()
 
   const filtered = useMemo(() => {
     const tab = TABS.find((t) => t.key === activeTab)
@@ -182,13 +230,14 @@ export default function NewArrivalsClient({
           )}
 
           {filtered.map((product, i) => {
-            const { price, oldPrice } = getPrices(product)
+            const { price, oldPrice, fromLabel } = getPrices(product)
             const hasSale = !!oldPrice
             const badge = getBadge(product, hasSale)
             const colors = getColorSwatches(product)
             const category = getCategoryLabel(product)
             const emoji = getEmoji(product)
             const firstImage = product.thumbnail || product.images?.[0]?.url
+            const isLiked = hydrated && wishlist.includes(product.id)
 
             return (
               <LocalizedClientLink
@@ -216,15 +265,25 @@ export default function NewArrivalsClient({
                     <div className="product-img-icon">{emoji}</div>
                   )}
                   {badge && <span className="product-badge">{badge}</span>}
-                  <div
+                  <button
+                    type="button"
+                    aria-label={isLiked ? "Remove from wishlist" : "Add to wishlist"}
                     className="product-wishlist"
                     onClick={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
+                      toggle(product.id)
+                    }}
+                    style={{
+                      color: isLiked ? "#E85D75" : undefined,
+                      background: isLiked ? "rgba(232,93,117,0.12)" : undefined,
+                      border: "none",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
                     }}
                   >
-                    ♡
-                  </div>
+                    {isLiked ? "♥" : "♡"}
+                  </button>
                 </div>
                 <div className="product-info">
                   <div className="product-category">{category}</div>
@@ -242,6 +301,20 @@ export default function NewArrivalsClient({
                   )}
                   <div className="product-price-row">
                     <div className="product-price">
+                      {fromLabel && (
+                        <span
+                          style={{
+                            fontSize: "0.7em",
+                            fontWeight: 400,
+                            color: "var(--warm-gray)",
+                            marginRight: "4px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
+                          }}
+                        >
+                          From
+                        </span>
+                      )}
                       {price ?? "—"}
                       {oldPrice && <span className="old">{oldPrice}</span>}
                     </div>
