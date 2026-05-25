@@ -43,7 +43,6 @@ const thresholdInCurrency = (gbpValue: number, currency: Currency) => {
 
 const formatMoney = (value: number, currency: Currency) => {
   const { symbol } = CURRENCY_CONFIG[currency]
-
   return `${symbol}${new Intl.NumberFormat("en-GB", {
     maximumFractionDigits: 0,
   }).format(value)}`
@@ -51,7 +50,6 @@ const formatMoney = (value: number, currency: Currency) => {
 
 const formatMoneyWithDecimals = (value: number, currency: Currency) => {
   const { symbol } = CURRENCY_CONFIG[currency]
-
   return `${symbol}${new Intl.NumberFormat("en-GB", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -60,6 +58,7 @@ const formatMoneyWithDecimals = (value: number, currency: Currency) => {
 
 const convertRewardValue = (gbpValue: number, currency: Currency) => {
   if (currency === "GBP") return gbpValue
+
   return Math.round(gbpValue * CURRENCY_CONFIG[currency].multiplierFromGBP)
 }
 
@@ -231,12 +230,10 @@ export default function RewardsPage() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
             <div className="fade-up fade-up-1">
               <div className="hero-eyebrow !mb-6">Rewards programme</div>
-
               <h1 className="hero-heading !mb-5">
                 Earn <em>5% back</em>, unlock better shipping, and climb every
                 tier.
               </h1>
-
               <p className="hero-desc !max-w-[640px] !text-[rgba(255,255,255,.68)]">
                 A luxury-feel rewards page built around Bronze, Silver, and
                 Gold. Members earn direct cashback value through points, enjoy
@@ -248,7 +245,6 @@ export default function RewardsPage() {
                 <LocalizedClientLink href="/store" className="btn btn-primary">
                   Shop to earn
                 </LocalizedClientLink>
-
                 <a href="#rewards-calculator" className="btn btn-outline">
                   Explore tiers
                 </a>
@@ -320,16 +316,13 @@ export default function RewardsPage() {
                     filter: "blur(18px)",
                   }}
                 />
-
                 <div className="relative z-[1]">
                   <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-[var(--accent)]">
                     Live tier snapshot
                   </div>
-
                   <div className="font-serif text-4xl text-white md:text-5xl">
                     {activeTier.icon} {activeTier.name}
                   </div>
-
                   <p className="mt-3 text-sm leading-7 text-[rgba(255,255,255,.65)]">
                     Based on a current yearly spend of{" "}
                     {formatMoney(spend, currency)}, this member receives{" "}
@@ -383,7 +376,7 @@ export default function RewardsPage() {
 
       <section id="rewards-calculator" className="py-16 md:py-24">
         <div className="container">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
+          <div className="mb-10 mx-auto max-w-3xl text-center">
             <div className="section-label justify-center">
               Interactive calculator
             </div>
@@ -540,7 +533,6 @@ export default function RewardsPage() {
                         : "Top tier reached"}
                     </div>
                   </div>
-
                   <div className="text-right">
                     <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
                       Cashback value
@@ -560,6 +552,36 @@ export default function RewardsPage() {
                     }}
                   />
                 </div>
+
+                {currentTier === "bronze" && (
+                  <div
+                    className="mt-5 rounded-[22px] border p-5"
+                    style={{
+                      borderColor: "rgba(155,127,232,.22)",
+                      background:
+                        "linear-gradient(135deg, rgba(155,127,232,.08), rgba(155,127,232,.03))",
+                    }}
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="max-w-[540px]">
+                        <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">
+                          👑 Want Silver perks today?
+                        </div>
+                        <p className="mt-3 text-sm leading-7 text-[var(--warm-gray)]">
+                          Skip the spend tracking and unlock all Silver benefits
+                          instantly with our Djonova Member Lounge subscription.
+                        </p>
+                      </div>
+
+                      <LocalizedClientLink
+                        href="/member-lounge"
+                        className="btn btn-dark !px-6 !py-3 !text-[10px]"
+                      >
+                        Explore Member Lounge
+                      </LocalizedClientLink>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-5 grid gap-3 md:grid-cols-3">
                   <MetricCard
@@ -766,14 +788,10 @@ export default function RewardsPage() {
                     transform: isActive ? "translateY(-6px)" : undefined,
                   }}
                 >
-                  <div
-                    className="tier-glow"
-                    style={{ background: tier.glow }}
-                  />
+                  <div className="tier-glow" style={{ background: tier.glow }} />
                   <div className="tier-medal">{tier.icon}</div>
                   <div className="tier-name">{tier.name}</div>
                   <div className="tier-threshold">{rangeLabel}</div>
-
                   <ul className="tier-perks">
                     <li>
                       <span className="perk-check">✓</span>
@@ -799,7 +817,6 @@ export default function RewardsPage() {
                       </li>
                     )}
                   </ul>
-
                   <button className="tier-cta">
                     {isActive ? "Current tier preview" : `See ${tier.name} perks`}
                   </button>
@@ -858,7 +875,6 @@ export default function RewardsPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             {faqItems.map((item, index) => {
               const open = openFaq === index
-
               return (
                 <button
                   key={item.q}
@@ -875,7 +891,6 @@ export default function RewardsPage() {
                       {open ? "−" : "+"}
                     </span>
                   </div>
-
                   {open && <div className="faq-a pt-4">{item.a}</div>}
                 </button>
               )
@@ -971,10 +986,7 @@ function HowCard({
     >
       <div
         className="mb-4 inline-flex rounded-full px-3 py-2 text-[11px] uppercase tracking-[0.22em]"
-        style={{
-          background: "rgba(155,127,232,.12)",
-          color: "var(--accent)",
-        }}
+        style={{ background: "rgba(155,127,232,.12)", color: "var(--accent)" }}
       >
         Step {step}
       </div>
