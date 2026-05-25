@@ -174,6 +174,16 @@ const SideMenu = ({ regions, locales, currentLocale }: SideMenuProps) => {
                             My Bag
                           </LocalizedClientLink>
                         </li>
+                         <li>
+                          <LocalizedClientLink href="/rewards" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                           My Reward Programme
+                          </LocalizedClientLink>
+                        </li>
+                         <li>
+                          <LocalizedClientLink href="/member-lounge" onClick={close} className="block py-2 text-xs uppercase tracking-widest text-gray-800 hover:text-purple-500 transition-colors font-medium">
+                            The Member's Lounge
+                          </LocalizedClientLink>
+                        </li>
                       </ul>
                     </div>
 
