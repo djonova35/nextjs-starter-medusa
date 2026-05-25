@@ -142,10 +142,7 @@ export default async function Nav() {
                 <LocalizedClientLink href="/categories/fashion/kidswear" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
                   Kids &amp; Toddler
                 </LocalizedClientLink>
-                <LocalizedClientLink href="/categories/fashion/accessories" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
-                  Accessories
-                </LocalizedClientLink>
-              </div>
+             </div>
             </div>
 
             {/* SHOES */}
@@ -163,6 +160,9 @@ export default async function Nav() {
                 <LocalizedClientLink href="/categories/shoes/menshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
                   Men Shoes
                 </LocalizedClientLink>
+                 <LocalizedClientLink href="/categories/shoes/kidshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Kid's Shoes
+                </LocalizedClientLink>
                 <LocalizedClientLink href="/categories/shoes/casualshoes" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
                   Casual
                 </LocalizedClientLink>
@@ -175,20 +175,23 @@ export default async function Nav() {
               </div>
             </div>
 
-            {/* TECH */}
+            {/* ACCESSORIES */}
             <div className="relative group/cat">
               <LocalizedClientLink
-                href="/categories/tech"
+                href="/categories/accessories"
                 className="text-xs uppercase tracking-widest text-ui-fg-subtle hover:text-ui-fg-base transition-colors py-2 inline-block"
               >
-                Tech
+                Accessories
               </LocalizedClientLink>
               <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-ui-border-base shadow-lg opacity-0 invisible group-hover/cat:opacity-100 group-hover/cat:visible transition-all duration-200 z-50 min-w-[160px]">
-                <LocalizedClientLink href="/categories/tech/phones" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
-                  Phones
+                <LocalizedClientLink href="/categories/accesories/tech" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Tech Essentials
                 </LocalizedClientLink>
-                <LocalizedClientLink href="/categories/tech/gadget" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
-                  Gadgets
+                <LocalizedClientLink href="/categories/accessories/jewelry" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Jewelry
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories/accesories/bags" className="block px-4 py-2 text-xs text-ui-fg-subtle hover:text-ui-fg-base hover:bg-ui-bg-subtle transition-colors">
+                  Bags
                 </LocalizedClientLink>
               </div>
             </div>
