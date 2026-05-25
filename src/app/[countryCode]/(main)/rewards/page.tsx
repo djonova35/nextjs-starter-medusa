@@ -35,11 +35,15 @@ const roundEquivalent = (value: number, currency: Currency) => {
 }
 
 const thresholdInCurrency = (gbpValue: number, currency: Currency) => {
-  return roundEquivalent(gbpValue * CURRENCY_CONFIG[currency].multiplierFromGBP, currency)
+  return roundEquivalent(
+    gbpValue * CURRENCY_CONFIG[currency].multiplierFromGBP,
+    currency
+  )
 }
 
 const formatMoney = (value: number, currency: Currency) => {
   const { symbol } = CURRENCY_CONFIG[currency]
+
   return `${symbol}${new Intl.NumberFormat("en-GB", {
     maximumFractionDigits: 0,
   }).format(value)}`
@@ -47,10 +51,16 @@ const formatMoney = (value: number, currency: Currency) => {
 
 const formatMoneyWithDecimals = (value: number, currency: Currency) => {
   const { symbol } = CURRENCY_CONFIG[currency]
+
   return `${symbol}${new Intl.NumberFormat("en-GB", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value)}`
+}
+
+const convertRewardValue = (gbpValue: number, currency: Currency) => {
+  if (currency === "GBP") return gbpValue
+  return Math.round(gbpValue * CURRENCY_CONFIG[currency].multiplierFromGBP)
 }
 
 function getProgram(currency: Currency) {
@@ -66,7 +76,8 @@ function getProgram(currency: Currency) {
       min: 0,
       max: silverMin - 1,
       shipping: `Free standard delivery from ${formatMoney(bronzeFreeShipMin, currency)}`,
-      subcopy: "Bronze members unlock free standard delivery once the basket reaches the minimum spend.",
+      subcopy:
+        "Bronze members unlock free standard delivery once the basket reaches the minimum spend.",
       gradient: "linear-gradient(160deg, #2a1c10, #4a2e18)",
       border: "rgba(205,127,50,.28)",
       glow: "rgba(205,127,50,.35)",
@@ -78,7 +89,8 @@ function getProgram(currency: Currency) {
       min: silverMin,
       max: goldMin - 1,
       shipping: "Free standard shipping, no minimum spend",
-      subcopy: "Silver members never need to hit a basket threshold for standard shipping.",
+      subcopy:
+        "Silver members never need to hit a basket threshold for standard shipping.",
       gradient: "linear-gradient(160deg, #1c1c2a, #303048)",
       border: "rgba(192,192,192,.28)",
       glow: "rgba(192,192,192,.30)",
@@ -90,7 +102,8 @@ function getProgram(currency: Currency) {
       min: goldMin,
       max: null,
       shipping: "Free express shipping on every order",
-      subcopy: "Gold includes express shipping, but not same-day priority delivery.",
+      subcopy:
+        "Gold includes express shipping, but not same-day priority delivery.",
       gradient: "linear-gradient(160deg, #2a2010, #503a18)",
       border: "rgba(255,215,0,.28)",
       glow: "rgba(255,215,0,.30)",
@@ -120,7 +133,10 @@ export default function RewardsPage() {
   const currentTier = getCurrentTier(spend, program)
   const activeTier = program.tiers.find((tier) => tier.key === currentTier)!
 
-  const sliderMax = Math.max(program.goldMin * 2, thresholdInCurrency(600, currency))
+  const sliderMax = Math.max(
+    program.goldMin * 2,
+    thresholdInCurrency(600, currency)
+  )
   const cashbackValue = spend * 0.05
   const pointsEarned = Math.round(spend * 5)
 
@@ -138,7 +154,9 @@ export default function RewardsPage() {
       ? 100
       : currentTier === "silver"
         ? Math.min(
-            ((spend - program.silverMin) / (program.goldMin - program.silverMin)) * 100,
+            ((spend - program.silverMin) /
+              (program.goldMin - program.silverMin)) *
+              100,
             100
           )
         : Math.min((spend / program.silverMin) * 100, 100)
@@ -177,6 +195,30 @@ export default function RewardsPage() {
     thresholdInCurrency(300, currency),
   ]
 
+  const voucherLevels = [
+    {
+      level: "Level 1",
+      points: 100,
+      value: convertRewardValue(5, currency),
+      minSpend: convertRewardValue(20, currency),
+      glow: "rgba(155,127,232,.16)",
+    },
+    {
+      level: "Level 2",
+      points: 200,
+      value: convertRewardValue(10, currency),
+      minSpend: convertRewardValue(40, currency),
+      glow: "rgba(107,78,230,.18)",
+    },
+    {
+      level: "Level 3",
+      points: 300,
+      value: convertRewardValue(15, currency),
+      minSpend: convertRewardValue(60, currency),
+      glow: "rgba(74,56,128,.18)",
+    },
+  ]
+
   return (
     <div style={{ background: "var(--cream)", color: "var(--ink)" }}>
       <section
@@ -189,20 +231,24 @@ export default function RewardsPage() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
             <div className="fade-up fade-up-1">
               <div className="hero-eyebrow !mb-6">Rewards programme</div>
+
               <h1 className="hero-heading !mb-5">
-                Earn <em>5% back</em>, unlock better shipping, and climb every tier.
+                Earn <em>5% back</em>, unlock better shipping, and climb every
+                tier.
               </h1>
+
               <p className="hero-desc !max-w-[640px] !text-[rgba(255,255,255,.68)]">
-                A luxury-feel rewards page built around Bronze, Silver, and Gold.
-                Members earn direct cashback value through points, enjoy tier-based
-                shipping upgrades, and can preview their perks in GBP, USD, EUR,
-                or CAD.
+                A luxury-feel rewards page built around Bronze, Silver, and
+                Gold. Members earn direct cashback value through points, enjoy
+                tier-based shipping upgrades, and can preview their perks in
+                GBP, USD, EUR, or CAD.
               </p>
 
               <div className="flex flex-wrap gap-3 pt-2">
                 <LocalizedClientLink href="/store" className="btn btn-primary">
                   Shop to earn
                 </LocalizedClientLink>
+
                 <a href="#rewards-calculator" className="btn btn-outline">
                   Explore tiers
                 </a>
@@ -220,7 +266,8 @@ export default function RewardsPage() {
                     Bronze
                   </div>
                   <div className="mt-2 font-serif text-3xl text-white">
-                    {formatMoney(0, currency)}–{formatMoney(program.silverMin - 1, currency)}
+                    {formatMoney(0, currency)}–
+                    {formatMoney(program.silverMin - 1, currency)}
                   </div>
                 </div>
 
@@ -235,7 +282,8 @@ export default function RewardsPage() {
                     Silver
                   </div>
                   <div className="mt-2 font-serif text-3xl text-white">
-                    {formatMoney(program.silverMin, currency)}–{formatMoney(program.goldMin - 1, currency)}
+                    {formatMoney(program.silverMin, currency)}–
+                    {formatMoney(program.goldMin - 1, currency)}
                   </div>
                 </div>
 
@@ -267,26 +315,42 @@ export default function RewardsPage() {
               >
                 <div
                   className="absolute -right-14 -top-14 h-40 w-40 rounded-full"
-                  style={{ background: "rgba(155,127,232,.22)", filter: "blur(18px)" }}
+                  style={{
+                    background: "rgba(155,127,232,.22)",
+                    filter: "blur(18px)",
+                  }}
                 />
+
                 <div className="relative z-[1]">
                   <div className="mb-2 text-[11px] uppercase tracking-[0.24em] text-[var(--accent)]">
                     Live tier snapshot
                   </div>
+
                   <div className="font-serif text-4xl text-white md:text-5xl">
                     {activeTier.icon} {activeTier.name}
                   </div>
+
                   <p className="mt-3 text-sm leading-7 text-[rgba(255,255,255,.65)]">
-                    Based on a current yearly spend of {formatMoney(spend, currency)},
-                    this member receives {activeTier.shipping.toLowerCase()} and earns
-                    {" "}
-                    {formatMoneyWithDecimals(cashbackValue, currency)} back in points value.
+                    Based on a current yearly spend of{" "}
+                    {formatMoney(spend, currency)}, this member receives{" "}
+                    {activeTier.shipping.toLowerCase()} and earns{" "}
+                    {formatMoneyWithDecimals(cashbackValue, currency)} back in
+                    points value.
                   </p>
 
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    <SnapshotBox label="Cashback value" value={formatMoneyWithDecimals(cashbackValue, currency)} />
-                    <SnapshotBox label="Points earned" value={`${pointsEarned.toLocaleString()} pts`} />
-                    <SnapshotBox label="Shipping perk" value={currentTier === "gold" ? "Express" : "Standard"} />
+                    <SnapshotBox
+                      label="Cashback value"
+                      value={formatMoneyWithDecimals(cashbackValue, currency)}
+                    />
+                    <SnapshotBox
+                      label="Points earned"
+                      value={`${pointsEarned.toLocaleString()} pts`}
+                    />
+                    <SnapshotBox
+                      label="Shipping perk"
+                      value={currentTier === "gold" ? "Express" : "Standard"}
+                    />
                     <SnapshotBox label="Store currency" value={currency} />
                   </div>
                 </div>
@@ -319,19 +383,26 @@ export default function RewardsPage() {
 
       <section id="rewards-calculator" className="py-16 md:py-24">
         <div className="container">
-          <div className="mb-10 max-w-3xl text-center mx-auto">
-            <div className="section-label justify-center">Interactive calculator</div>
-            <h2 className="section-heading">Preview membership, shipping, and cashback instantly</h2>
+          <div className="mx-auto mb-10 max-w-3xl text-center">
+            <div className="section-label justify-center">
+              Interactive calculator
+            </div>
+            <h2 className="section-heading">
+              Preview membership, shipping, and cashback instantly
+            </h2>
             <p className="mt-4 text-base leading-8 text-[var(--warm-gray)]">
-              Use the currency switcher and spend slider to show customers exactly
-              what they unlock at each reward level.
+              Use the currency switcher and spend slider to show customers
+              exactly what they unlock at each reward level.
             </p>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[1.05fr_.95fr]">
             <div
               className="rounded-[28px] border p-6 md:p-8"
-              style={{ background: "var(--card-bg)", borderColor: "var(--light-line)" }}
+              style={{
+                background: "var(--card-bg)",
+                borderColor: "var(--light-line)",
+              }}
             >
               <div className="mb-5 flex flex-wrap gap-2">
                 {(Object.keys(CURRENCY_CONFIG) as Currency[]).map((item) => (
@@ -341,15 +412,26 @@ export default function RewardsPage() {
                       setCurrency(item)
                       setSpend((current) => {
                         const nextDefault = thresholdInCurrency(85, item)
-                        return current > sliderMax ? nextDefault : Math.min(current, Math.max(thresholdInCurrency(600, item), thresholdInCurrency(300, item) * 2))
+                        return current > sliderMax
+                          ? nextDefault
+                          : Math.min(
+                              current,
+                              Math.max(
+                                thresholdInCurrency(600, item),
+                                thresholdInCurrency(300, item) * 2
+                              )
+                            )
                       })
                     }}
                     className="rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.18em] transition-all"
                     style={{
-                      background: currency === item ? "var(--accent)" : "transparent",
+                      background:
+                        currency === item ? "var(--accent)" : "transparent",
                       color: currency === item ? "white" : "var(--ink)",
                       borderColor:
-                        currency === item ? "var(--accent)" : "var(--light-line)",
+                        currency === item
+                          ? "var(--accent)"
+                          : "var(--light-line)",
                     }}
                   >
                     {item}
@@ -357,7 +439,7 @@ export default function RewardsPage() {
                 ))}
               </div>
 
-              <div className="mb-4 flex items-end justify-between gap-4 flex-wrap">
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
                     Selected spend
@@ -373,7 +455,10 @@ export default function RewardsPage() {
                       key={preset}
                       onClick={() => setSpend(preset)}
                       className="rounded-full border px-3 py-2 text-[11px] uppercase tracking-[0.16em] transition-all"
-                      style={{ borderColor: "var(--light-line)", color: "var(--warm-gray)" }}
+                      style={{
+                        borderColor: "var(--light-line)",
+                        color: "var(--warm-gray)",
+                      }}
                     >
                       Jump to {formatMoney(preset, currency)}
                     </button>
@@ -400,15 +485,23 @@ export default function RewardsPage() {
                     type="number"
                     min={0}
                     value={spend}
-                    onChange={(e) => setSpend(Math.max(0, Number(e.target.value) || 0))}
+                    onChange={(e) =>
+                      setSpend(Math.max(0, Number(e.target.value) || 0))
+                    }
                     className="w-full rounded-2xl border px-4 py-3 text-base outline-none"
-                    style={{ borderColor: "var(--light-line)", background: "white" }}
+                    style={{
+                      borderColor: "var(--light-line)",
+                      background: "white",
+                    }}
                   />
                 </label>
 
                 <div
                   className="rounded-2xl border px-4 py-4"
-                  style={{ borderColor: "var(--light-line)", background: "white" }}
+                  style={{
+                    borderColor: "var(--light-line)",
+                    background: "white",
+                  }}
                 >
                   <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--warm-gray)]">
                     Current tier
@@ -416,25 +509,38 @@ export default function RewardsPage() {
                   <div className="mt-2 flex items-center gap-3">
                     <span className="text-3xl">{activeTier.icon}</span>
                     <div>
-                      <div className="font-serif text-3xl text-[var(--ink)]">{activeTier.name}</div>
-                      <div className="text-sm text-[var(--warm-gray)]">{activeTier.shipping}</div>
+                      <div className="font-serif text-3xl text-[var(--ink)]">
+                        {activeTier.name}
+                      </div>
+                      <div className="text-sm text-[var(--warm-gray)]">
+                        {activeTier.shipping}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-7 rounded-[22px] border p-5" style={{ borderColor: "var(--light-line)", background: "white" }}>
-                <div className="mb-3 flex items-center justify-between gap-4 flex-wrap">
+              <div
+                className="mt-7 rounded-[22px] border p-5"
+                style={{
+                  borderColor: "var(--light-line)",
+                  background: "white",
+                }}
+              >
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
                       Progress to next tier
                     </div>
                     <div className="mt-1 text-sm text-[var(--warm-gray)]">
                       {nextTarget
-                        ? `${formatMoney(amountToNext, currency)} away from ${currentTier === "bronze" ? "Silver" : "Gold"}`
+                        ? `${formatMoney(amountToNext, currency)} away from ${
+                            currentTier === "bronze" ? "Silver" : "Gold"
+                          }`
                         : "Top tier reached"}
                     </div>
                   </div>
+
                   <div className="text-right">
                     <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
                       Cashback value
@@ -456,9 +562,18 @@ export default function RewardsPage() {
                 </div>
 
                 <div className="mt-5 grid gap-3 md:grid-cols-3">
-                  <MetricCard label="Points" value={`${pointsEarned.toLocaleString()} pts`} />
-                  <MetricCard label="Shipping" value={currentTier === "gold" ? "Express" : "Standard"} />
-                  <MetricCard label="Status" value={currentTier === "gold" ? "Top tier" : "Leveling up"} />
+                  <MetricCard
+                    label="Points"
+                    value={`${pointsEarned.toLocaleString()} pts`}
+                  />
+                  <MetricCard
+                    label="Shipping"
+                    value={currentTier === "gold" ? "Express" : "Standard"}
+                  />
+                  <MetricCard
+                    label="Status"
+                    value={currentTier === "gold" ? "Top tier" : "Leveling up"}
+                  />
                 </div>
               </div>
             </div>
@@ -467,7 +582,10 @@ export default function RewardsPage() {
               <InfoPanel title="Live benefits summary" text={shippingStatus} />
               <InfoPanel
                 title="Points model"
-                text={`Every 1 spent = 5 points. That equals ${formatMoneyWithDecimals(cashbackValue, currency)} back on a ${formatMoney(spend, currency)} spend.`}
+                text={`Every 1 spent = 5 points. That equals ${formatMoneyWithDecimals(
+                  cashbackValue,
+                  currency
+                )} back on a ${formatMoney(spend, currency)} spend.`}
               />
               <InfoPanel
                 title="International view"
@@ -478,17 +596,151 @@ export default function RewardsPage() {
         </div>
       </section>
 
+      <section className="py-16 md:py-24" style={{ background: "var(--cream)" }}>
+        <div className="container">
+          <div className="mb-10 max-w-3xl">
+            <div className="section-label">Redeem points for vouchers</div>
+            <h2 className="section-heading">
+              Turn earned points into instant voucher value
+            </h2>
+            <p className="mt-4 text-base leading-8 text-[var(--warm-gray)]">
+              Customers can exchange their points for vouchers once they unlock
+              the required level. Voucher values and minimum order thresholds
+              update to the selected store currency.
+            </p>
+          </div>
+
+          <div
+            className="mb-6 rounded-[24px] border p-5 md:p-6"
+            style={{ background: "white", borderColor: "var(--light-line)" }}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
+                  Current redemption preview
+                </div>
+                <div className="mt-2 font-serif text-4xl text-[var(--ink)]">
+                  {pointsEarned.toLocaleString()} points available
+                </div>
+              </div>
+
+              <div
+                className="rounded-full px-4 py-3 text-[12px] uppercase tracking-[0.18em]"
+                style={{
+                  background: "rgba(155,127,232,.12)",
+                  color: "var(--accent)",
+                }}
+              >
+                Cashback earned: {formatMoneyWithDecimals(cashbackValue, currency)}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {voucherLevels.map((voucher) => {
+              const unlocked = pointsEarned >= voucher.points
+              const pointsNeeded = Math.max(voucher.points - pointsEarned, 0)
+
+              return (
+                <div
+                  key={voucher.level}
+                  className="relative overflow-hidden rounded-[26px] border p-6"
+                  style={{
+                    background: "var(--card-bg)",
+                    borderColor: unlocked
+                      ? "rgba(155,127,232,.35)"
+                      : "var(--light-line)",
+                    boxShadow: unlocked ? `0 18px 50px ${voucher.glow}` : "none",
+                  }}
+                >
+                  <div
+                    className="absolute right-0 top-0 h-28 w-28 rounded-full"
+                    style={{
+                      background: voucher.glow,
+                      filter: "blur(22px)",
+                      transform: "translate(30%, -30%)",
+                    }}
+                  />
+
+                  <div className="relative z-[1]">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">
+                          {voucher.level} voucher
+                        </div>
+                        <div className="mt-2 font-serif text-4xl text-[var(--ink)]">
+                          {formatMoney(voucher.value, currency)}
+                        </div>
+                      </div>
+
+                      <div
+                        className="rounded-full px-3 py-2 text-[10px] uppercase tracking-[0.16em]"
+                        style={{
+                          background: unlocked
+                            ? "var(--accent)"
+                            : "rgba(155,127,232,.10)",
+                          color: unlocked ? "white" : "var(--accent)",
+                        }}
+                      >
+                        {unlocked ? "Unlocked" : `${pointsNeeded} pts to go`}
+                      </div>
+                    </div>
+
+                    <div className="mt-5 space-y-3 text-sm leading-7 text-[var(--warm-gray)]">
+                      <p>
+                        <strong className="text-[var(--ink)]">
+                          Exchange cost:
+                        </strong>{" "}
+                        {voucher.points} points
+                      </p>
+                      <p>
+                        <strong className="text-[var(--ink)]">
+                          Voucher value:
+                        </strong>{" "}
+                        {formatMoney(voucher.value, currency)} off
+                      </p>
+                      <p>
+                        <strong className="text-[var(--ink)]">
+                          Minimum order:
+                        </strong>{" "}
+                        valid on orders over{" "}
+                        {formatMoney(voucher.minSpend, currency)}
+                      </p>
+                    </div>
+
+                    <div className="mt-6 h-2 overflow-hidden rounded-full bg-[rgba(155,127,232,.12)]">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.min(
+                            (pointsEarned / voucher.points) * 100,
+                            100
+                          )}%`,
+                          background: "linear-gradient(90deg, #9B7FE8, #6B4EE6)",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
       <section className="loyalty">
         <div className="container">
           <div className="loyalty-header">
             <div className="section-label justify-center !text-[rgba(255,255,255,.55)] before:!bg-[var(--accent)]">
               Tiers at a glance
             </div>
-            <h2 className="section-heading light">Luxury rewards, clearly structured</h2>
+            <h2 className="section-heading light">
+              Luxury rewards, clearly structured
+            </h2>
             <p className="mx-auto mt-4 max-w-3xl text-base leading-8 text-[rgba(255,255,255,.58)]">
-              Each card below matches the rules you set: Bronze starts the journey,
-              Silver removes the shipping minimum, and Gold upgrades members to free
-              express delivery.
+              Each card below matches the rules you set: Bronze starts the
+              journey, Silver removes the shipping minimum, and Gold upgrades
+              members to free express delivery.
             </p>
           </div>
 
@@ -498,7 +750,10 @@ export default function RewardsPage() {
               const rangeLabel =
                 tier.max === null
                   ? `${formatMoney(tier.min, currency)}+`
-                  : `${formatMoney(tier.min, currency)} – ${formatMoney(tier.max, currency)}`
+                  : `${formatMoney(tier.min, currency)} – ${formatMoney(
+                      tier.max,
+                      currency
+                    )}`
 
               return (
                 <div
@@ -511,10 +766,14 @@ export default function RewardsPage() {
                     transform: isActive ? "translateY(-6px)" : undefined,
                   }}
                 >
-                  <div className="tier-glow" style={{ background: tier.glow }} />
+                  <div
+                    className="tier-glow"
+                    style={{ background: tier.glow }}
+                  />
                   <div className="tier-medal">{tier.icon}</div>
                   <div className="tier-name">{tier.name}</div>
                   <div className="tier-threshold">{rangeLabel}</div>
+
                   <ul className="tier-perks">
                     <li>
                       <span className="perk-check">✓</span>
@@ -540,6 +799,7 @@ export default function RewardsPage() {
                       </li>
                     )}
                   </ul>
+
                   <button className="tier-cta">
                     {isActive ? "Current tier preview" : `See ${tier.name} perks`}
                   </button>
@@ -554,7 +814,9 @@ export default function RewardsPage() {
         <div className="container">
           <div className="mb-10 max-w-3xl">
             <div className="section-label">How rewards work</div>
-            <h2 className="section-heading">Simple logic your customers can understand in seconds</h2>
+            <h2 className="section-heading">
+              Simple logic your customers can understand in seconds
+            </h2>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -566,12 +828,21 @@ export default function RewardsPage() {
             <HowCard
               step="02"
               title="Move through tiers"
-              text={`Bronze covers ${formatMoney(0, currency)} to ${formatMoney(program.silverMin - 1, currency)}, Silver starts at ${formatMoney(program.silverMin, currency)}, and Gold starts at ${formatMoney(program.goldMin, currency)}.`}
+              text={`Bronze covers ${formatMoney(0, currency)} to ${formatMoney(
+                program.silverMin - 1,
+                currency
+              )}, Silver starts at ${formatMoney(
+                program.silverMin,
+                currency
+              )}, and Gold starts at ${formatMoney(program.goldMin, currency)}.`}
             />
             <HowCard
               step="03"
               title="Unlock better delivery"
-              text={`Bronze needs ${formatMoney(program.bronzeFreeShipMin, currency)} for free standard delivery, Silver removes the minimum, and Gold gets express shipping.`}
+              text={`Bronze needs ${formatMoney(
+                program.bronzeFreeShipMin,
+                currency
+              )} for free standard delivery, Silver removes the minimum, and Gold gets express shipping.`}
             />
           </div>
         </div>
@@ -587,6 +858,7 @@ export default function RewardsPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             {faqItems.map((item, index) => {
               const open = openFaq === index
+
               return (
                 <button
                   key={item.q}
@@ -599,8 +871,11 @@ export default function RewardsPage() {
                       <span className="faq-num">0{index + 1}</span>
                       <span>{item.q}</span>
                     </div>
-                    <span className="text-xl text-[var(--accent)]">{open ? "−" : "+"}</span>
+                    <span className="text-xl text-[var(--accent)]">
+                      {open ? "−" : "+"}
+                    </span>
                   </div>
+
                   {open && <div className="faq-a pt-4">{item.a}</div>}
                 </button>
               )
@@ -614,8 +889,9 @@ export default function RewardsPage() {
           <div className="promo-label">Members get more</div>
           <h2 className="promo-heading">Style loyalty with real value back</h2>
           <p className="promo-sub">
-            Use this page as your storefront-facing rewards destination and swap in
-            your own copy or visuals later if you want it even closer to the picture references.
+            Use this page as your storefront-facing rewards destination and swap
+            in your own copy or visuals later if you want it even closer to the
+            picture references.
           </p>
           <div className="promo-code-box">
             <span className="promo-code-label">Current preview</span>
@@ -636,9 +912,14 @@ function SnapshotBox({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="rounded-[18px] border px-4 py-4"
-      style={{ borderColor: "rgba(255,255,255,.12)", background: "rgba(255,255,255,.05)" }}
+      style={{
+        borderColor: "rgba(255,255,255,.12)",
+        background: "rgba(255,255,255,.05)",
+      }}
     >
-      <div className="text-[11px] uppercase tracking-[0.2em] text-[rgba(255,255,255,.5)]">{label}</div>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-[rgba(255,255,255,.5)]">
+        {label}
+      </div>
       <div className="mt-2 text-lg font-semibold text-white">{value}</div>
     </div>
   )
@@ -650,8 +931,12 @@ function MetricCard({ label, value }: { label: string; value: string }) {
       className="rounded-2xl border px-4 py-4"
       style={{ borderColor: "var(--light-line)", background: "var(--cream)" }}
     >
-      <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--warm-gray)]">{label}</div>
-      <div className="mt-2 text-lg font-semibold text-[var(--ink)]">{value}</div>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--warm-gray)]">
+        {label}
+      </div>
+      <div className="mt-2 text-lg font-semibold text-[var(--ink)]">
+        {value}
+      </div>
     </div>
   )
 }
@@ -662,7 +947,9 @@ function InfoPanel({ title, text }: { title: string; text: string }) {
       className="rounded-[24px] border p-6"
       style={{ background: "white", borderColor: "var(--light-line)" }}
     >
-      <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">{title}</div>
+      <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">
+        {title}
+      </div>
       <p className="mt-3 text-sm leading-7 text-[var(--warm-gray)]">{text}</p>
     </div>
   )
@@ -682,8 +969,12 @@ function HowCard({
       className="rounded-[24px] border p-6"
       style={{ background: "var(--cream)", borderColor: "var(--light-line)" }}
     >
-      <div className="mb-4 inline-flex rounded-full px-3 py-2 text-[11px] uppercase tracking-[0.22em]"
-        style={{ background: "rgba(155,127,232,.12)", color: "var(--accent)" }}
+      <div
+        className="mb-4 inline-flex rounded-full px-3 py-2 text-[11px] uppercase tracking-[0.22em]"
+        style={{
+          background: "rgba(155,127,232,.12)",
+          color: "var(--accent)",
+        }}
       >
         Step {step}
       </div>
