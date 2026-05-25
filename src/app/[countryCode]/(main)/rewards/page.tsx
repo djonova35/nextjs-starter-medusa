@@ -58,8 +58,25 @@ const formatMoneyWithDecimals = (value: number, currency: Currency) => {
 
 const convertRewardValue = (gbpValue: number, currency: Currency) => {
   if (currency === "GBP") return gbpValue
-
   return Math.round(gbpValue * CURRENCY_CONFIG[currency].multiplierFromGBP)
+}
+
+const getCashbackRate = (tier: TierKey) => {
+  if (tier === "gold") return 0.1
+  if (tier === "silver") return 0.07
+  return 0.05
+}
+
+const getPointsRate = (tier: TierKey) => {
+  if (tier === "gold") return 10
+  if (tier === "silver") return 7
+  return 5
+}
+
+const getCashbackLabel = (tier: TierKey) => {
+  if (tier === "gold") return "10% cashback"
+  if (tier === "silver") return "7% cashback"
+  return "5% cashback"
 }
 
 function getProgram(currency: Currency) {
@@ -139,8 +156,11 @@ export default function RewardsPage() {
     program.goldMin * 2,
     thresholdInCurrency(600, currency)
   )
-  const cashbackValue = spend * 0.05
-  const pointsEarned = Math.round(spend * 5)
+
+  const cashbackRate = getCashbackRate(currentTier)
+  const pointsRate = getPointsRate(currentTier)
+  const cashbackValue = spend * cashbackRate
+  const pointsEarned = Math.round(spend * pointsRate)
 
   const nextTarget =
     currentTier === "bronze"
@@ -177,18 +197,12 @@ export default function RewardsPage() {
 
   const faqItems = [
     {
-      q: "How does the 5% cashback points system work?",
-      a: "For every 1 unit of currency you spend, you earn 5 points back in value. That means a 100 basket earns 500 points, equal to 5 in direct cashback value.",
+      q: "How does cashback change across Bronze, Silver, and Gold?",
+      a: "Bronze members earn 5% back, Silver members earn 7% back, and Gold members earn 10% back through the rewards programme.",
     },
     {
-      q: "What unlocks Silver and Gold?",
-      a: `Silver starts from ${formatMoney(
-        program.silverMin,
-        currency
-      )} and Gold starts from ${formatMoney(
-        program.goldMin,
-        currency
-      )} in your selected store currency equivalent.`,
+      q: "How do points increase by tier?",
+      a: "Bronze earns 5 points per 1 spent, Silver earns 7 points per 1 spent, and Gold earns 10 points per 1 spent.",
     },
     {
       q: "What shipping perk does each tier get?",
@@ -246,14 +260,14 @@ export default function RewardsPage() {
             <div className="fade-up fade-up-1">
               <div className="hero-eyebrow !mb-6">Rewards programme</div>
               <h1 className="hero-heading !mb-5">
-                Earn <em>5% back</em>, unlock better shipping, and climb every
+                Earn <em>up to 10% back</em>, unlock better shipping, and climb every
                 tier.
               </h1>
               <p className="hero-desc !max-w-[640px] !text-[rgba(255,255,255,.68)]">
-                A luxury-feel rewards page built around Bronze, Silver, and
-                Gold. Members earn direct cashback value through points, enjoy
-                tier-based shipping upgrades, and can preview their perks in
-                GBP, USD, EUR, or CAD.
+                A luxury-feel rewards page built around Bronze, Silver, and Gold.
+                Members earn increasing cashback and points by tier, enjoy
+                shipping upgrades, and can preview their perks in GBP, USD, EUR,
+                or CAD.
               </p>
 
               <div className="flex flex-wrap gap-3 pt-2">
@@ -280,6 +294,9 @@ export default function RewardsPage() {
                     {formatMoney(0, currency)}–
                     {formatMoney(program.silverMin - 1, currency)}
                   </div>
+                  <div className="mt-2 text-xs text-[rgba(255,255,255,.6)]">
+                    5% cashback
+                  </div>
                 </div>
 
                 <div
@@ -296,6 +313,9 @@ export default function RewardsPage() {
                     {formatMoney(program.silverMin, currency)}–
                     {formatMoney(program.goldMin - 1, currency)}
                   </div>
+                  <div className="mt-2 text-xs text-[rgba(255,255,255,.6)]">
+                    7% cashback
+                  </div>
                 </div>
 
                 <div
@@ -310,6 +330,9 @@ export default function RewardsPage() {
                   </div>
                   <div className="mt-2 font-serif text-3xl text-white">
                     {formatMoney(program.goldMin, currency)}+
+                  </div>
+                  <div className="mt-2 text-xs text-[rgba(255,255,255,.6)]">
+                    10% cashback
                   </div>
                 </div>
               </div>
@@ -339,11 +362,10 @@ export default function RewardsPage() {
                     {activeTier.icon} {activeTier.name}
                   </div>
                   <p className="mt-3 text-sm leading-7 text-[rgba(255,255,255,.65)]">
-                    Based on a current yearly spend of{" "}
-                    {formatMoney(spend, currency)}, this member receives{" "}
-                    {activeTier.shipping.toLowerCase()} and earns{" "}
-                    {formatMoneyWithDecimals(cashbackValue, currency)} back in
-                    points value.
+                    Based on a current yearly spend of {formatMoney(spend, currency)},
+                    this member receives {activeTier.shipping.toLowerCase()}, earns{" "}
+                    {getCashbackLabel(currentTier).toLowerCase()}, and currently gets{" "}
+                    {formatMoneyWithDecimals(cashbackValue, currency)} back in value.
                   </p>
 
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -356,8 +378,8 @@ export default function RewardsPage() {
                       value={`${pointsEarned.toLocaleString()} pts`}
                     />
                     <SnapshotBox
-                      label="Shipping perk"
-                      value={currentTier === "gold" ? "Express" : "Standard"}
+                      label="Cashback rate"
+                      value={getCashbackLabel(currentTier)}
                     />
                     <SnapshotBox label="Store currency" value={currency} />
                   </div>
@@ -373,10 +395,10 @@ export default function RewardsPage() {
           {Array.from({ length: 2 }).map((_, trackIndex) => (
             <div key={trackIndex} className="flex">
               {[
-                "5% cashback in points value",
-                "Bronze: free standard delivery from qualifying minimum spend",
-                "Silver: free standard shipping with no minimum",
-                "Gold: free express shipping",
+                "Bronze 5% cashback",
+                "Silver 7% cashback",
+                "Gold 10% cashback",
+                "Free shipping perks by tier",
                 "GBP · USD · EUR · CAD supported",
               ].map((item) => (
                 <div key={`${trackIndex}-${item}`} className="ticker-item">
@@ -391,7 +413,7 @@ export default function RewardsPage() {
 
       <section id="rewards-calculator" className="py-16 md:py-24">
         <div className="container">
-          <div className="mb-10 max-w-3xl text-center mx-auto">
+          <div className="mx-auto mb-10 max-w-3xl text-center">
             <div className="section-label justify-center">
               Interactive calculator
             </div>
@@ -607,12 +629,12 @@ export default function RewardsPage() {
                     value={`${pointsEarned.toLocaleString()} pts`}
                   />
                   <MetricCard
-                    label="Shipping"
-                    value={currentTier === "gold" ? "Express" : "Standard"}
+                    label="Cashback"
+                    value={getCashbackLabel(currentTier)}
                   />
                   <MetricCard
-                    label="Status"
-                    value={currentTier === "gold" ? "Top tier" : "Leveling up"}
+                    label="Shipping"
+                    value={currentTier === "gold" ? "Express" : "Standard"}
                   />
                 </div>
               </div>
@@ -622,10 +644,15 @@ export default function RewardsPage() {
               <InfoPanel title="Live benefits summary" text={shippingStatus} />
               <InfoPanel
                 title="Points model"
-                text={`Every 1 spent = 5 points. That equals ${formatMoneyWithDecimals(
+                text={`${activeTier.name} currently earns ${pointsRate} points per 1 spent and returns ${getCashbackLabel(
+                  currentTier
+                ).toLowerCase()} in value. On ${formatMoney(
+                  spend,
+                  currency
+                )}, that preview equals ${pointsEarned.toLocaleString()} points and ${formatMoneyWithDecimals(
                   cashbackValue,
                   currency
-                )} back on a ${formatMoney(spend, currency)} spend.`}
+                )} back.`}
               />
               <InfoPanel
                 title="International view"
@@ -728,23 +755,16 @@ export default function RewardsPage() {
 
                     <div className="mt-5 space-y-3 text-sm leading-7 text-[var(--warm-gray)]">
                       <p>
-                        <strong className="text-[var(--ink)]">
-                          Exchange cost:
-                        </strong>{" "}
+                        <strong className="text-[var(--ink)]">Exchange cost:</strong>{" "}
                         {voucher.points} points
                       </p>
                       <p>
-                        <strong className="text-[var(--ink)]">
-                          Voucher value:
-                        </strong>{" "}
+                        <strong className="text-[var(--ink)]">Voucher value:</strong>{" "}
                         {formatMoney(voucher.value, currency)} off
                       </p>
                       <p>
-                        <strong className="text-[var(--ink)]">
-                          Minimum order:
-                        </strong>{" "}
-                        valid on orders over{" "}
-                        {formatMoney(voucher.minSpend, currency)}
+                        <strong className="text-[var(--ink)]">Minimum order:</strong>{" "}
+                        valid on orders over {formatMoney(voucher.minSpend, currency)}
                       </p>
                     </div>
 
@@ -813,15 +833,15 @@ export default function RewardsPage() {
                   <ul className="tier-perks">
                     <li>
                       <span className="perk-check">✓</span>
-                      5% back in points value
+                      {getCashbackLabel(tier.key)} back in value
+                    </li>
+                    <li>
+                      <span className="perk-check">✓</span>
+                      {getPointsRate(tier.key)} points per 1 spent
                     </li>
                     <li>
                       <span className="perk-check">✓</span>
                       {tier.shipping}
-                    </li>
-                    <li>
-                      <span className="perk-check">✓</span>
-                      {tier.subcopy}
                     </li>
                     {tier.key === "gold" ? (
                       <li>
@@ -831,7 +851,7 @@ export default function RewardsPage() {
                     ) : (
                       <li>
                         <span className="perk-check">✓</span>
-                        Auto-upgrade as spend grows
+                        {tier.subcopy}
                       </li>
                     )}
                   </ul>
@@ -858,7 +878,7 @@ export default function RewardsPage() {
             <HowCard
               step="01"
               title="Spend and earn"
-              text="Every order earns 5% back in points value, giving customers direct cashback they can feel."
+              text="Bronze earns 5% back, Silver earns 7% back, and Gold earns 10% back while points increase by tier too."
             />
             <HowCard
               step="02"
@@ -920,7 +940,7 @@ export default function RewardsPage() {
       <section className="promo-banner">
         <div className="container promo-content">
           <div className="promo-label">Members get more</div>
-          <h2 className="promo-heading">Style loyalty with real value back</h2>
+          <h2 className="promo-heading">Style loyalty with up to 10% back</h2>
           <p className="promo-sub">
             Use this page as your storefront-facing rewards destination and swap
             in your own copy or visuals later if you want it even closer to the
@@ -928,7 +948,7 @@ export default function RewardsPage() {
           </p>
           <div className="promo-code-box">
             <span className="promo-code-label">Current preview</span>
-            <span className="promo-code">5% BACK</span>
+            <span className="promo-code">UP TO 10% BACK</span>
           </div>
           <div>
             <LocalizedClientLink href="/store" className="btn btn-light">
