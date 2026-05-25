@@ -74,7 +74,10 @@ function getProgram(currency: Currency) {
       icon: "🥉",
       min: 0,
       max: silverMin - 1,
-      shipping: `Free standard delivery from ${formatMoney(bronzeFreeShipMin, currency)}`,
+      shipping: `Free standard delivery from ${formatMoney(
+        bronzeFreeShipMin,
+        currency
+      )}`,
       subcopy:
         "Bronze members unlock free standard delivery once the basket reaches the minimum spend.",
       gradient: "linear-gradient(160deg, #2a1c10, #4a2e18)",
@@ -167,7 +170,10 @@ export default function RewardsPage() {
         ? "Free standard shipping unlocked on every order."
         : spend >= program.bronzeFreeShipMin
           ? "Free standard delivery unlocked for your current basket."
-          : `Spend ${formatMoney(program.bronzeFreeShipMin - spend, currency)} more to unlock free standard delivery.`
+          : `Spend ${formatMoney(
+              program.bronzeFreeShipMin - spend,
+              currency
+            )} more to unlock free standard delivery.`
 
   const faqItems = [
     {
@@ -176,11 +182,20 @@ export default function RewardsPage() {
     },
     {
       q: "What unlocks Silver and Gold?",
-      a: `Silver starts from ${formatMoney(program.silverMin, currency)} and Gold starts from ${formatMoney(program.goldMin, currency)} in your selected store currency equivalent.`,
+      a: `Silver starts from ${formatMoney(
+        program.silverMin,
+        currency
+      )} and Gold starts from ${formatMoney(
+        program.goldMin,
+        currency
+      )} in your selected store currency equivalent.`,
     },
     {
       q: "What shipping perk does each tier get?",
-      a: `Bronze gets free standard delivery from ${formatMoney(program.bronzeFreeShipMin, currency)}. Silver gets free standard shipping with no minimum spend. Gold gets free express shipping, but not same-day priority.`,
+      a: `Bronze gets free standard delivery from ${formatMoney(
+        program.bronzeFreeShipMin,
+        currency
+      )}. Silver gets free standard shipping with no minimum spend. Gold gets free express shipping, but not same-day priority.`,
     },
     {
       q: "Do international customers also get tiers?",
@@ -376,7 +391,7 @@ export default function RewardsPage() {
 
       <section id="rewards-calculator" className="py-16 md:py-24">
         <div className="container">
-          <div className="mb-10 mx-auto max-w-3xl text-center">
+          <div className="mb-10 max-w-3xl text-center mx-auto">
             <div className="section-label justify-center">
               Interactive calculator
             </div>
@@ -432,7 +447,7 @@ export default function RewardsPage() {
                 ))}
               </div>
 
-              <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+              <div className="mb-4 flex items-end justify-between gap-4 flex-wrap">
                 <div>
                   <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
                     Selected spend
@@ -520,7 +535,7 @@ export default function RewardsPage() {
                   background: "white",
                 }}
               >
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-4">
+                <div className="mb-3 flex items-center justify-between gap-4 flex-wrap">
                   <div>
                     <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--warm-gray)]">
                       Progress to next tier
@@ -553,7 +568,7 @@ export default function RewardsPage() {
                   />
                 </div>
 
-                {currentTier === "bronze" && (
+                {currentTier !== "gold" && (
                   <div
                     className="mt-5 rounded-[22px] border p-5"
                     style={{
@@ -565,11 +580,14 @@ export default function RewardsPage() {
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div className="max-w-[540px]">
                         <div className="text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">
-                          👑 Want Silver perks today?
+                          {currentTier === "bronze"
+                            ? "👑 Want Silver perks today?"
+                            : "👑 Want Gold perks today?"}
                         </div>
                         <p className="mt-3 text-sm leading-7 text-[var(--warm-gray)]">
-                          Skip the spend tracking and unlock all Silver benefits
-                          instantly with our Djonova Member Lounge subscription.
+                          {currentTier === "bronze"
+                            ? "Skip the spend tracking and unlock all Silver benefits instantly with our Djonova Member Lounge subscription."
+                            : "Fast-track to Gold and unlock premium Gold benefits instantly with our Djonova Member Lounge subscription."}
                         </p>
                       </div>
 
