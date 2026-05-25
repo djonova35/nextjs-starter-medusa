@@ -68,15 +68,21 @@ const getCashbackRate = (tier: TierKey) => {
 }
 
 const getPointsRate = (tier: TierKey) => {
-  if (tier === "gold") return 10
-  if (tier === "silver") return 7
-  return 5
+  if (tier === "gold") return 2
+  if (tier === "silver") return 1.5
+  return 1
 }
 
 const getCashbackLabel = (tier: TierKey) => {
   if (tier === "gold") return "10% cashback"
   if (tier === "silver") return "7% cashback"
   return "5% cashback"
+}
+
+const getPointsLabel = (tier: TierKey) => {
+  if (tier === "gold") return "2 points per £1 spent"
+  if (tier === "silver") return "1.5 points per £1 spent"
+  return "1 point per £1 spent"
 }
 
 function getProgram(currency: Currency) {
@@ -202,7 +208,7 @@ export default function RewardsPage() {
     },
     {
       q: "How do points increase by tier?",
-      a: "Bronze earns 5 points per 1 spent, Silver earns 7 points per 1 spent, and Gold earns 10 points per 1 spent.",
+      a: "Bronze earns 1 point per £1 spent, Silver earns 1.5 points per £1 spent, and Gold earns 2 points per £1 spent.",
     },
     {
       q: "What shipping perk does each tier get?",
@@ -295,7 +301,7 @@ export default function RewardsPage() {
                     {formatMoney(program.silverMin - 1, currency)}
                   </div>
                   <div className="mt-2 text-xs text-[rgba(255,255,255,.6)]">
-                    5% cashback
+                    5% cashback · 1 point per £1 spent
                   </div>
                 </div>
 
@@ -314,7 +320,7 @@ export default function RewardsPage() {
                     {formatMoney(program.goldMin - 1, currency)}
                   </div>
                   <div className="mt-2 text-xs text-[rgba(255,255,255,.6)]">
-                    7% cashback
+                    7% cashback · 1.5 points per £1 spent
                   </div>
                 </div>
 
@@ -332,7 +338,7 @@ export default function RewardsPage() {
                     {formatMoney(program.goldMin, currency)}+
                   </div>
                   <div className="mt-2 text-xs text-[rgba(255,255,255,.6)]">
-                    10% cashback
+                    10% cashback · 2 points per £1 spent
                   </div>
                 </div>
               </div>
@@ -644,7 +650,7 @@ export default function RewardsPage() {
               <InfoPanel title="Live benefits summary" text={shippingStatus} />
               <InfoPanel
                 title="Points model"
-                text={`${activeTier.name} currently earns ${pointsRate} points per 1 spent and returns ${getCashbackLabel(
+                text={`${activeTier.name} currently earns ${pointsRate} points per £1 spent and returns ${getCashbackLabel(
                   currentTier
                 ).toLowerCase()} in value. On ${formatMoney(
                   spend,
@@ -837,7 +843,7 @@ export default function RewardsPage() {
                     </li>
                     <li>
                       <span className="perk-check">✓</span>
-                      {getPointsRate(tier.key)} points per 1 spent
+                      {getPointsLabel(tier.key)}
                     </li>
                     <li>
                       <span className="perk-check">✓</span>
@@ -878,7 +884,7 @@ export default function RewardsPage() {
             <HowCard
               step="01"
               title="Spend and earn"
-              text="Bronze earns 5% back, Silver earns 7% back, and Gold earns 10% back while points increase by tier too."
+              text="Bronze earns 5% back with 1 point per £1 spent, Silver earns 7% back with 1.5 points per £1 spent, and Gold earns 10% back with 2 points per £1 spent."
             />
             <HowCard
               step="02"
