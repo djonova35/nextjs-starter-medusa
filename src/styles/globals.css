@@ -300,6 +300,15 @@
   object-position: center;
   z-index: 1;
 }
+
+/* Mobile: show the whole shoe, don't crop */
+@media (max-width: 768px) {
+  .hero-product-image {
+    object-fit: contain;
+    object-position: center;
+    padding: 20px;
+  }
+}
 .hero-product-placeholder {
   position: absolute;
   inset: 50%;
