@@ -393,18 +393,13 @@ export default function AccessoriesPage() {
         }
         .ac-btn--ghost:hover { background: rgba(255,255,255,0.06); color: #fff; }
 
-        /* ── STICKY NAV ── */
-        .ac-nav {
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          background: rgba(250,250,254,0.92);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border-bottom: 1px solid var(--ac-line);
-          transition: box-shadow 0.3s ease;
-        }
-        .ac-nav--scrolled { box-shadow: 0 4px 24px rgba(22,14,43,0.08); }
+        /* ── NAV (not sticky) ── */
+.ac-nav {
+  position: relative;
+  background: rgba(250,250,254,0.92);
+  border-bottom: 1px solid var(--ac-line);
+}
+.ac-nav--scrolled { box-shadow: none; }
         .ac-nav__inner {
           display: flex;
           align-items: center;
