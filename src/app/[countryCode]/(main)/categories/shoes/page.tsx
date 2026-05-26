@@ -882,47 +882,46 @@ export default function ShoesPage() {
           color: rgba(255,255,255,0.5);
         }
         .sh-kids-banner__content {
-          background: rgba(255,255,255,0.03);
-          border-left: 1px solid rgba(255,255,255,0.06);
-          padding: 48px 40px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          gap: 20px;
-        }
-        .sh-kids-banner__eyebrow {
-          font-family: 'Space Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #9B7EFF;
-        }
-        .sh-kids-banner__title {
-          font-family: 'Cormorant Garamond', serif;
-          font-style: italic;
-          font-weight: 300;
-          font-size: clamp(32px, 4vw, 52px);
-          line-height: 1.05;
-          color: #fff;
-        }
-        .sh-kids-banner__desc {
-          font-size: 14px;
-          color: rgba(255,255,255,0.5);
-          line-height: 1.7;
-          max-width: 300px;
-        }
-        .sh-kids-banner__tags { display: flex; gap: 8px; flex-wrap: wrap; }
-        .sh-kids-banner__tag {
-          font-family: 'Space Mono', monospace;
-          font-size: 9px;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          padding: 5px 12px;
-          border-radius: 999px;
-          border: 1px solid rgba(107,78,230,0.4);
-          color: rgba(255,255,255,0.6);
-        }
-
+  background: #fff;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  border-left: 1px solid var(--sh-line);
+}
+.sh-kids-banner__eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sh-accent);
+}
+.sh-kids-banner__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.05;
+  color: var(--sh-ink);
+}
+.sh-kids-banner__desc {
+  font-size: 14px;
+  color: var(--sh-gray);
+  line-height: 1.7;
+  max-width: 300px;
+}
+.sh-kids-banner__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.sh-kids-banner__tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--sh-line);
+  color: var(--sh-gray);
+}
         .sh-kids-age-strip {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
