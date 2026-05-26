@@ -54,7 +54,7 @@ export default async function Home({
   <div className="ss26-badge">SS26 Drop</div>
   <div className="hero-circle-wrap fade-up fade-up-3">
     <img
-      src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/w_800/v1779625843/1776783235326-1316d7b8-3e0f-4d43-88e5-7341cfdcc8fb_ynzpdq.png"
+      src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
       alt="DJONOVA SS26 Shoe"
       className="hero-product-image"
     />
