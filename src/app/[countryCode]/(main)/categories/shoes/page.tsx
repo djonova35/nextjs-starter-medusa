@@ -730,34 +730,113 @@ export default function ShoesPage() {
         .sh-men { background: #fff; border-top: 1px solid var(--sh-line); border-bottom: 1px solid var(--sh-line); }
         .sh-men__accent-bar { width: 60px; height: 3px; background: var(--sh-accent); border-radius: 999px; margin-top: 12px; }
 
-        /* ── KIDS SECTION ── */
-        .sh-kids { background: var(--sh-deep); padding: 80px 0; }
-        @media (min-width: 1024px) { .sh-kids { padding: 120px 0; } }
-        .sh-kids .sh-section-title   { color: #fff; }
-        .sh-kids .sh-section-eyebrow { color: #9B7EFF; }
-        .sh-kids .sh-view-all        { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2); }
-        .sh-kids .sh-view-all:hover  { background: rgba(255,255,255,0.08); color: #fff; }
-        .sh-kids .sh-chip            { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); }
-        .sh-kids .sh-chip:hover      { border-color: var(--sh-accent); color: #C4B5FD; }
-        .sh-kids .sh-chip--active    { background: var(--sh-accent); border-color: var(--sh-accent); color: #fff; }
-        .sh-kids .sh-sort label      { color: rgba(255,255,255,0.4); }
-        .sh-kids .sh-sort select     { background-color: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); color: #fff; }
-        .sh-kids .sh-card            { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
-        .sh-kids .sh-card:hover      { box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
-        .sh-kids .sh-card__img-placeholder { background: linear-gradient(160deg, #2A1A5E 0%, #1A0E3A 100%); }
-        .sh-kids .sh-card__name      { color: #fff; }
-        .sh-kids .sh-card__price     { color: #C4B5FD; }
-        .sh-kids .sh-card__size      { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+/* ── KIDS SECTION ── */
+.sh-kids { background: #EDE8FC; padding: 80px 0; }
+@media (min-width: 1024px) { .sh-kids { padding: 120px 0; } }
+.sh-kids .sh-section-title   { color: var(--sh-ink); }
+.sh-kids .sh-section-eyebrow { color: var(--sh-accent); }
+.sh-kids .sh-view-all        { color: var(--sh-accent); border-color: var(--sh-accent); }
+.sh-kids .sh-view-all:hover  { background: var(--sh-accent); color: #fff; }
+.sh-kids .sh-chip            { background: #fff; border-color: var(--sh-line); color: var(--sh-gray); }
+.sh-kids .sh-chip:hover      { border-color: var(--sh-accent); color: var(--sh-accent); }
+.sh-kids .sh-chip--active    { background: var(--sh-accent); border-color: var(--sh-accent); color: #fff; }
+.sh-kids .sh-sort label      { color: var(--sh-gray); }
+.sh-kids .sh-sort select     { background-color: #fff; border-color: var(--sh-line); color: var(--sh-ink); }
+.sh-kids .sh-card            { background: #fff; border-color: var(--sh-line); }
+.sh-kids .sh-card:hover      { box-shadow: 0 16px 48px rgba(107,78,230,0.12); }
+.sh-kids .sh-card__img-placeholder { background: linear-gradient(160deg, #EDE8FC 0%, #C4B5FD 100%); }
+.sh-kids .sh-card__name      { color: var(--sh-ink); }
+.sh-kids .sh-card__price     { color: var(--sh-ink); }
+.sh-kids .sh-card__size      { background: var(--sh-cream); border-color: var(--sh-line); color: var(--sh-gray); }
 
-        .sh-kids-banner {
-          display: grid;
-          grid-template-columns: 1fr;
-          border-radius: 24px;
-          overflow: hidden;
-          margin-bottom: 48px;
-          border: 1px solid rgba(255,255,255,0.06);
-          min-height: 380px;
-        }
+        .sh-kids-banner__content {
+  background: var(--sh-deep);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+.sh-kids-banner__eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sh-accent);
+}
+.sh-kids-banner__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.05;
+  color: #fff;
+}
+.sh-kids-banner__desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  max-width: 300px;
+}
+.sh-kids-banner__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.sh-kids-banner__tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(107,78,230,0.4);
+  color: rgba(255,255,255,0.6);
+}
+
+/* Age cards - light theme */
+.sh-kids-age-card {
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  border: 1px solid var(--sh-line);
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.sh-kids-age-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(107,78,230,0.12);
+  border-color: var(--sh-accent);
+}
+.sh-kids-age-card::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(107,78,230,0.08) 0%, transparent 70%);
+}
+.sh-kids-age-card__range {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 28px;
+  color: var(--sh-ink);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.sh-kids-age-card__label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sh-gray);
+  margin-bottom: 8px;
+}
+.sh-kids-age-card__sizes {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--sh-accent);
+}
         @media (min-width: 768px) { .sh-kids-banner { grid-template-columns: 1fr 1fr; min-height: 440px; } }
         .sh-kids-banner__img {
           background: linear-gradient(135deg, #3D1F8C 0%, #6B4EE6 60%, #9B7EFF 100%);
