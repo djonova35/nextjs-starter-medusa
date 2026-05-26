@@ -1258,63 +1258,6 @@ export default function FashionPage() {
           </div>
         </div>
       </section>
-
-      {/* ── ACCESSORIES ── */}
-      <section className="fh-accessories" id="accessories" aria-label="Accessories">
-        <div className="fh-container">
-          <div className="fh-section-header fh-reveal">
-            <div>
-              <p className="fh-section-eyebrow">04 — Accessories</p>
-              <h2 className="fh-section-title">The finishing <em>touch.</em></h2>
-            </div>
-            <a href="/categories/fashion/accessories" className="fh-view-all">View All →</a>
-          </div>
-
-          <div className="fh-acc-grid fh-reveal fh-reveal--delay-1">
-            <article className="fh-acc-card fh-acc-card--featured">
-              <div className="fh-acc-card__img-bg">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
-                </svg>
-                <span>700 × 920 px</span>
-              </div>
-              <div className="fh-acc-card__overlay" />
-              <div className="fh-acc-card__info">
-                <p className="fh-acc-card__cat">Bags</p>
-                <h3 className="fh-acc-card__name">The Nocturne Tote</h3>
-                <div className="fh-acc-card__footer">
-                  <span className="fh-acc-card__price">£189.00</span>
-                  <a href="#" className="fh-acc-card__cta">Add to Bag</a>
-                </div>
-              </div>
-            </article>
-
-            {[
-              { cat: "Scarves", name: "Cashmere Wrap", price: "£76.00", size: "480 × 300 px" },
-              { cat: "Jewellery", name: "Amethyst Ear Cuff", price: "£42.00", size: "480 × 300 px" },
-              { cat: "Eyewear", name: "Oval Tinted Lens", price: "£58.00", size: "480 × 300 px" },
-            ].map((item, i) => (
-              <article className="fh-acc-card fh-acc-card--sm" key={i}>
-                <div className="fh-acc-card__img-bg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
-                  </svg>
-                  <span>{item.size}</span>
-                </div>
-                <div className="fh-acc-card__overlay" />
-                <div className="fh-acc-card__info">
-                  <p className="fh-acc-card__cat">{item.cat}</p>
-                  <h3 className="fh-acc-card__name">{item.name}</h3>
-                  <div className="fh-acc-card__footer">
-                    <span className="fh-acc-card__price">{item.price}</span>
-                    <a href="#" className="fh-acc-card__cta">Add</a>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   )
 }
