@@ -24,52 +24,6 @@ export default function ShoesPage() {
       reveals.forEach((el) => el.classList.add("sh-reveal--visible"))
     }
 
-    // Sticky nav shadow + active tab
-    const nav = document.getElementById("sh-nav")
-    const sectionIds = ["women", "men", "kids", "casual", "formal", "sports"]
-    const sections = sectionIds.map((id) => document.getElementById(id))
-    const tabs = document.querySelectorAll(".sh-nav__tab")
-
-    function highlightTab() {
-      const wH = window.innerHeight
-      let activeId: string | null = null
-      sections.forEach((s) => {
-        if (!s) return
-        const r = s.getBoundingClientRect()
-        if (r.top <= wH * 0.4 && r.bottom >= wH * 0.4) activeId = s.id
-      })
-      if (!activeId && window.scrollY < 200) activeId = "women"
-      tabs.forEach((t) =>
-        t.classList.toggle(
-          "sh-nav__tab--active",
-          (t as HTMLElement).dataset.section === activeId
-        )
-      )
-    }
-
-    const onScroll = () => {
-      if (nav) nav.classList.toggle("sh-nav--scrolled", window.scrollY > 10)
-      highlightTab()
-    }
-    window.addEventListener("scroll", onScroll, { passive: true })
-
-    // Smooth scroll on tab click
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", function (e) {
-        e.preventDefault()
-        const el = tab as HTMLElement
-        const target = document.getElementById(el.dataset.section || "")
-        if (target && nav) {
-          const top =
-            target.getBoundingClientRect().top +
-            window.scrollY -
-            nav.getBoundingClientRect().height -
-            12
-          window.scrollTo({ top, behavior: "smooth" })
-        }
-      })
-    })
-
     // Filter chips per group
     ;[
       "sh-women-filters",
@@ -135,9 +89,6 @@ export default function ShoesPage() {
       })
     })
 
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-    }
   }, [])
 
   const svgPlaceholder = (
@@ -388,70 +339,6 @@ export default function ShoesPage() {
         }
         .sh-btn--ghost:hover { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.3); }
 
-        /* ── STICKY NAV ── */
-        .sh-nav {
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          background: rgba(244,242,250,0.92);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-bottom: 1px solid var(--sh-line);
-          transition: box-shadow 0.3s ease;
-        }
-        .sh-nav--scrolled { box-shadow: 0 4px 24px rgba(22,14,43,0.08); }
-        .sh-nav__inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 60px;
-          gap: 8px;
-        }
-        .sh-nav__logo {
-          font-family: 'Cormorant Garamond', serif;
-          font-weight: 600;
-          font-size: 20px;
-          letter-spacing: 0.12em;
-          color: var(--sh-ink);
-          text-decoration: none;
-          white-space: nowrap;
-          flex-shrink: 0;
-          display: none;
-        }
-        @media (min-width: 768px) { .sh-nav__logo { display: block; } }
-        .sh-nav__tabs {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          overflow-x: auto;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          flex: 1;
-          justify-content: flex-start;
-        }
-        .sh-nav__tabs::-webkit-scrollbar { display: none; }
-        .sh-nav__tab {
-          font-family: 'Space Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--sh-gray);
-          text-decoration: none;
-          padding: 8px 14px;
-          border-radius: 999px;
-          white-space: nowrap;
-          transition: color 0.2s ease, background 0.2s ease;
-          cursor: pointer;
-          background: none;
-          border: none;
-          flex-shrink: 0;
-        }
-        .sh-nav__tab:hover   { color: var(--sh-ink); background: var(--sh-line); }
-        .sh-nav__tab--active { color: #fff; background: var(--sh-accent); }
-        @media (max-width: 640px) {
-          .sh-nav__tab { font-size: 9px; padding: 7px 12px; letter-spacing: 0.06em; }
-        }
-
         /* ── CATEGORY STRIP ── */
         .sh-cat-strip {
           background: #fff;
@@ -483,7 +370,7 @@ export default function ShoesPage() {
         .sh-cat-strip__card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(22,14,43,0.12); }
         .sh-cat-strip__card--women  { background: linear-gradient(160deg, #EDE8FC 0%, #C4B5FD 100%); }
         .sh-cat-strip__card--men    { background: linear-gradient(160deg, #2A1A5E 0%, #4C35A0 100%); }
-        .sh-cat-strip__card--kids   { background: linear-gradient(160deg, #FDE8F0 0%, #F9A8C9 100%); }
+        .sh-cat-strip__card--kids   { background: linear-gradient(160deg, #2D1060 0%, #6B4EE6 100%); }
         .sh-cat-strip__card--casual { background: linear-gradient(160deg, #D8D0F5 0%, #9B7EFF 100%); }
         .sh-cat-strip__card--formal { background: linear-gradient(160deg, #160E2B 0%, #2A1A5E 100%); }
         .sh-cat-strip__card--sports { background: linear-gradient(160deg, #6B4EE6 0%, #9B7EFF 100%); }
@@ -844,31 +731,58 @@ export default function ShoesPage() {
         .sh-men__accent-bar { width: 60px; height: 3px; background: var(--sh-accent); border-radius: 999px; margin-top: 12px; }
 
         /* ── KIDS SECTION ── */
-        .sh-kids {
-          background: #FFF9FC;
-          border-top: 1px solid var(--sh-line);
-          border-bottom: 1px solid var(--sh-line);
-        }
+        .sh-kids { background: var(--sh-deep); padding: 80px 0; }
+        @media (min-width: 1024px) { .sh-kids { padding: 120px 0; } }
+        .sh-kids .sh-section-title   { color: #fff; }
+        .sh-kids .sh-section-eyebrow { color: #9B7EFF; }
+        .sh-kids .sh-view-all        { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2); }
+        .sh-kids .sh-view-all:hover  { background: rgba(255,255,255,0.08); color: #fff; }
+        .sh-kids .sh-chip            { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); }
+        .sh-kids .sh-chip:hover      { border-color: var(--sh-accent); color: #C4B5FD; }
+        .sh-kids .sh-chip--active    { background: var(--sh-accent); border-color: var(--sh-accent); color: #fff; }
+        .sh-kids .sh-sort label      { color: rgba(255,255,255,0.4); }
+        .sh-kids .sh-sort select     { background-color: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); color: #fff; }
+        .sh-kids .sh-card            { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+        .sh-kids .sh-card:hover      { box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+        .sh-kids .sh-card__img-placeholder { background: linear-gradient(160deg, #2A1A5E 0%, #1A0E3A 100%); }
+        .sh-kids .sh-card__name      { color: #fff; }
+        .sh-kids .sh-card__price     { color: #C4B5FD; }
+        .sh-kids .sh-card__size      { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+
         .sh-kids-banner {
           display: grid;
           grid-template-columns: 1fr;
           border-radius: 24px;
           overflow: hidden;
           margin-bottom: 48px;
-          border: 1px solid var(--sh-line);
+          border: 1px solid rgba(255,255,255,0.06);
           min-height: 380px;
         }
-        @media (min-width: 768px) {
-          .sh-kids-banner { grid-template-columns: 1fr 1fr; min-height: 440px; }
-        }
+        @media (min-width: 768px) { .sh-kids-banner { grid-template-columns: 1fr 1fr; min-height: 440px; } }
         .sh-kids-banner__img {
-          background: linear-gradient(135deg, #FDE8F0 0%, #F9A8C9 60%, #E879A0 100%);
+          background: linear-gradient(135deg, #3D1F8C 0%, #6B4EE6 60%, #9B7EFF 100%);
           position: relative;
           min-height: 280px;
           display: flex;
           align-items: center;
           justify-content: center;
           overflow: hidden;
+        }
+        .sh-kids-banner__img::before {
+          content: '';
+          position: absolute;
+          top: -60px; right: -60px;
+          width: 300px; height: 300px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+        }
+        .sh-kids-banner__img::after {
+          content: '';
+          position: absolute;
+          bottom: -40px; left: -40px;
+          width: 200px; height: 200px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(107,78,230,0.3) 0%, transparent 70%);
         }
         .sh-kids-banner__img-inner {
           position: absolute;
@@ -889,7 +803,8 @@ export default function ShoesPage() {
           color: rgba(255,255,255,0.5);
         }
         .sh-kids-banner__content {
-          background: linear-gradient(135deg, #2A1A5E 0%, #4C35A0 100%);
+          background: rgba(255,255,255,0.03);
+          border-left: 1px solid rgba(255,255,255,0.06);
           padding: 48px 40px;
           display: flex;
           flex-direction: column;
@@ -901,7 +816,7 @@ export default function ShoesPage() {
           font-size: 10px;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: #F9A8C9;
+          color: #9B7EFF;
         }
         .sh-kids-banner__title {
           font-family: 'Cormorant Garamond', serif;
@@ -925,24 +840,23 @@ export default function ShoesPage() {
           text-transform: uppercase;
           padding: 5px 12px;
           border-radius: 999px;
-          border: 1px solid rgba(249,168,201,0.4);
+          border: 1px solid rgba(107,78,230,0.4);
           color: rgba(255,255,255,0.6);
         }
+
         .sh-kids-age-strip {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-          margin-bottom: 40px;
+          gap: 16px;
+          margin-bottom: 48px;
         }
-        @media (min-width: 768px) {
-          .sh-kids-age-strip { gap: 16px; }
-        }
+        @media (max-width: 640px) { .sh-kids-age-strip { grid-template-columns: 1fr; gap: 12px; } }
         .sh-kids-age-card {
-          border-radius: 16px;
-          padding: 24px 20px;
+          border-radius: 20px;
+          padding: 32px 24px;
           text-align: center;
-          border: 1px solid var(--sh-line);
-          background: #fff;
+          border: 1px solid rgba(107,78,230,0.2);
+          background: linear-gradient(135deg, rgba(107,78,230,0.08) 0%, rgba(155,126,255,0.05) 100%);
           cursor: pointer;
           transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
           position: relative;
@@ -950,43 +864,43 @@ export default function ShoesPage() {
         }
         .sh-kids-age-card:hover {
           transform: translateY(-4px);
-          box-shadow: 0 12px 32px rgba(249,168,201,0.25);
-          border-color: #F9A8C9;
+          box-shadow: 0 12px 40px rgba(107,78,230,0.2);
+          border-color: rgba(107,78,230,0.5);
         }
         .sh-kids-age-card::before {
           content: '';
           position: absolute;
-          top: -20px; right: -20px;
-          width: 80px; height: 80px;
+          top: -30px; right: -30px;
+          width: 100px; height: 100px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(249,168,201,0.15) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(107,78,230,0.15) 0%, transparent 70%);
         }
         .sh-kids-age-card__emoji {
-          font-size: 28px;
-          margin-bottom: 10px;
+          font-size: 32px;
+          margin-bottom: 12px;
           display: block;
         }
         .sh-kids-age-card__range {
           font-family: 'Cormorant Garamond', serif;
-          font-weight: 500;
-          font-size: 22px;
-          color: var(--sh-ink);
+          font-weight: 300;
+          font-size: 28px;
+          color: #fff;
           line-height: 1;
-          margin-bottom: 4px;
+          margin-bottom: 6px;
         }
         .sh-kids-age-card__label {
           font-family: 'Space Mono', monospace;
           font-size: 9px;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: var(--sh-gray);
+          color: rgba(255,255,255,0.4);
+          margin-bottom: 8px;
         }
         .sh-kids-age-card__sizes {
           font-family: 'Space Mono', monospace;
           font-size: 8px;
           letter-spacing: 0.1em;
-          color: #E879A0;
-          margin-top: 8px;
+          color: #9B7EFF;
         }
 
         /* ── CASUAL SECTION ── */
@@ -1286,23 +1200,6 @@ export default function ShoesPage() {
         </div>
       </section>
 
-      {/* ── STICKY NAV ── */}
-      <nav className="sh-nav" id="sh-nav" aria-label="Shoe category navigation">
-        <div className="sh-container">
-          <div className="sh-nav__inner">
-            <a href="/categories/shoes" className="sh-nav__logo">DJONOVA</a>
-            <div className="sh-nav__tabs" role="tablist">
-              <button className="sh-nav__tab sh-nav__tab--active" data-section="women"  role="tab">Women&apos;s</button>
-              <button className="sh-nav__tab" data-section="men"    role="tab">Men&apos;s</button>
-              <button className="sh-nav__tab" data-section="kids"   role="tab">Kids&apos;</button>
-              <button className="sh-nav__tab" data-section="casual" role="tab">Casual</button>
-              <button className="sh-nav__tab" data-section="formal" role="tab">Formal</button>
-              <button className="sh-nav__tab" data-section="sports" role="tab">Sports</button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* ── CATEGORY STRIP ── */}
       <div className="sh-cat-strip sh-reveal">
         <div className="sh-container">
@@ -1483,7 +1380,7 @@ export default function ShoesPage() {
       </section>
 
       {/* ── KIDS' SHOES ── */}
-      <section className="sh-section sh-kids" id="kids" aria-label="Kids' Shoes">
+      <section className="sh-kids" id="kids" aria-label="Kids' Shoes">
         <div className="sh-container">
 
           <div className="sh-section-header sh-reveal">
@@ -1494,7 +1391,6 @@ export default function ShoesPage() {
             <a href="/categories/shoes/kidsshoes" className="sh-view-all">View All →</a>
           </div>
 
-          {/* Banner */}
           <div className="sh-kids-banner sh-reveal sh-reveal--delay-1">
             <div className="sh-kids-banner__img">
               <div className="sh-kids-banner__img-inner">
@@ -1523,7 +1419,6 @@ export default function ShoesPage() {
             </div>
           </div>
 
-          {/* Age Range Cards */}
           <div className="sh-kids-age-strip sh-reveal sh-reveal--delay-2">
             {[
               { emoji: "👶", range: "EU 16–22", label: "Toddler",    sizes: "UK 0 – UK 5½" },
@@ -1539,7 +1434,6 @@ export default function ShoesPage() {
             ))}
           </div>
 
-          {/* Filters */}
           <div className="sh-filter-bar sh-reveal sh-reveal--delay-2" id="sh-kids-filters">
             <div className="sh-chips" role="group">
               {["All", "Trainers", "School", "Sandals", "Boots", "Velcro"].map((f, i) => (
@@ -1563,7 +1457,6 @@ export default function ShoesPage() {
             </div>
           </div>
 
-          {/* Product Grid */}
           <div className="sh-product-grid sh-reveal sh-reveal--delay-3">
             {[
               {
@@ -1876,7 +1769,7 @@ export default function ShoesPage() {
 
           <div className="sh-product-grid sh-reveal sh-reveal--delay-4">
             {[
-              { cat: "Running",    name: "PULSE Race Pro",    price: "£152.00", badge: "new",  sizes: ["UK 6","UK 7","UK 8","UK 9","UK 10"] },
+              { cat: "Running",    name: "PULSE Race Pro",     price: "£152.00", badge: "new",  sizes: ["UK 6","UK 7","UK 8","UK 9","UK 10"] },
               { cat: "Training",   name: "GRID Cross Trainer", price: "£138.00", sizes: ["UK 6","UK 7","UK 8","UK 9","UK 10"], outSizes: ["UK 8"] },
               { cat: "Trail",      name: "TERRA Trail Boot",   price: "£151.30", badge: "sale", saleLabel: "−15%", oldPrice: "£178.00", sizes: ["UK 7","UK 8","UK 9","UK 10"] },
               { cat: "Basketball", name: "COURT High Purple",  price: "£165.00", badge: "new",  sizes: ["UK 7","UK 8","UK 9","UK 10","UK 11"] },
