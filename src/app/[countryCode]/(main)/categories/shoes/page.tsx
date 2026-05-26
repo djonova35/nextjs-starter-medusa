@@ -26,7 +26,7 @@ export default function ShoesPage() {
 
     // Sticky nav shadow + active tab
     const nav = document.getElementById("sh-nav")
-    const sectionIds = ["women", "men", "casual", "formal", "sports"]
+    const sectionIds = ["women", "men", "kids", "casual", "formal", "sports"]
     const sections = sectionIds.map((id) => document.getElementById(id))
     const tabs = document.querySelectorAll(".sh-nav__tab")
 
@@ -74,6 +74,7 @@ export default function ShoesPage() {
     ;[
       "sh-women-filters",
       "sh-men-filters",
+      "sh-kids-filters",
       "sh-casual-filters",
       "sh-formal-filters",
       "sh-sports-filters",
@@ -386,72 +387,70 @@ export default function ShoesPage() {
           border: 1px solid rgba(255,255,255,0.18);
         }
         .sh-btn--ghost:hover { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.3); }
-       
+
         /* ── STICKY NAV ── */
-.sh-nav__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-  gap: 8px;
-}
-
-/* Hide logo on mobile to give tabs full width */
-.sh-nav__logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 600;
-  font-size: 20px;
-  letter-spacing: 0.12em;
-  color: var(--sh-ink);
-  text-decoration: none;
-  white-space: nowrap;
-  flex-shrink: 0;
-  display: none; /* ← hidden on mobile */
-}
-@media (min-width: 768px) {
-  .sh-nav__logo { display: block; } /* ← show on tablet and above */
-}
-
-/* Tabs take full width on mobile */
-.sh-nav__tabs {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  flex: 1;
-  justify-content: flex-start; /* ← left-aligned so tabs don't crowd */
-}
-.sh-nav__tabs::-webkit-scrollbar { display: none; }
-
-.sh-nav__tab {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--sh-gray);
-  text-decoration: none;
-  padding: 8px 14px;
-  border-radius: 999px;
-  white-space: nowrap; /* ← prevents wrapping or cutting */
-  transition: color 0.2s ease, background 0.2s ease;
-  cursor: pointer;
-  background: none;
-  border: none;
-  flex-shrink: 0; /* ← prevents tabs from being squished */
-}
-.sh-nav__tab:hover   { color: var(--sh-ink); background: var(--sh-line); }
-.sh-nav__tab--active { color: #fff; background: var(--sh-accent); }
-
-/* Mobile: smaller tabs, full scroll row */
-@media (max-width: 640px) {
-  .sh-nav__tab {
-    font-size: 9px;
-    padding: 7px 12px;
-    letter-spacing: 0.06em;
-  }
-}
+        .sh-nav {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          background: rgba(244,242,250,0.92);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--sh-line);
+          transition: box-shadow 0.3s ease;
+        }
+        .sh-nav--scrolled { box-shadow: 0 4px 24px rgba(22,14,43,0.08); }
+        .sh-nav__inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 60px;
+          gap: 8px;
+        }
+        .sh-nav__logo {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 600;
+          font-size: 20px;
+          letter-spacing: 0.12em;
+          color: var(--sh-ink);
+          text-decoration: none;
+          white-space: nowrap;
+          flex-shrink: 0;
+          display: none;
+        }
+        @media (min-width: 768px) { .sh-nav__logo { display: block; } }
+        .sh-nav__tabs {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          overflow-x: auto;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          flex: 1;
+          justify-content: flex-start;
+        }
+        .sh-nav__tabs::-webkit-scrollbar { display: none; }
+        .sh-nav__tab {
+          font-family: 'Space Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--sh-gray);
+          text-decoration: none;
+          padding: 8px 14px;
+          border-radius: 999px;
+          white-space: nowrap;
+          transition: color 0.2s ease, background 0.2s ease;
+          cursor: pointer;
+          background: none;
+          border: none;
+          flex-shrink: 0;
+        }
+        .sh-nav__tab:hover   { color: var(--sh-ink); background: var(--sh-line); }
+        .sh-nav__tab--active { color: #fff; background: var(--sh-accent); }
+        @media (max-width: 640px) {
+          .sh-nav__tab { font-size: 9px; padding: 7px 12px; letter-spacing: 0.06em; }
+        }
 
         /* ── CATEGORY STRIP ── */
         .sh-cat-strip {
@@ -461,12 +460,14 @@ export default function ShoesPage() {
         }
         .sh-cat-strip__grid {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          grid-template-columns: repeat(6, 1fr);
           gap: 16px;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+          .sh-cat-strip__grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        }
+        @media (max-width: 640px) {
           .sh-cat-strip__grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-          .sh-cat-strip__card:last-child { grid-column: 1 / -1; }
         }
         .sh-cat-strip__card {
           border-radius: 16px;
@@ -482,6 +483,7 @@ export default function ShoesPage() {
         .sh-cat-strip__card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(22,14,43,0.12); }
         .sh-cat-strip__card--women  { background: linear-gradient(160deg, #EDE8FC 0%, #C4B5FD 100%); }
         .sh-cat-strip__card--men    { background: linear-gradient(160deg, #2A1A5E 0%, #4C35A0 100%); }
+        .sh-cat-strip__card--kids   { background: linear-gradient(160deg, #FDE8F0 0%, #F9A8C9 100%); }
         .sh-cat-strip__card--casual { background: linear-gradient(160deg, #D8D0F5 0%, #9B7EFF 100%); }
         .sh-cat-strip__card--formal { background: linear-gradient(160deg, #160E2B 0%, #2A1A5E 100%); }
         .sh-cat-strip__card--sports { background: linear-gradient(160deg, #6B4EE6 0%, #9B7EFF 100%); }
@@ -841,6 +843,152 @@ export default function ShoesPage() {
         .sh-men { background: #fff; border-top: 1px solid var(--sh-line); border-bottom: 1px solid var(--sh-line); }
         .sh-men__accent-bar { width: 60px; height: 3px; background: var(--sh-accent); border-radius: 999px; margin-top: 12px; }
 
+        /* ── KIDS SECTION ── */
+        .sh-kids {
+          background: #FFF9FC;
+          border-top: 1px solid var(--sh-line);
+          border-bottom: 1px solid var(--sh-line);
+        }
+        .sh-kids-banner {
+          display: grid;
+          grid-template-columns: 1fr;
+          border-radius: 24px;
+          overflow: hidden;
+          margin-bottom: 48px;
+          border: 1px solid var(--sh-line);
+          min-height: 380px;
+        }
+        @media (min-width: 768px) {
+          .sh-kids-banner { grid-template-columns: 1fr 1fr; min-height: 440px; }
+        }
+        .sh-kids-banner__img {
+          background: linear-gradient(135deg, #FDE8F0 0%, #F9A8C9 60%, #E879A0 100%);
+          position: relative;
+          min-height: 280px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+        }
+        .sh-kids-banner__img-inner {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          z-index: 2;
+        }
+        .sh-kids-banner__img-inner svg  { width: 48px; height: 48px; opacity: 0.4; color: #fff; }
+        .sh-kids-banner__img-inner span {
+          font-family: 'Space Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.5);
+        }
+        .sh-kids-banner__content {
+          background: linear-gradient(135deg, #2A1A5E 0%, #4C35A0 100%);
+          padding: 48px 40px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 20px;
+        }
+        .sh-kids-banner__eyebrow {
+          font-family: 'Space Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #F9A8C9;
+        }
+        .sh-kids-banner__title {
+          font-family: 'Cormorant Garamond', serif;
+          font-style: italic;
+          font-weight: 300;
+          font-size: clamp(32px, 4vw, 52px);
+          line-height: 1.05;
+          color: #fff;
+        }
+        .sh-kids-banner__desc {
+          font-size: 14px;
+          color: rgba(255,255,255,0.5);
+          line-height: 1.7;
+          max-width: 300px;
+        }
+        .sh-kids-banner__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+        .sh-kids-banner__tag {
+          font-family: 'Space Mono', monospace;
+          font-size: 9px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          padding: 5px 12px;
+          border-radius: 999px;
+          border: 1px solid rgba(249,168,201,0.4);
+          color: rgba(255,255,255,0.6);
+        }
+        .sh-kids-age-strip {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+          margin-bottom: 40px;
+        }
+        @media (min-width: 768px) {
+          .sh-kids-age-strip { gap: 16px; }
+        }
+        .sh-kids-age-card {
+          border-radius: 16px;
+          padding: 24px 20px;
+          text-align: center;
+          border: 1px solid var(--sh-line);
+          background: #fff;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        .sh-kids-age-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 32px rgba(249,168,201,0.25);
+          border-color: #F9A8C9;
+        }
+        .sh-kids-age-card::before {
+          content: '';
+          position: absolute;
+          top: -20px; right: -20px;
+          width: 80px; height: 80px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(249,168,201,0.15) 0%, transparent 70%);
+        }
+        .sh-kids-age-card__emoji {
+          font-size: 28px;
+          margin-bottom: 10px;
+          display: block;
+        }
+        .sh-kids-age-card__range {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 500;
+          font-size: 22px;
+          color: var(--sh-ink);
+          line-height: 1;
+          margin-bottom: 4px;
+        }
+        .sh-kids-age-card__label {
+          font-family: 'Space Mono', monospace;
+          font-size: 9px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--sh-gray);
+        }
+        .sh-kids-age-card__sizes {
+          font-family: 'Space Mono', monospace;
+          font-size: 8px;
+          letter-spacing: 0.1em;
+          color: #E879A0;
+          margin-top: 8px;
+        }
+
         /* ── CASUAL SECTION ── */
         .sh-casual { background: var(--sh-cream); }
         .sh-casual-hero {
@@ -1146,6 +1294,7 @@ export default function ShoesPage() {
             <div className="sh-nav__tabs" role="tablist">
               <button className="sh-nav__tab sh-nav__tab--active" data-section="women"  role="tab">Women&apos;s</button>
               <button className="sh-nav__tab" data-section="men"    role="tab">Men&apos;s</button>
+              <button className="sh-nav__tab" data-section="kids"   role="tab">Kids&apos;</button>
               <button className="sh-nav__tab" data-section="casual" role="tab">Casual</button>
               <button className="sh-nav__tab" data-section="formal" role="tab">Formal</button>
               <button className="sh-nav__tab" data-section="sports" role="tab">Sports</button>
@@ -1159,11 +1308,12 @@ export default function ShoesPage() {
         <div className="sh-container">
           <div className="sh-cat-strip__grid">
             {[
-              { cls: "women",  label: "Women",  count: "72 styles",  href: "#women"  },
-              { cls: "men",    label: "Men",    count: "58 styles",  href: "#men"    },
-              { cls: "casual", label: "Casual", count: "44 styles",  href: "#casual" },
-              { cls: "formal", label: "Formal", count: "36 styles",  href: "#formal" },
-              { cls: "sports", label: "Sports", count: "30 styles",  href: "#sports" },
+              { cls: "women",  label: "Women",  count: "72 styles", href: "#women"  },
+              { cls: "men",    label: "Men",    count: "58 styles", href: "#men"    },
+              { cls: "kids",   label: "Kids",   count: "40 styles", href: "#kids"   },
+              { cls: "casual", label: "Casual", count: "44 styles", href: "#casual" },
+              { cls: "formal", label: "Formal", count: "36 styles", href: "#formal" },
+              { cls: "sports", label: "Sports", count: "30 styles", href: "#sports" },
             ].map((item) => (
               <a
                 key={item.cls}
@@ -1332,12 +1482,168 @@ export default function ShoesPage() {
         </div>
       </section>
 
+      {/* ── KIDS' SHOES ── */}
+      <section className="sh-section sh-kids" id="kids" aria-label="Kids' Shoes">
+        <div className="sh-container">
+
+          <div className="sh-section-header sh-reveal">
+            <div>
+              <p className="sh-section-eyebrow">03 — Kids&apos; Shoes</p>
+              <h2 className="sh-section-title">Little feet, <em>big adventures.</em></h2>
+            </div>
+            <a href="/categories/shoes/kidsshoes" className="sh-view-all">View All →</a>
+          </div>
+
+          {/* Banner */}
+          <div className="sh-kids-banner sh-reveal sh-reveal--delay-1">
+            <div className="sh-kids-banner__img">
+              <div className="sh-kids-banner__img-inner">
+                {svgPlaceholder}
+                <span>800 × 600 px</span>
+              </div>
+            </div>
+            <div className="sh-kids-banner__content">
+              <p className="sh-kids-banner__eyebrow">Spring Collection 2025</p>
+              <h3 className="sh-kids-banner__title">Shoes that<br />keep up with them.</h3>
+              <p className="sh-kids-banner__desc">
+                Durable, fun, and designed to support growing feet — from first steps to the playground.
+              </p>
+              <div className="sh-kids-banner__tags">
+                <span className="sh-kids-banner__tag">Trainers</span>
+                <span className="sh-kids-banner__tag">School</span>
+                <span className="sh-kids-banner__tag">Sandals</span>
+                <span className="sh-kids-banner__tag">Boots</span>
+                <span className="sh-kids-banner__tag">Velcro</span>
+              </div>
+              <div>
+                <a href="/categories/shoes/kidsshoes" className="sh-btn sh-btn--primary">
+                  Shop Kids&apos;
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Age Range Cards */}
+          <div className="sh-kids-age-strip sh-reveal sh-reveal--delay-2">
+            {[
+              { emoji: "👶", range: "EU 16–22", label: "Toddler",    sizes: "UK 0 – UK 5½" },
+              { emoji: "🧒", range: "EU 23–32", label: "Little Kid", sizes: "UK 6 – UK 13½" },
+              { emoji: "🧑", range: "EU 33–38", label: "Big Kid",    sizes: "UK 1 – UK 5½"  },
+            ].map((age) => (
+              <div className="sh-kids-age-card" key={age.label}>
+                <span className="sh-kids-age-card__emoji">{age.emoji}</span>
+                <div className="sh-kids-age-card__range">{age.range}</div>
+                <div className="sh-kids-age-card__label">{age.label}</div>
+                <div className="sh-kids-age-card__sizes">{age.sizes}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Filters */}
+          <div className="sh-filter-bar sh-reveal sh-reveal--delay-2" id="sh-kids-filters">
+            <div className="sh-chips" role="group">
+              {["All", "Trainers", "School", "Sandals", "Boots", "Velcro"].map((f, i) => (
+                <button
+                  key={f}
+                  className={`sh-chip${i === 0 ? " sh-chip--active" : ""}`}
+                  data-group="kids"
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+            <div className="sh-sort">
+              <label htmlFor="sh-sort-kids">Sort</label>
+              <select id="sh-sort-kids">
+                <option>Newest</option>
+                <option>Price: Low–High</option>
+                <option>Price: High–Low</option>
+                <option>Best Sellers</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Product Grid */}
+          <div className="sh-product-grid sh-reveal sh-reveal--delay-3">
+            {[
+              {
+                cat: "Trainers",
+                name: "SPARK Kids Runner",
+                price: "£58.00",
+                badge: "new",
+                sizes: ["EU 28","EU 29","EU 30","EU 31","EU 32"],
+                outSizes: [] as string[],
+              },
+              {
+                cat: "School",
+                name: "Classic Leather School",
+                price: "£52.00",
+                sizes: ["EU 30","EU 31","EU 32","EU 33","EU 34"],
+                outSizes: ["EU 32"],
+              },
+              {
+                cat: "Sandals",
+                name: "Summer Strap Sandal",
+                price: "£38.00",
+                badge: "sale",
+                saleLabel: "−15%",
+                oldPrice: "£45.00",
+                sizes: ["EU 24","EU 25","EU 26","EU 27","EU 28"],
+                outSizes: [] as string[],
+              },
+              {
+                cat: "Boots",
+                name: "Mini Chelsea Boot",
+                price: "£72.00",
+                badge: "new",
+                sizes: ["EU 26","EU 27","EU 28","EU 29","EU 30","EU 31"],
+                outSizes: [] as string[],
+              },
+            ].map((item, i) => (
+              <article className="sh-card" key={i}>
+                <div className="sh-card__img">
+                  <div className="sh-card__img-placeholder">
+                    {svgPlaceholder}
+                    <span>600 × 800 px</span>
+                  </div>
+                  {item.badge === "new"  && <span className="sh-card__badge sh-card__badge--new">New</span>}
+                  {item.badge === "sale" && <span className="sh-card__badge sh-card__badge--sale">{item.saleLabel}</span>}
+                  <div className="sh-card__wish" aria-label="Add to wishlist">♡</div>
+                </div>
+                <div className="sh-card__body">
+                  <p className="sh-card__cat">{item.cat}</p>
+                  <h3 className="sh-card__name">{item.name}</h3>
+                  <div className="sh-card__sizes">
+                    {item.sizes?.map((s) => (
+                      <span
+                        key={s}
+                        className={`sh-card__size${item.outSizes?.includes(s) ? " sh-card__size--out" : ""}`}
+                      >
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="sh-card__footer">
+                    <span className="sh-card__price">
+                      {item.oldPrice && <s>{item.oldPrice}</s>}
+                      {item.price}
+                    </span>
+                    <button className="sh-card__add" aria-label="Add to bag">+</button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
       {/* ── CASUAL ── */}
       <section className="sh-section sh-casual" id="casual" aria-label="Casual Shoes">
         <div className="sh-container">
           <div className="sh-section-header sh-reveal">
             <div>
-              <p className="sh-section-eyebrow">03 — Casual</p>
+              <p className="sh-section-eyebrow">04 — Casual</p>
               <h2 className="sh-section-title">Easy. <em>Effortless.</em></h2>
             </div>
             <a href="/categories/shoes/casualshoes" className="sh-view-all">View All →</a>
@@ -1411,7 +1717,7 @@ export default function ShoesPage() {
         <div className="sh-container">
           <div className="sh-section-header sh-reveal">
             <div>
-              <p className="sh-section-eyebrow">04 — Formal</p>
+              <p className="sh-section-eyebrow">05 — Formal</p>
               <h2 className="sh-section-title">Power in <em>every step.</em></h2>
             </div>
             <a href="/categories/shoes/formalshoes" className="sh-view-all">View All →</a>
@@ -1514,7 +1820,7 @@ export default function ShoesPage() {
         <div className="sh-container">
           <div className="sh-section-header sh-reveal">
             <div>
-              <p className="sh-section-eyebrow">05 — Sports</p>
+              <p className="sh-section-eyebrow">06 — Sports</p>
               <h2 className="sh-section-title">Push <em>further.</em></h2>
             </div>
             <a href="/categories/shoes/sportshoes" className="sh-view-all">View All →</a>
@@ -1602,4 +1908,4 @@ export default function ShoesPage() {
       </section>
     </>
   )
-      }
+}
