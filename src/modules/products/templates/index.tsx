@@ -79,29 +79,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
         {/* ── 5. DELIVERY STRIP ── */}
         <div className="dj-delivery-strip">
-          <div className="dj-delivery-item">
-            <span className="dj-delivery-icon">🇬🇧</span>
-            <div>
-              <div className="dj-delivery-title">UK Standard Delivery</div>
-              <div className="dj-delivery-sub">
-                 2–7 days shipping
-              </div>
-              <div className="dj-delivery-free">
-                Free on orders over £40
-              </div>
-            </div>
-          </div>
-
-          <div className="dj-delivery-item">
-            <span className="dj-delivery-icon">✈️</span>
-            <div>
-              <div className="dj-delivery-title">International Delivery</div>
-              <div className="dj-delivery-sub">
-                 7–14 days shipping
-              </div>
-            </div>
-          </div>
-
           <div className="dj-delivery-item dj-delivery-item--full">
             <span className="dj-delivery-icon">↩️</span>
             <div>
