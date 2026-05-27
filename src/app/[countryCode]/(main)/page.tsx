@@ -299,58 +299,6 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ======================== CAMPAIGN SPLIT ======================== */}
-      <section className="campaign-split">
-        <div className="campaign-video">
-          <div className="campaign-video-inner">
-            <div style={{textAlign:'center'}}>
-              <div className="video-play-btn" style={{margin:'0 auto 16px'}}>▶</div>
-              <p style={{fontFamily:"'Space Mono',monospace",fontSize:'.6rem',letterSpacing:'.16em',textTransform:'uppercase',color:'rgba(255,255,255,.3)'}}>
-                SS26 Campaign — Watch Now
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="campaign-text">
-          <span className="section-label">Why DJONOVA</span>
-          <h2 className="section-heading">
-            Built Different,<br/>
-            <em style={{fontStyle:'italic',color:'var(--accent)'}}>By Design.</em>
-          </h2>
-          <ul className="campaign-features">
-            <li>
-              <div className="feature-icon">🌱</div>
-              <div>
-                <strong style={{display:'block',color:'var(--ink)',fontWeight:600,marginBottom:'2px'}}>Sustainable Materials</strong>
-                Ethically sourced fabrics, recycled soles, and low-impact dyes throughout every collection.
-              </div>
-            </li>
-            <li>
-              <div className="feature-icon">✦</div>
-              <div>
-                <strong style={{display:'block',color:'var(--ink)',fontWeight:600,marginBottom:'2px'}}>Artisan Craftsmanship</strong>
-                Each piece is finished by skilled artisans with a minimum of 12-step quality control.
-              </div>
-            </li>
-            <li>
-              <div className="feature-icon">🔬</div>
-              <div>
-                <strong style={{display:'block',color:'var(--ink)',fontWeight:600,marginBottom:'2px'}}>Performance Tech</strong>
-                Our proprietary AURA cushioning system is engineered for all-day comfort without compromise.
-              </div>
-            </li>
-            <li>
-              <div className="feature-icon">♻️</div>
-              <div>
-                <strong style={{display:'block',color:'var(--ink)',fontWeight:600,marginBottom:'2px'}}>Take-Back Programme</strong>
-                Return worn DJONOVA pieces for recycling and earn double points in the Members Club.
-              </div>
-            </li>
-          </ul>
-          <a href="#" className="btn btn-primary">Explore Our Values →</a>
-        </div>
-      </section>
-
       {/* ======================== SIZE GUIDE ======================== */}
       <section className="size-guide">
         <div className="container">
@@ -585,11 +533,10 @@ export default async function Home({
           </div>
           <div className="faq-grid">
             {[
-              ['01','How long does delivery take?','Standard delivery takes 3–7 business days. Express (2 business days) and same-day dispatch (Gold Members) options are also available at checkout.'],
-              ['02','What is your return policy?','We offer a 30-day free returns policy on all unworn items in their original packaging. Simply initiate a return from your account dashboard.'],
+              ['01','How long does delivery take?','Standard delivery takes 3–7 business days. Express (2-5 business days) and same-day dispatch (Gold Members) options are also available at checkout.'],
+              ['02','What is your return policy?','We offer a 14-day free returns policy on all unworn items in their original packaging. Simply initiate a return from your account dashboard.'],
               ['03','Do DJONOVA shoes run true to size?','Our footwear runs true to European sizing. We recommend checking our interactive Size Guide for accurate measurements across EU, US, and UK sizes.'],
               ['04','How do I use the promo code DJNV20?','Enter DJNV20 at checkout to receive 20% off your first order. The code applies to full-price items and is valid for new customers only.'],
-              ['05','Are your materials ethically sourced?','Yes. 100% of our materials are ethically sourced and we partner only with certified suppliers. Our Take-Back Programme also lets you recycle old DJONOVA pieces.'],
               ['06','Can I track my order?','Yes — once your order ships, you\'ll receive a tracking link via email and SMS. You can also track orders anytime from your DJONOVA account page.'],
               ['07','How does the Members Club work?','Sign up for free (Bronze tier) and earn 1 point per £1 spent. Redeem points for discounts, and unlock Silver and Gold as your total spend grows.'],
               ['08','Do you ship internationally?','We ship to 18+ countries worldwide. International orders typically arrive within 7–14 business days. Duties and taxes may apply depending on your location.'],
@@ -616,7 +563,7 @@ export default async function Home({
             </div>
             <br/>
             <a href="/gb/store" className="btn btn-light">Shop Now and Save →</a>
-            <p className="promo-expiry">Valid on full-price items · New customers only · Expires 31 Dec 2026</p>
+            <p className="promo-expiry">Valid on full-price items · New customers only · Expires 31 Dec 2027</p>
           </div>
         </div>
       </section>
