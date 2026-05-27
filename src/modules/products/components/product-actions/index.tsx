@@ -1,5 +1,6 @@
 "use client"
 
+import DeliveryInfo from "@/components/DeliveryInfo"
 import { addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
