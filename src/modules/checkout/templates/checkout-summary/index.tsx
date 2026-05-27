@@ -1,9 +1,9 @@
 import { Heading } from "@medusajs/ui"
-
 import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
+import DeliveryInfo from "../../../../components/DeliveryInfo"   // ← Correct path for checkout
 
 const CheckoutSummary = ({ cart }: { cart: any }) => {
   return (
@@ -22,6 +22,11 @@ const CheckoutSummary = ({ cart }: { cart: any }) => {
         <div className="my-6">
           <DiscountCode cart={cart} />
         </div>
+
+        <Divider className="my-6" />
+        {/* ── DELIVERY INFORMATION ── */}
+        <DeliveryInfo />
+
       </div>
     </div>
   )
