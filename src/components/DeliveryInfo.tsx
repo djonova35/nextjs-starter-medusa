@@ -25,7 +25,6 @@ function formatDate(date: Date): string {
 }
 
 function getUKNow(): Date {
-  // Always calculated from UK timezone
   const ukTime = new Date(
     new Date().toLocaleString("en-US", { timeZone: "Europe/London" })
   )
@@ -84,7 +83,6 @@ export default function DeliveryInfo() {
     setSelected(chosen)
 
     // ── REDIRECT TO CORRECT COUNTRY URL ──
-    // e.g. /gb/products/my-product → /lu/products/my-product
     const segments = pathname.split("/")
     segments[1] = chosen.code
     const newPath = segments.join("/")
@@ -146,55 +144,132 @@ export default function DeliveryInfo() {
         /* ── DELIVERY STRIP ── */
         .dj-delivery-strip {
           display: flex;
-          align-items: stretch;
-          gap: 0;
+          flex-direction: column;
           background: #fff;
           border: 1px solid #E2DCF5;
           border-radius: 16px;
           overflow: hidden;
         }
-        .dj-delivery-item {
+
+        /* ── EACH ROW ── */
+        .dj-delivery-row {
           display: flex;
           align-items: flex-start;
-          gap: 12px;
-          padding: 18px 20px;
-          flex: 1;
+          gap: 14px;
+          padding: 16px 20px;
+          border-bottom: 1px solid #E2DCF5;
+          transition: background 0.15s ease;
         }
-        .dj-delivery-item:first-child {
-          border-right: 1px solid #E2DCF5;
+        .dj-delivery-row:last-child {
+          border-bottom: none;
         }
+        .dj-delivery-row:hover {
+          background: #F4F2FA;
+        }
+
         .dj-delivery-icon {
-          font-size: 22px;
+          font-size: 20px;
           flex-shrink: 0;
           margin-top: 2px;
+          width: 28px;
+          text-align: center;
         }
+
         .dj-delivery-text {
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 3px;
+          flex: 1;
         }
+
+        .dj-delivery-title-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
         .dj-delivery-title {
           font-weight: 600;
           font-size: 13px;
           color: #18162B;
         }
+
+        /* ── GOLD BADGE ── */
+        .dj-gold-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 3px 8px;
+          border-radius: 999px;
+          background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+          color: #fff;
+          white-space: nowrap;
+        }
+        .dj-gold-badge-icon {
+          font-size: 10px;
+        }
+
         .dj-delivery-est {
           font-size: 11px;
           color: #8A82A8;
           letter-spacing: 0.02em;
         }
+
+        /* ── FREE TAG ── */
         .dj-delivery-free {
           font-size: 11px;
           color: #22c55e;
+          font-weight: 600;
+        }
+
+        /* ── GOLD NOTE ── */
+        .dj-gold-note {
+          font-size: 10px;
+          color: #D97706;
           font-weight: 500;
         }
+
+        /* ── GOLD PROMO BANNER ── */
+        .dj-gold-promo {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 16px;
+          background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+          border: 1px solid #F59E0B;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+          text-decoration: none;
+        }
+        .dj-gold-promo:hover { opacity: 0.85; }
+        .dj-gold-promo-icon { font-size: 20px; flex-shrink: 0; }
+        .dj-gold-promo-text { display: flex; flex-direction: column; gap: 2px; }
+        .dj-gold-promo-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: #92400E;
+          letter-spacing: 0.02em;
+        }
+        .dj-gold-promo-sub {
+          font-size: 11px;
+          color: #B45309;
+        }
+        .dj-gold-promo-arrow {
+          margin-left: auto;
+          font-size: 14px;
+          color: #D97706;
+          flex-shrink: 0;
+        }
+
         @media (max-width: 640px) {
-          .dj-delivery-strip { flex-direction: column; }
-          .dj-delivery-item:first-child {
-            border-right: none;
-            border-bottom: 1px solid #E2DCF5;
-          }
           .dj-country-selector { width: 100%; box-sizing: border-box; }
+          .dj-delivery-row { padding: 14px 16px; }
         }
       `}</style>
 
@@ -217,30 +292,37 @@ export default function DeliveryInfo() {
           </select>
         </div>
 
-        {/* ── DELIVERY DATES ── */}
+        {/* ── DELIVERY OPTIONS ── */}
         <div className="dj-delivery-strip">
+
           {isUK ? (
             <>
               {/* UK Standard */}
-              <div className="dj-delivery-item">
+              <div className="dj-delivery-row">
                 <div className="dj-delivery-icon">🇬🇧</div>
                 <div className="dj-delivery-text">
-                  <span className="dj-delivery-title">UK Standard Delivery</span>
-                  <span className="dj-delivery-est">
-                    {getDeliveryDates(5, 9)}
-                  </span>
-                  <span className="dj-delivery-free">
-                    Free on orders over £40
-                  </span>
+                  <div className="dj-delivery-title-row">
+                    <span className="dj-delivery-title">UK Standard Delivery</span>
+                  </div>
+                  <span className="dj-delivery-est">{getDeliveryDates(5, 9)}</span>
+                  <span className="dj-delivery-free">Free on orders over £40</span>
                 </div>
               </div>
+
               {/* UK Express */}
-              <div className="dj-delivery-item">
+              <div className="dj-delivery-row">
                 <div className="dj-delivery-icon">⚡</div>
                 <div className="dj-delivery-text">
-                  <span className="dj-delivery-title">UK Express Delivery</span>
-                  <span className="dj-delivery-est">
-                    {getDeliveryDates(2, 3)}
+                  <div className="dj-delivery-title-row">
+                    <span className="dj-delivery-title">UK Express Delivery</span>
+                    <span className="dj-gold-badge">
+                      <span className="dj-gold-badge-icon">👑</span>
+                      Gold Members
+                    </span>
+                  </div>
+                  <span className="dj-delivery-est">{getDeliveryDates(4, 8)}</span>
+                  <span className="dj-gold-note">
+                    Free for Gold Members &amp; Gold Access · Others pay standard rate
                   </span>
                 </div>
               </div>
@@ -248,32 +330,49 @@ export default function DeliveryInfo() {
           ) : (
             <>
               {/* International Standard */}
-              <div className="dj-delivery-item">
+              <div className="dj-delivery-row">
                 <div className="dj-delivery-icon">✈️</div>
                 <div className="dj-delivery-text">
-                  <span className="dj-delivery-title">
-                    International Standard
-                  </span>
-                  <span className="dj-delivery-est">
-                    {getDeliveryDates(7, 15)}
-                  </span>
+                  <div className="dj-delivery-title-row">
+                    <span className="dj-delivery-title">International Standard</span>
+                  </div>
+                  <span className="dj-delivery-est">{getDeliveryDates(7, 15)}</span>
                 </div>
               </div>
+
               {/* International Express */}
-              <div className="dj-delivery-item">
+              <div className="dj-delivery-row">
                 <div className="dj-delivery-icon">📦</div>
                 <div className="dj-delivery-text">
-                  <span className="dj-delivery-title">
-                    International Express
-                  </span>
-                  <span className="dj-delivery-est">
-                    {getDeliveryDates(3, 5)}
+                  <div className="dj-delivery-title-row">
+                    <span className="dj-delivery-title">International Express</span>
+                    <span className="dj-gold-badge">
+                      <span className="dj-gold-badge-icon">👑</span>
+                      Gold Members
+                    </span>
+                  </div>
+                  <span className="dj-delivery-est">{getDeliveryDates(5, 12)}</span>
+                  <span className="dj-gold-note">
+                    Free for Gold Members &amp; Gold Access · Others pay standard rate
                   </span>
                 </div>
               </div>
             </>
           )}
+
         </div>
+
+        {/* ── GOLD PROMO BANNER ── */}
+        <a href="/member-lounge" className="dj-gold-promo">
+          <span className="dj-gold-promo-icon">👑</span>
+          <div className="dj-gold-promo-text">
+            <span className="dj-gold-promo-title">Unlock Free Express Delivery</span>
+            <span className="dj-gold-promo-sub">
+              Join Gold Membership or get Gold Access in the Member Lounge
+            </span>
+          </div>
+          <span className="dj-gold-promo-arrow">→</span>
+        </a>
 
       </div>
     </>
