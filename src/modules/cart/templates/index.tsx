@@ -4,6 +4,7 @@ import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
 import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
+import DeliveryInfo from "../../../components/DeliveryInfo"   // ← Correct path for cart
 
 const CartTemplate = ({
   cart,
@@ -25,6 +26,10 @@ const CartTemplate = ({
                 </>
               )}
               <ItemsTemplate cart={cart} />
+
+              {/* ── DELIVERY INFORMATION ── */}
+              <DeliveryInfo />
+
             </div>
             <div className="relative">
               <div className="flex flex-col gap-y-8 sticky top-12">
