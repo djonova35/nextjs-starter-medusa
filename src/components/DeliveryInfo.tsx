@@ -1,7 +1,8 @@
 "use client"
 
-import { useRouter, useParams, usePathname } from "next/navigation"
-import { useState } from "react"
+import { useParams, usePathname } from "next/navigation"
+import { useState, useTransition } from "react"
+import { updateRegion } from "@lib/data/cart"
 
 // ── DELIVERY DATE CALCULATOR ──
 function getBusinessDays(startDate: Date, daysToAdd: number): Date {
@@ -67,7 +68,6 @@ const COUNTRIES = [
 ]
 
 export default function DeliveryInfo() {
-  const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
   const currentCountryCode = (params?.countryCode as string) || "gb"
@@ -76,17 +76,23 @@ export default function DeliveryInfo() {
     COUNTRIES.find((c) => c.code === currentCountryCode) || COUNTRIES[0]
 
   const [selected, setSelected] = useState(currentCountry)
+  const [isPending, startTransition] = useTransition()
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const chosen = COUNTRIES.find((c) => c.code === e.target.value)
     if (!chosen) return
     setSelected(chosen)
 
-    // ── REDIRECT TO CORRECT COUNTRY URL ──
+    // ── STRIP COUNTRY CODE FROM PATH ──
+    // pathname is like "/gb/checkout" — updateRegion re-adds the country code
     const segments = pathname.split("/")
-    segments[1] = chosen.code
-    const newPath = segments.join("/")
-    router.push(newPath)
+    segments.splice(1, 1) // remove country code segment
+    const pathWithoutCountry = segments.join("/") || "/"
+
+    // ── UPDATE CART REGION + REDIRECT ──
+    startTransition(async () => {
+      await updateRegion(chosen.code, pathWithoutCountry)
+    })
   }
 
   const isUK = selected.isUK
@@ -140,6 +146,25 @@ export default function DeliveryInfo() {
           background-size: 10px;
         }
         .dj-country-select:focus { outline: none; }
+        .dj-country-select:disabled {
+          opacity: 0.6;
+          cursor: wait;
+        }
+
+        /* ── LOADING INDICATOR ── */
+        .dj-loading-dot {
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #8A82A8;
+          margin-left: 6px;
+          animation: dj-pulse 1s infinite ease-in-out;
+        }
+        @keyframes dj-pulse {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
 
         /* ── DELIVERY STRIP ── */
         .dj-delivery-strip {
@@ -283,6 +308,7 @@ export default function DeliveryInfo() {
             className="dj-country-select"
             value={selected.code}
             onChange={handleCountryChange}
+            disabled={isPending}
           >
             {COUNTRIES.map((c) => (
               <option key={c.code} value={c.code}>
@@ -290,6 +316,7 @@ export default function DeliveryInfo() {
               </option>
             ))}
           </select>
+          {isPending && <span className="dj-loading-dot" />}
         </div>
 
         {/* ── DELIVERY OPTIONS ── */}
