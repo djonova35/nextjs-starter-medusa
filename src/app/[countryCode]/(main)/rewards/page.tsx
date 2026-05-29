@@ -1,5 +1,6 @@
 "use client"
 
+import LiveRewardsPanel from "@modules/rewards/components/live-rewards-panel"
 import { useMemo, useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -416,6 +417,8 @@ export default function RewardsPage() {
           ))}
         </div>
       </div>
+
+      <LiveRewardsPanel currency={currency} />
 
       <section id="rewards-calculator" className="py-16 md:py-24">
         <div className="container">
