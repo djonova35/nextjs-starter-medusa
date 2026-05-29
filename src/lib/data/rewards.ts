@@ -54,32 +54,10 @@ export type RedeemVoucherResponse = {
   remaining_points: number
 }
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
-const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-
-const createHeaders = (withJson = false) => {
-  const headers = new Headers()
-
-  if (PUBLISHABLE_KEY) {
-    headers.set("x-publishable-api-key", PUBLISHABLE_KEY)
-  }
-
-  if (withJson) {
-    headers.set("Content-Type", "application/json")
-  }
-
-  return headers
-}
-
 export async function getMyRewards(): Promise<RewardsData | null> {
-  if (!BACKEND_URL) {
-    throw new Error("Missing NEXT_PUBLIC_MEDUSA_BACKEND_URL")
-  }
-
-  const res = await fetch(`${BACKEND_URL}/store/customers/me/rewards`, {
+  const res = await fetch("/api/rewards/me", {
     method: "GET",
     credentials: "include",
-    headers: createHeaders(false),
     cache: "no-store",
   })
 
@@ -100,22 +78,17 @@ export async function redeemVoucherReward(input: {
   voucherLevel: 1 | 2 | 3
   currencyCode: RewardsCurrencyCode
 }): Promise<RedeemVoucherResponse> {
-  if (!BACKEND_URL) {
-    throw new Error("Missing NEXT_PUBLIC_MEDUSA_BACKEND_URL")
-  }
-
-  const res = await fetch(
-    `${BACKEND_URL}/store/customers/me/rewards/redeem-voucher`,
-    {
-      method: "POST",
-      credentials: "include",
-      headers: createHeaders(true),
-      body: JSON.stringify({
-        voucher_level: input.voucherLevel,
-        currency_code: input.currencyCode,
-      }),
-    }
-  )
+  const res = await fetch("/api/rewards/redeem-voucher", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      voucher_level: input.voucherLevel,
+      currency_code: input.currencyCode,
+    }),
+  })
 
   const body = await safeJson(res)
 
