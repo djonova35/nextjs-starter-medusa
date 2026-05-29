@@ -14,12 +14,10 @@ type Variant = {
   calculated_price?: {
     calculated_amount: number
     original_amount: number
-    currency_code?: string
   }
   prices?: {
     amount: number
     currency_code: string
-    region_id?: string
   }[]
 }
 
@@ -31,11 +29,48 @@ type Product = {
   variants?: Variant[]
 }
 
+// Maps currency code to symbol
+function getCurrencySymbol(currencyCode: string): string {
+  const symbols: Record<string, string> = {
+    gbp: "£",
+    eur: "€",
+    usd: "$",
+    cad: "CA$",
+    aud: "A$",
+    jpy: "¥",
+    chf: "CHF",
+    sek: "kr",
+    nok: "kr",
+    dkk: "kr",
+    pln: "zł",
+    czk: "Kč",
+    huf: "Ft",
+    ron: "lei",
+    bgn: "лв",
+    hrk: "kn",
+    nzd: "NZ$",
+    sgd: "S$",
+    hkd: "HK$",
+    mxn: "MX$",
+    brl: "R$",
+    zar: "R",
+    aed: "د.إ",
+    sar: "﷼",
+    inr: "₹",
+    try: "₺",
+    rub: "₽",
+    krw: "₩",
+    cny: "¥",
+  }
+  return symbols[currencyCode.toLowerCase()] ?? currencyCode.toUpperCase()
+}
+
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist } = useWishlist()
   const [mounted, setMounted] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [regionId, setRegionId] = useState<string | null>(null)
+  const [currencyCode, setCurrencyCode] = useState<string>("gbp")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const params = useParams()
@@ -72,20 +107,9 @@ export default function WishlistPage() {
           return
         }
 
-        // Debug: log full variant data in browser console
-        console.log("=== WISHLIST PRODUCTS ===")
-        data.products?.forEach((p: any) => {
-          console.log("Product:", p.title)
-          p.variants?.forEach((v: any) => {
-            console.log("  Variant:", v.title, {
-              calculated_price: v.calculated_price,
-              prices: v.prices,
-            })
-          })
-        })
-
         setProducts(data.products || [])
         setRegionId(data.region_id || null)
+        setCurrencyCode(data.currency_code || "gbp")
       } catch (err) {
         setError("Could not load saved products")
       } finally {
@@ -201,21 +225,20 @@ export default function WishlistPage() {
         </div>
       )}
 
-      {/* PRODUCT GRID - 3 columns desktop, 2 mobile */}
+      {/* PRODUCT GRID */}
       {!loading && !error && products.length > 0 && (
         <div style={{
           maxWidth: "1200px",
           margin: "0 auto",
           padding: "40px 20px",
         }}>
-          {/* Using CSS classes for responsive grid */}
           <div className="wishlist-grid">
             {products.map((product) => (
               <WishlistCard
                 key={product.id}
                 product={product}
-                regionId={regionId}
                 countryCode={countryCode}
+                currencyCode={currencyCode}
                 onRemove={() => removeFromWishlist(product.id)}
               />
             ))}
@@ -235,14 +258,12 @@ export default function WishlistPage() {
         </div>
       )}
 
-      {/* Responsive grid styles */}
       <style>{`
         .wishlist-grid {
           display: grid;
           gap: 24px;
           grid-template-columns: repeat(2, 1fr);
         }
-
         @media (min-width: 768px) {
           .wishlist-grid {
             grid-template-columns: repeat(3, 1fr);
@@ -256,13 +277,13 @@ export default function WishlistPage() {
 
 function WishlistCard({
   product,
-  regionId,
   countryCode,
+  currencyCode,
   onRemove,
 }: {
   product: Product
-  regionId: string | null
   countryCode: string
+  currencyCode: string
   onRemove: () => void
 }) {
   const [selectedVariantId, setSelectedVariantId] = useState<string>("")
@@ -274,18 +295,11 @@ function WishlistCard({
   const selectedVariant = variants.find((v) => v.id === selectedVariantId)
   const displayVariant = selectedVariant || variants[0]
 
-  // calculated_price comes in minor units (pence)
-  // but sometimes Medusa returns it already divided - we need to check
   const calculatedAmount =
     displayVariant?.calculated_price?.calculated_amount
   const originalAmount =
     displayVariant?.calculated_price?.original_amount
-
-  // Raw prices array as fallback
-  const rawPrices = displayVariant?.prices || []
-  const fallbackPrice = rawPrices[0]?.amount
-
-  // Use calculated first, fallback to raw prices
+  const fallbackPrice = displayVariant?.prices?.[0]?.amount
   const priceToShow = calculatedAmount ?? fallbackPrice
 
   const hasDiscount =
@@ -293,12 +307,11 @@ function WishlistCard({
     calculatedAmount &&
     calculatedAmount < originalAmount
 
-  // Smart format - if amount looks already divided (small number) don't divide again
-  const formatPrice = (amount: number) => {
-    // If amount is less than 100, it might already be in major units
-    // Medusa v2 always returns minor units (pence) so divide by 100
-    return `£${amount.toFixed(2)}`
-  }
+  // Use correct symbol based on currency from region
+  const symbol = getCurrencySymbol(currencyCode)
+
+  const formatPrice = (amount: number) =>
+    `${symbol}${amount.toFixed(2)}`
 
   const handleAddToBag = async () => {
     if (!selectedVariantId) {
