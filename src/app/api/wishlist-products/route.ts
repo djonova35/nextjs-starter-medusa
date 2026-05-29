@@ -20,12 +20,13 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Step 1: Get region by country code
+    // Get region by country code
     const regionRes = await fetch(`${backendUrl}/store/regions`, {
       headers: { "x-publishable-api-key": publishableKey },
     })
 
     let regionId: string | null = null
+    let currencyCode: string = "gbp"
 
     if (regionRes.ok) {
       const regionData = await regionRes.json()
@@ -37,18 +38,21 @@ export async function GET(req: NextRequest) {
         )
         if (match) {
           regionId = region.id
+          currencyCode = region.currency_code || "gbp"
           break
         }
       }
 
+      // Fallback to first region
       if (!regionId && regions.length > 0) {
         regionId = regions[0].id
+        currencyCode = regions[0].currency_code || "gbp"
       }
 
-      console.log("Country:", countryCode, "| Region ID:", regionId)
+      console.log("Country:", countryCode, "| Region:", regionId, "| Currency:", currencyCode)
     }
 
-    // Step 2: Fetch products with region_id
+    // Fetch products with region_id
     const params = new URLSearchParams()
     ids.forEach((id) => params.append("id", id))
     if (regionId) params.append("region_id", regionId)
@@ -70,21 +74,10 @@ export async function GET(req: NextRequest) {
 
     const data = await res.json()
 
-    // Step 3: Log what prices actually came back so we can debug
-    console.log("=== PRICE DEBUG ===")
-    data.products?.forEach((p: any) => {
-      console.log("Product:", p.title)
-      p.variants?.forEach((v: any) => {
-        console.log("  Variant:", v.title)
-        console.log("  calculated_price:", JSON.stringify(v.calculated_price))
-        console.log("  prices:", JSON.stringify(v.prices))
-      })
-    })
-    console.log("===================")
-
     return NextResponse.json({
       ...data,
       region_id: regionId,
+      currency_code: currencyCode,
     })
   } catch (err: any) {
     console.error("Wishlist fetch error:", err)
