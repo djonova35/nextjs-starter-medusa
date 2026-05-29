@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { getAuthHeaders } from "@lib/data/cookies"
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
@@ -11,8 +12,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const cookie = req.headers.get("cookie")
-  const authorization = req.headers.get("authorization")
+  const authHeaders = await getAuthHeaders()
   const body = await req.text()
 
   const res = await fetch(
@@ -24,8 +24,7 @@ export async function POST(req: NextRequest) {
         ...(PUBLISHABLE_KEY
           ? { "x-publishable-api-key": PUBLISHABLE_KEY }
           : {}),
-        ...(cookie ? { cookie } : {}),
-        ...(authorization ? { authorization } : {}),
+        ...authHeaders,
       },
       body,
       cache: "no-store",
