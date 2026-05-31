@@ -69,28 +69,27 @@ export default async function Home({
 </div>
       </section>
 
-     {/* ======================== CAMPAIGN GALLERY STRIP ======================== */}
-
+   {/* ======================== CAMPAIGN GALLERY STRIP ======================== */}
 <section className="campaign-gallery-strip">
   <div className="container">
     <div className="campaign-gallery-header fade-up">
       <span className="section-label">SS26 Visual Diary</span>
 
       <h2 className="campaign-gallery-title">
-        Crafted for the city, styled for the future.
+        A closer look at the new season.
       </h2>
 
       <p className="campaign-gallery-desc">
-        A closer look at the textures, silhouettes, and everyday moments behind
-        the DJONOVA Spring / Summer 2026 collection.
+        Clean silhouettes, future footwear, and everyday essentials designed for
+        movement, comfort, and presence.
       </p>
     </div>
 
     <div className="campaign-gallery-grid">
-      <a href="/gb/store" className="campaign-gallery-card card-tall fade-up fade-up-1">
+      <a href="/gb/store" className="campaign-gallery-card fade-up fade-up-1">
         <img
           src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
-          alt="DJONOVA SS26 campaign look"
+          alt="DJONOVA SS26 footwear"
         />
 
         <div className="campaign-card-content">
@@ -99,10 +98,10 @@ export default async function Home({
         </div>
       </a>
 
-      <a href="/gb/store" className="campaign-gallery-card card-wide fade-up fade-up-2">
+      <a href="/gb/store" className="campaign-gallery-card fade-up fade-up-2">
         <img
           src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
-          alt="DJONOVA SS26 lifestyle detail"
+          alt="DJONOVA SS26 streetwear"
         />
 
         <div className="campaign-card-content">
@@ -111,10 +110,10 @@ export default async function Home({
         </div>
       </a>
 
-      <a href="/gb/store" className="campaign-gallery-card card-small fade-up fade-up-3">
+      <a href="/gb/store" className="campaign-gallery-card fade-up fade-up-3">
         <img
           src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
-          alt="DJONOVA SS26 product detail"
+          alt="DJONOVA SS26 daily essentials"
         />
 
         <div className="campaign-card-content">
@@ -150,27 +149,27 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ======================== EDITORIAL IMAGE SPLIT ======================== */}
+     {/* ======================== EDITORIAL IMAGE SPLIT ======================== */}
 <section className="editorial-split">
   <div className="container">
     <div className="editorial-grid">
       <div className="editorial-copy fade-up fade-up-1">
-        <span className="section-label">Built for movement</span>
+        <span className="section-label">Designed for everyday movement</span>
 
         <h2 className="section-heading">
-          Everyday pieces with a{" "}
+          Soft structure, sharp details,{" "}
           <em style={{ fontStyle: "italic", color: "var(--accent)" }}>
-            luxury edge
+            made to stand out.
           </em>
         </h2>
 
         <p className="editorial-text">
-          From statement footwear to essential layers, DJONOVA is designed for
-          people who move through the city with confidence, comfort, and intent.
+          DJONOVA brings together footwear, apparel, and essentials with a clean
+          luxury feel — pieces that work from daily wear to statement styling.
         </p>
 
         <a href="/gb/store" className="btn btn-primary">
-          Explore New Arrivals ↗
+          Shop New Arrivals ↗
         </a>
       </div>
 
@@ -192,7 +191,7 @@ export default async function Home({
     </div>
   </div>
 </section>
-
+      
       {/* ======================== CATEGORIES ======================== */}
       <section className="categories">
         <div className="container">
