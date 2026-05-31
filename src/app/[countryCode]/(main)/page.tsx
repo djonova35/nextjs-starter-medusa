@@ -69,6 +69,17 @@ export default async function Home({
 </div>
       </section>
 
+      {/* ======================== VIDEO HERO ======================== */}
+      <section className="video-hero">
+        <div className="video-hero-bg"></div>
+        <div className="video-hero-content">
+          <p className="video-hero-label">SS26 Campaign Film</p>
+          <div className="video-play-btn">▶</div>
+          <h2 className="video-hero-title">The Art of Motion</h2>
+          <p className="video-hero-sub">A film about craft, movement, and the spaces between steps.</p>
+        </div>
+      </section>
+
       {/* ======================== STATS BAR ======================== */}
       <section className="stats-bar">
         <div className="container">
@@ -90,17 +101,6 @@ export default async function Home({
               <div className="stat-label">Tracked & Secure Delivery</div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ======================== VIDEO HERO ======================== */}
-      <section className="video-hero">
-        <div className="video-hero-bg"></div>
-        <div className="video-hero-content">
-          <p className="video-hero-label">SS26 Campaign Film</p>
-          <div className="video-play-btn">▶</div>
-          <h2 className="video-hero-title">The Art of Motion</h2>
-          <p className="video-hero-sub">A film about craft, movement, and the spaces between steps.</p>
         </div>
       </section>
 
