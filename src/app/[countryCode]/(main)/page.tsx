@@ -69,38 +69,63 @@ export default async function Home({
 </div>
       </section>
 
-      {/* ======================== CAMPAIGN IMAGE HERO ======================== */}
-<section className="campaign-image-hero">
-  <div
-    className="campaign-image-bg"
-    style={{
-      backgroundImage:
-        "linear-gradient(120deg, rgba(0,0,0,.72), rgba(0,0,0,.25), rgba(0,0,0,.7)), url('https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png')",
-    }}
-  />
+     {/* ======================== CAMPAIGN GALLERY STRIP ======================== */}
 
-  <div className="campaign-image-content">
-    <p className="campaign-label">SS26 Campaign</p>
+<section className="campaign-gallery-strip">
+  <div className="container">
+    <div className="campaign-gallery-header fade-up">
+      <span className="section-label">SS26 Visual Diary</span>
 
-    <h2 className="campaign-title">
-      The Art of <em>Motion</em>
-    </h2>
+      <h2 className="campaign-gallery-title">
+        Crafted for the city, styled for the future.
+      </h2>
 
-    <p className="campaign-sub">
-      A visual story of craft, movement, and future-facing everyday luxury.
-    </p>
+      <p className="campaign-gallery-desc">
+        A closer look at the textures, silhouettes, and everyday moments behind
+        the DJONOVA Spring / Summer 2026 collection.
+      </p>
+    </div>
 
-    <div className="campaign-actions">
-      <a href="/gb/store" className="btn btn-primary">
-        Shop the Collection ↗
+    <div className="campaign-gallery-grid">
+      <a href="/gb/store" className="campaign-gallery-card card-tall fade-up fade-up-1">
+        <img
+          src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
+          alt="DJONOVA SS26 campaign look"
+        />
+
+        <div className="campaign-card-content">
+          <span>01</span>
+          <strong>Future Footwear</strong>
+        </div>
       </a>
-      <a href="#lookbook" className="btn btn-outline light">
-        View Lookbook
+
+      <a href="/gb/store" className="campaign-gallery-card card-wide fade-up fade-up-2">
+        <img
+          src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
+          alt="DJONOVA SS26 lifestyle detail"
+        />
+
+        <div className="campaign-card-content">
+          <span>02</span>
+          <strong>Street Luxury</strong>
+        </div>
+      </a>
+
+      <a href="/gb/store" className="campaign-gallery-card card-small fade-up fade-up-3">
+        <img
+          src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
+          alt="DJONOVA SS26 product detail"
+        />
+
+        <div className="campaign-card-content">
+          <span>03</span>
+          <strong>Daily Essentials</strong>
+        </div>
       </a>
     </div>
   </div>
 </section>
-
+      
       {/* ======================== STATS BAR ======================== */}
       <section className="stats-bar">
         <div className="container">
