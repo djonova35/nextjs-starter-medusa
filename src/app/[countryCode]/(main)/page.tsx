@@ -69,16 +69,37 @@ export default async function Home({
 </div>
       </section>
 
-      {/* ======================== VIDEO HERO ======================== */}
-      <section className="video-hero">
-        <div className="video-hero-bg"></div>
-        <div className="video-hero-content">
-          <p className="video-hero-label">SS26 Campaign Film</p>
-          <div className="video-play-btn">▶</div>
-          <h2 className="video-hero-title">The Art of Motion</h2>
-          <p className="video-hero-sub">A film about craft, movement, and the spaces between steps.</p>
-        </div>
-      </section>
+      {/* ======================== CAMPAIGN IMAGE HERO ======================== */}
+<section className="campaign-image-hero">
+  <div
+    className="campaign-image-bg"
+    style={{
+      backgroundImage:
+        "linear-gradient(120deg, rgba(0,0,0,.72), rgba(0,0,0,.25), rgba(0,0,0,.7)), url('https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png')",
+    }}
+  />
+
+  <div className="campaign-image-content">
+    <p className="campaign-label">SS26 Campaign</p>
+
+    <h2 className="campaign-title">
+      The Art of <em>Motion</em>
+    </h2>
+
+    <p className="campaign-sub">
+      A visual story of craft, movement, and future-facing everyday luxury.
+    </p>
+
+    <div className="campaign-actions">
+      <a href="/gb/store" className="btn btn-primary">
+        Shop the Collection ↗
+      </a>
+      <a href="#lookbook" className="btn btn-outline light">
+        View Lookbook
+      </a>
+    </div>
+  </div>
+</section>
 
       {/* ======================== STATS BAR ======================== */}
       <section className="stats-bar">
@@ -103,6 +124,49 @@ export default async function Home({
           </div>
         </div>
       </section>
+
+      {/* ======================== EDITORIAL IMAGE SPLIT ======================== */}
+<section className="editorial-split">
+  <div className="container">
+    <div className="editorial-grid">
+      <div className="editorial-copy fade-up fade-up-1">
+        <span className="section-label">Built for movement</span>
+
+        <h2 className="section-heading">
+          Everyday pieces with a{" "}
+          <em style={{ fontStyle: "italic", color: "var(--accent)" }}>
+            luxury edge
+          </em>
+        </h2>
+
+        <p className="editorial-text">
+          From statement footwear to essential layers, DJONOVA is designed for
+          people who move through the city with confidence, comfort, and intent.
+        </p>
+
+        <a href="/gb/store" className="btn btn-primary">
+          Explore New Arrivals ↗
+        </a>
+      </div>
+
+      <div className="editorial-images fade-up fade-up-2">
+        <div className="editorial-img-card editorial-img-large">
+          <img
+            src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
+            alt="DJONOVA editorial look"
+          />
+        </div>
+
+        <div className="editorial-img-card editorial-img-small">
+          <img
+            src="https://res.cloudinary.com/dhrzk7wrs/image/upload/q_auto/f_auto/v1779807495/ChatGPT_Image_May_26_2026_03_57_46_PM_c6izks.png"
+            alt="DJONOVA product detail"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ======================== CATEGORIES ======================== */}
       <section className="categories">
@@ -166,89 +230,6 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ======================== NEW ARRIVALS ======================== */}
-      <NewArrivals countryCode={countryCode} />
-
-      {/* ======================== GENDER SPLIT ======================== */}
-      <section className="gender-split">
-        <div className="gender-panel gender-mens">
-          <div className="gender-panel-bg"></div>
-          <div className="gender-panel-overlay"></div>
-          <span className="gender-panel-tag">68 Pieces</span>
-          <div className="gender-panel-content">
-            <div className="gender-icon">🧔</div>
-            <h3 className="gender-title">Men&apos;s</h3>
-            <p className="gender-sub">Sharp. Refined. Effortless.</p>
-            <a href="/gb/store" className="btn btn-outline">Shop Men&apos;s</a>
-          </div>
-        </div>
-        <div className="gender-panel gender-womens">
-          <div className="gender-panel-bg"></div>
-          <div className="gender-panel-overlay"></div>
-          <span className="gender-panel-tag">84 Pieces</span>
-          <div className="gender-panel-content">
-            <div className="gender-icon">👩</div>
-            <h3 className="gender-title">Women&apos;s</h3>
-            <p className="gender-sub">Bold. Fluid. Expressive.</p>
-            <a href="/gb/store" className="btn btn-outline">Shop Women&apos;s</a>
-          </div>
-        </div>
-        <div className="gender-panel gender-kids">
-          <div className="gender-panel-bg"></div>
-          <div className="gender-panel-overlay"></div>
-          <span className="gender-panel-tag">42 Styles</span>
-          <div className="gender-panel-content">
-            <div className="gender-icon">🧒</div>
-            <h3 className="gender-title">Kids &amp; Toddlers</h3>
-            <p className="gender-sub">Playful. Durable. Bright.</p>
-            <a href="/gb/store" className="btn btn-outline">Shop Kids</a>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================== BRAND STORY ======================== */}
-      <section className="brand-story">
-        <div className="brand-story-left fade-up">
-          <span className="section-label">Our Story</span>
-          <h2 className="section-heading">
-            Rooted in<br/>
-            <em style={{fontStyle:'italic',color:'var(--accent)'}}>Craft,</em><br/>
-            Built for Now.
-          </h2>
-          <p className="brand-story-text">
-            DJONOVA was born from a simple belief: that what you wear should feel as deliberate
-            as every move you make. We design footwear, clothing, and tech essentials that honour
-            precision without sacrificing comfort — for the ones who live at the intersection
-            of culture and craft.
-          </p>
-          <a href="#" className="btn btn-accent-outline">Read Our Story →</a>
-          <div className="brand-story-stats">
-            <div className="story-stat">
-              <div className="story-stat-num">2019</div>
-              <div className="story-stat-label">Founded</div>
-            </div>
-            <div className="story-stat">
-              <div className="story-stat-num">18+</div>
-              <div className="story-stat-label">Countries</div>
-            </div>
-            <div className="story-stat">
-              <div className="story-stat-num">100%</div>
-              <div className="story-stat-label">Ethically Sourced</div>
-            </div>
-            <div className="story-stat">
-              <div className="story-stat-num">40K</div>
-              <div className="story-stat-label">Community Members</div>
-            </div>
-          </div>
-        </div>
-        <div className="brand-story-right">
-          <div className="story-video-placeholder">
-            <div className="video-play-btn" style={{margin:'0'}}>▶</div>
-            <div className="story-video-label">Brand Story Film — 3:42</div>
-          </div>
-        </div>
-      </section>
-
       {/* ======================== LOOKBOOK ======================== */}
       <section className="lookbook" id="lookbook">
         <div className="container">
@@ -299,30 +280,47 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ======================== SIZE GUIDE ======================== */}
-      <section className="size-guide">
-        <div className="container">
-          <div className="size-guide-inner">
-            <div className="size-guide-text">
-              <div className="size-icon">📏</div>
-              <div className="size-text">
-                <h3>Not Sure of Your Size?</h3>
-                <p>Use our interactive size guide for footwear, clothing &amp; kids&apos; fits</p>
-              </div>
-            </div>
-            <div className="size-chips">
-              <span className="size-chip">EU 36–48</span>
-              <span className="size-chip">US 4–14</span>
-              <span className="size-chip">UK 3–13</span>
-              <span className="size-chip">Kids 20–35</span>
-              <span className="size-chip">XS–4XL</span>
-            </div>
-            <a href="#" className="btn btn-light">Open Size Guide</a>
+      {/* ======================== NEW ARRIVALS ======================== */}
+      <NewArrivals countryCode={countryCode} />
+
+      {/* ======================== GENDER SPLIT ======================== */}
+      <section className="gender-split">
+        <div className="gender-panel gender-mens">
+          <div className="gender-panel-bg"></div>
+          <div className="gender-panel-overlay"></div>
+          <span className="gender-panel-tag">68 Pieces</span>
+          <div className="gender-panel-content">
+            <div className="gender-icon">🧔</div>
+            <h3 className="gender-title">Men&apos;s</h3>
+            <p className="gender-sub">Sharp. Refined. Effortless.</p>
+            <a href="/gb/store" className="btn btn-outline">Shop Men&apos;s</a>
+          </div>
+        </div>
+        <div className="gender-panel gender-womens">
+          <div className="gender-panel-bg"></div>
+          <div className="gender-panel-overlay"></div>
+          <span className="gender-panel-tag">84 Pieces</span>
+          <div className="gender-panel-content">
+            <div className="gender-icon">👩</div>
+            <h3 className="gender-title">Women&apos;s</h3>
+            <p className="gender-sub">Bold. Fluid. Expressive.</p>
+            <a href="/gb/store" className="btn btn-outline">Shop Women&apos;s</a>
+          </div>
+        </div>
+        <div className="gender-panel gender-kids">
+          <div className="gender-panel-bg"></div>
+          <div className="gender-panel-overlay"></div>
+          <span className="gender-panel-tag">42 Styles</span>
+          <div className="gender-panel-content">
+            <div className="gender-icon">🧒</div>
+            <h3 className="gender-title">Kids &amp; Toddlers</h3>
+            <p className="gender-sub">Playful. Durable. Bright.</p>
+            <a href="/gb/store" className="btn btn-outline">Shop Kids</a>
           </div>
         </div>
       </section>
 
-      {/* ======================== TECH SECTION ======================== */}
+       {/* ======================== TECH SECTION ======================== */}
       <section className="tech-section">
         <div className="container">
           <div className="tech-header fade-up">
@@ -382,62 +380,68 @@ export default async function Home({
         </div>
       </section>
 
-      {/* ======================== REVIEWS ======================== */}
-      <section className="reviews">
-        <div className="container">
-          <div className="reviews-header fade-up">
-            <span className="section-label" style={{justifyContent:'center'}}>What They&apos;re Saying</span>
-            <h2 className="section-heading">Worn &amp; <em style={{fontStyle:'italic',color:'var(--accent)'}}>Loved</em></h2>
-            <p style={{color:'var(--warm-gray)',maxWidth:'440px',margin:'12px auto 0',fontSize:'.9rem'}}>
-              Over 40,000 verified customers — join the DJONOVA community.
-            </p>
+      {/* ======================== BRAND STORY ======================== */}
+      <section className="brand-story">
+        <div className="brand-story-left fade-up">
+          <span className="section-label">Our Story</span>
+          <h2 className="section-heading">
+            Rooted in<br/>
+            <em style={{fontStyle:'italic',color:'var(--accent)'}}>Craft,</em><br/>
+            Built for Now.
+          </h2>
+          <p className="brand-story-text">
+            DJONOVA was born from a simple belief: that what you wear should feel as deliberate
+            as every move you make. We design footwear, clothing, and tech essentials that honour
+            precision without sacrificing comfort — for the ones who live at the intersection
+            of culture and craft.
+          </p>
+          <a href="#" className="btn btn-accent-outline">Read Our Story →</a>
+          <div className="brand-story-stats">
+            <div className="story-stat">
+              <div className="story-stat-num">2019</div>
+              <div className="story-stat-label">Founded</div>
+            </div>
+            <div className="story-stat">
+              <div className="story-stat-num">18+</div>
+              <div className="story-stat-label">Countries</div>
+            </div>
+            <div className="story-stat">
+              <div className="story-stat-num">100%</div>
+              <div className="story-stat-label">Ethically Sourced</div>
+            </div>
+            <div className="story-stat">
+              <div className="story-stat-num">40K</div>
+              <div className="story-stat-label">Community Members</div>
+            </div>
           </div>
-          <div className="reviews-grid">
-            <div className="review-card fade-up fade-up-1">
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">
-                &quot;The AURA Low Pros are genuinely the most comfortable shoes I&apos;ve owned. Wore them
-                for a 12-hour shift and my feet thanked me at the end of it.&quot;
-              </p>
-              <div className="review-author">
-                <div className="review-avatar av1">😊</div>
-                <div>
-                  <div className="review-name">Amara O.</div>
-                  <div className="review-location">Lagos, Nigeria</div>
-                </div>
-                <div className="review-verified">✓ Verified</div>
+        </div>
+        <div className="brand-story-right">
+          <div className="story-video-placeholder">
+            <div className="video-play-btn" style={{margin:'0'}}>▶</div>
+            <div className="story-video-label">Brand Story Film — 3:42</div>
+          </div>
+        </div>
+      </section>
+
+      {/* ======================== SIZE GUIDE ======================== */}
+      <section className="size-guide">
+        <div className="container">
+          <div className="size-guide-inner">
+            <div className="size-guide-text">
+              <div className="size-icon">📏</div>
+              <div className="size-text">
+                <h3>Not Sure of Your Size?</h3>
+                <p>Use our interactive size guide for footwear, clothing &amp; kids&apos; fits</p>
               </div>
             </div>
-            <div className="review-card fade-up fade-up-2">
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">
-                &quot;Bought the NOVA Field Jacket in toffee and received so many compliments.
-                The quality for the price is unmatched. DJONOVA will be my go-to brand.&quot;
-              </p>
-              <div className="review-author">
-                <div className="review-avatar av2">😎</div>
-                <div>
-                  <div className="review-name">Marcus T.</div>
-                  <div className="review-location">London, UK</div>
-                </div>
-                <div className="review-verified">✓ Verified</div>
-              </div>
+            <div className="size-chips">
+              <span className="size-chip">EU 36–48</span>
+              <span className="size-chip">US 4–14</span>
+              <span className="size-chip">UK 3–13</span>
+              <span className="size-chip">Kids 20–35</span>
+              <span className="size-chip">XS–4XL</span>
             </div>
-            <div className="review-card fade-up fade-up-3">
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">
-                &quot;Ordered kids&apos; shoes for my 5-year-old and was blown away by the build quality.
-                Still going strong 6 months later. Fast shipping, beautiful packaging.&quot;
-              </p>
-              <div className="review-author">
-                <div className="review-avatar av3">🥰</div>
-                <div>
-                  <div className="review-name">Priya K.</div>
-                  <div className="review-location">Toronto, Canada</div>
-                </div>
-                <div className="review-verified">✓ Verified</div>
-              </div>
-            </div>
+            <a href="#" className="btn btn-light">Open Size Guide</a>
           </div>
         </div>
       </section>
