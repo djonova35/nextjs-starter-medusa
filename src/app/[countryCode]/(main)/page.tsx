@@ -513,7 +513,6 @@ export default async function Home({
               <div className="tier-threshold">£0 – £99</div>
               <ul className="tier-perks">
                 <li><span className="perk-check">✓</span>1 point per £1 spent</li>
-                <li><span className="perk-check">✓</span>Birthday 10% discount</li>
                 <li><span className="perk-check">✓</span>Free standard shipping over £40</li>
                 <li><span className="perk-check">✓</span>Early sale access</li>
               </ul>
@@ -526,7 +525,6 @@ export default async function Home({
               <div className="tier-threshold">£100 – £299</div>
               <ul className="tier-perks">
                 <li><span className="perk-check">✓</span>1.5 points per £1 spent</li>
-                <li><span className="perk-check">✓</span>Birthday 15% discount</li>
                 <li><span className="perk-check">✓</span>Free standard shipping on ALL Orders</li>
                 <li><span className="perk-check">✓</span>Exclusive drops preview</li>
                 <li><span className="perk-check">✓</span>Priority customer support</li>
@@ -540,7 +538,6 @@ export default async function Home({
               <div className="tier-threshold">£300+</div>
               <ul className="tier-perks">
                 <li><span className="perk-check">✓</span>2 points per £1 spent</li>
-                <li><span className="perk-check">✓</span>Birthday 20% discount</li>
                 <li><span className="perk-check">✓</span>Free Express Shipping On ALL Orders</li>
                 <li><span className="perk-check">✓</span>Exclusive Gold-only pieces</li>
                 <li><span className="perk-check">✓</span>Annual gift package</li>
