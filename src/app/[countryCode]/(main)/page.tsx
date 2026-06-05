@@ -580,7 +580,7 @@ export default async function Home({
         <div className="container">
           <div className="promo-content fade-up">
             <p className="promo-label">Limited Time Offer</p>
-            <h2 className="promo-heading">20% Off Your First Order</h2>
+            <h2 className="promo-heading">10% Off Your First Order</h2>
             <p className="promo-sub">New to DJONOVA? Welcome to the club. Use the code below at checkout.</p>
             <div className="promo-code-box">
               <span className="promo-code-label">Promo Code</span>
