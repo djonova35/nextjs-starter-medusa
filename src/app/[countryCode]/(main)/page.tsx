@@ -584,7 +584,7 @@ export default async function Home({
             <p className="promo-sub">New to DJONOVA? Welcome to the club. Use the code below at checkout.</p>
             <div className="promo-code-box">
               <span className="promo-code-label">Promo Code</span>
-              <span className="promo-code">DJNV20</span>
+              <span className="promo-code">DJNV10</span>
             </div>
             <br/>
             <a href="/gb/store" className="btn btn-light">Shop Now and Save →</a>
