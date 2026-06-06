@@ -295,7 +295,7 @@ export default function CartRecommendations({ cartItemIds = [] }: Props) {
             className={`dj-recs-pill ${activeTab === "favourites" ? "active" : ""}`}
             onClick={() => setActiveTab("favourites")}
           >
-            ❤️ Favourites
+            💜 Favourites
             {wishlist.length > 0 && (
               <span className="dj-recs-pill-count">{wishlist.length}</span>
             )}
@@ -351,7 +351,7 @@ export default function CartRecommendations({ cartItemIds = [] }: Props) {
                         }}
                         aria-label="Toggle wishlist"
                       >
-                        {wishlisted ? "❤️" : "🤍"}
+                        {wishlisted ? "💜" : "🤍"}
                       </button>
                     </div>
                     <div className="dj-rec-title">{p.title}</div>
@@ -381,7 +381,7 @@ export default function CartRecommendations({ cartItemIds = [] }: Props) {
             </span>
             <div>
               {activeTab === "favourites"
-                ? "No favourites yet — tap ❤️ on any product"
+                ? "No favourites yet — tap 💜 on any product"
                 : activeTab === "recent"
                 ? "No recently viewed items"
                 : "No suggestions available right now"}
