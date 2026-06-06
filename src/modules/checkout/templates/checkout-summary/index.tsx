@@ -26,6 +26,7 @@ const CheckoutSummary = ({ cart }: { cart: any }) => {
         <Divider className="my-6" />
         {/* ── DELIVERY INFORMATION ── */}
         <DeliveryInfo />
+        <CartRecommendations cartItemIds={cart?.items?.map(i => i.product_id) ?? []} />
 
       </div>
     </div>
