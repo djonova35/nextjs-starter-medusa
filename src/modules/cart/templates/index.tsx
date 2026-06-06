@@ -30,6 +30,10 @@ const CartTemplate = ({
               {/* ── DELIVERY INFORMATION ── */}
               <DeliveryInfo />
 
+              <CartRecommendations 
+  cartItemIds={cart?.items?.map((i) => i.product_id) ?? []}
+/>
+              
             </div>
             <div className="relative">
               <div className="flex flex-col gap-y-8 sticky top-12">
