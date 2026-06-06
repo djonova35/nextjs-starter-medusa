@@ -1,11 +1,13 @@
 import { Heading, Text } from "@medusajs/ui"
-
 import InteractiveLink from "@modules/common/components/interactive-link"
-
 import CartRecommendations from "@modules/cart/components/cart-recommendations"
+
 const EmptyCartMessage = () => {
   return (
-    <div className="py-48 px-2 flex flex-col justify-center items-start" data-testid="empty-cart-message">
+    <div
+      className="py-48 px-2 flex flex-col justify-center items-start"
+      data-testid="empty-cart-message"
+    >
       <Heading
         level="h1"
         className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
@@ -18,9 +20,11 @@ const EmptyCartMessage = () => {
       </Text>
       <div>
         <InteractiveLink href="/store">Explore products</InteractiveLink>
+      </div>
 
+      {/* ── RECOMMENDATIONS (Favourites + Recently Viewed) ── */}
+      <div className="w-full mt-12">
         <CartRecommendations />
-</div>
       </div>
     </div>
   )
