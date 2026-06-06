@@ -2,6 +2,7 @@ import { Heading, Text } from "@medusajs/ui"
 
 import InteractiveLink from "@modules/common/components/interactive-link"
 
+import CartRecommendations from "@modules/cart/components/cart-recommendations"
 const EmptyCartMessage = () => {
   return (
     <div className="py-48 px-2 flex flex-col justify-center items-start" data-testid="empty-cart-message">
@@ -17,6 +18,9 @@ const EmptyCartMessage = () => {
       </Text>
       <div>
         <InteractiveLink href="/store">Explore products</InteractiveLink>
+
+        <CartRecommendations />
+</div>
       </div>
     </div>
   )
