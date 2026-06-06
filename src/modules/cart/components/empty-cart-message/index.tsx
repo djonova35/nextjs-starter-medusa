@@ -22,7 +22,6 @@ const EmptyCartMessage = () => {
         <InteractiveLink href="/store">Explore products</InteractiveLink>
       </div>
 
-      {/* ── RECOMMENDATIONS (Favourites + Recently Viewed) ── */}
       <div className="w-full mt-12">
         <CartRecommendations />
       </div>
