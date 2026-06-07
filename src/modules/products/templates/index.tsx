@@ -526,6 +526,60 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           background: #9B7FE8;
         }
 
+        /* DESKTOP / WIDE TABLET PRODUCT LAYOUT */
+@media (min-width: 900px) {
+  .dj-product-top-shell {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px 24px 60px;
+  }
+
+  .dj-product-top-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
+    gap: 44px;
+    align-items: start;
+  }
+
+  .dj-gallery-wrap {
+    width: 100%;
+    background: transparent;
+    position: sticky;
+    top: 90px;
+  }
+
+  .dj-right-column {
+    min-width: 0;
+  }
+
+  .dj-product-content {
+    max-width: none;
+    margin: 0;
+    padding: 0 0 32px;
+  }
+
+  .dj-related-section {
+    padding: 32px 0 0;
+    background: transparent;
+    border-top: 1px solid #EDE8FA;
+  }
+
+  .dj-related-section .content-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .dj-reviews-section {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1180px) {
+  .dj-product-top-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 0.8fr);
+    gap: 28px;
+  }
+}
       `}</style>
     </div>
   )
