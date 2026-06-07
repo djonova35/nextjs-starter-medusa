@@ -21,20 +21,18 @@ export default function WishlistButton() {
         .dj-nav-icon:hover { color: #7C3AED; }
         .dj-nav-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  min-width: 14px;
-  height: 14px;
+  top: -3px;
+  right: -5px;
+  min-width: 15px;
+  height: 15px;
   padding: 0 3px;
   background: #7C3AED;
   color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 14px;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 15px;
   text-align: center;
   border-radius: 999px;
-  border: 1.5px solid #fff;
-  box-sizing: content-box;
   pointer-events: none;
 }
       `}</style>
