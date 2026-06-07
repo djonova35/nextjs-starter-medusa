@@ -4,7 +4,8 @@ import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
 import Divider from "@modules/common/components/divider"
 import { HttpTypes } from "@medusajs/types"
-import DeliveryInfo from "../../../components/DeliveryInfo"   // ← Correct path for cart
+import DeliveryInfo from "../../../components/DeliveryInfo"
+import CartRecommendations from "@modules/cart/components/cart-recommendations"  // 👈 ADD THIS
 
 const CartTemplate = ({
   cart,
@@ -30,10 +31,9 @@ const CartTemplate = ({
               {/* ── DELIVERY INFORMATION ── */}
               <DeliveryInfo />
 
-              <CartRecommendations 
-  cartItemIds={cart?.items?.map((i) => i.product_id) ?? []}
-/>
-              
+              <CartRecommendations
+                cartItemIds={cart?.items?.map((i) => i.product_id) ?? []}
+              />
             </div>
             <div className="relative">
               <div className="flex flex-col gap-y-8 sticky top-12">
