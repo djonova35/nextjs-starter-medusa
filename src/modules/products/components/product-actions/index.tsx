@@ -67,22 +67,41 @@ export default function ProductActions({
   const paymentVariant = selectedVariant || product.variants?.[0]
 
   const sellingPrice =
-    Number(paymentVariant?.calculated_price?.calculated_amount) || 0
+  Number(paymentVariant?.calculated_price?.calculated_amount) || 0
 
-  const currencyCode =
-    paymentVariant?.calculated_price?.currency_code?.toUpperCase() ||
-    region?.currency_code?.toUpperCase() ||
-    "GBP"
+const currencyCode =
+  paymentVariant?.calculated_price?.currency_code?.toUpperCase() ||
+  region?.currency_code?.toUpperCase() ||
+  "GBP"
 
-  const formatMoney = (amount: number) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: currencyCode,
-    }).format(amount / 100)
+const getLocaleForCurrency = (currency: string) => {
+  switch (currency) {
+    case "USD":
+      return "en-US"
+    case "EUR":
+      return "en-IE"
+    case "GBP":
+      return "en-GB"
+    case "CAD":
+      return "en-CA"
+    case "AUD":
+      return "en-AU"
+    default:
+      return "en-GB"
   }
+}
 
-  const klarnaInstallment = sellingPrice ? formatMoney(sellingPrice / 3) : null
-  const clearpayInstallment = sellingPrice ? formatMoney(sellingPrice / 4) : null
+const formatMoney = (amount: number) => {
+  return new Intl.NumberFormat(getLocaleForCurrency(currencyCode), {
+    style: "currency",
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
+}
+
+const klarnaInstallment = sellingPrice ? formatMoney(sellingPrice / 3) : null
+const clearpayInstallment = sellingPrice ? formatMoney(sellingPrice / 4) : null
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
@@ -186,26 +205,32 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        {/* KLARNA + CLEARPAY MESSAGE */}
-        {sellingPrice > 0 && (
-          <div className="dj-payment-options">
-            <p className="dj-payment-line">
-              Pay now, or in 3 interest-free installments of{" "}
-              <strong>{klarnaInstallment}</strong>, with{" "}
-              <span className="dj-klarna-logo">Klarna</span>
-            </p>
+       {/* KLARNA + CLEARPAY MESSAGE */}
+{sellingPrice > 0 && (
+  <div className="dj-payment-options">
+    <div className="dj-payment-row">
+      <span className="dj-payment-bullet">•</span>
+      <p className="dj-payment-line">
+        Pay now, or in 3 interest-free installments of{" "}
+        <strong>{klarnaInstallment}</strong> with{" "}
+        <span className="dj-klarna-logo">Klarna</span>
+      </p>
+    </div>
 
-            <ul className="dj-payment-list">
-              <li>
-                4 interest-free installments of{" "}
-                <strong>{clearpayInstallment}</strong> with{" "}
-                <span className="dj-clearpay-logo">clearpay</span>
-              </li>
-              <li>18+, T&amp;C apply, Credit subject to status</li>
-            </ul>
-          </div>
-        )}
+    <div className="dj-payment-row">
+      <span className="dj-payment-bullet">•</span>
+      <p className="dj-payment-line">
+        4 interest-free installments of{" "}
+        <strong>{clearpayInstallment}</strong> with{" "}
+        <span className="dj-clearpay-logo">clearpay</span>
+      </p>
+    </div>
 
+    <p className="dj-payment-small">
+      18+, T&amp;C apply, Credit subject to status
+    </p>
+  </div>
+)}
         <Button
           onClick={handleAddToCart}
           disabled={
@@ -245,69 +270,77 @@ export default function ProductActions({
 
       <style>{`
         .dj-payment-options {
-          margin: 8px 0 14px;
-          padding: 12px 14px;
-          background: #FAF8FF;
-          border: 1px solid #EDE8FA;
-          border-radius: 10px;
-        }
+  margin: 10px 0 16px;
+  padding: 13px 14px;
+  background: #FAF8FF;
+  border: 1px solid #EDE8FA;
+  border-radius: 10px;
+}
 
-        .dj-payment-line {
-          margin: 0 0 8px;
-          font-size: 12px;
-          line-height: 1.5;
-          color: #2A1F4A;
-        }
+.dj-payment-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 7px;
+}
 
-        .dj-payment-line strong,
-        .dj-payment-list strong {
-          font-weight: 700;
-          color: #2A1F4A;
-        }
+.dj-payment-bullet {
+  color: #6C6285;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 1px;
+}
 
-        .dj-payment-list {
-          margin: 0;
-          padding-left: 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-        }
+.dj-payment-line {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #2A1F4A;
+}
 
-        .dj-payment-list li {
-          font-size: 11px;
-          line-height: 1.5;
-          color: #6C6285;
-        }
+.dj-payment-line strong {
+  font-weight: 700;
+  color: #2A1F4A;
+}
 
-        .dj-klarna-logo {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2px 8px;
-          border-radius: 5px;
-          background: #ffb3c7;
-          color: #111;
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: -0.03em;
-          line-height: 1.2;
-          vertical-align: middle;
-        }
+.dj-payment-small {
+  margin: 7px 0 0 21px;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: #7D7396;
+}
 
-        .dj-clearpay-logo {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2px 8px;
-          border-radius: 999px;
-          background: #111;
-          color: #b2fce4;
-          font-size: 11px;
-          font-weight: 800;
-          letter-spacing: -0.03em;
-          line-height: 1.2;
-          vertical-align: middle;
-        }
+.dj-klarna-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: #ffb3c7;
+  color: #111;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.dj-clearpay-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #111;
+  color: #b2fce4;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  vertical-align: middle;
+  white-space: nowrap;
+}
       `}</style>
     </>
   )
