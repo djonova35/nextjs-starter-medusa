@@ -228,6 +228,48 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
         .dj-thumb-active {
           border-color: #9B7FE8;
         }
+        
+        /* DESKTOP / IPAD GALLERY */
+@media (min-width: 900px) {
+  .dj-swiper-wrap {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 14px;
+    background: transparent;
+  }
+
+  .dj-swiper-main {
+    grid-column: 2;
+    grid-row: 1;
+    aspect-ratio: 4 / 5;
+    background: #F0EAF8;
+  }
+
+  .dj-thumbs {
+    grid-column: 1;
+    grid-row: 1;
+    flex-direction: column;
+    padding: 0;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 720px;
+  }
+
+  .dj-thumb {
+    width: 72px;
+    height: 90px;
+    border-radius: 0;
+  }
+
+  .dj-dots {
+    display: none;
+  }
+
+  .dj-counter {
+    display: none;
+  }
+}
       `}</style>
     </div>
   )
