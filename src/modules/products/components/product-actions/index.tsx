@@ -1,6 +1,7 @@
 "use client"
 
 import DeliveryInfo from "../../../../components/DeliveryInfo"
+
 import { addToCart } from "@lib/data/cart"
 import { useIntersection } from "@lib/hooks/use-in-view"
 import { HttpTypes } from "@medusajs/types"
@@ -31,6 +32,7 @@ const optionsAsKeymap = (
 
 export default function ProductActions({
   product,
+  region,
   disabled,
 }: ProductActionsProps) {
   const router = useRouter()
@@ -39,6 +41,7 @@ export default function ProductActions({
 
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options
@@ -47,7 +50,7 @@ export default function ProductActions({
       const variantOptions = optionsAsKeymap(product.variants[0].options)
       setOptions(variantOptions ?? {})
     }
-  }, [])
+  }, [product.variants])
 
   const selectedVariant = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -60,6 +63,27 @@ export default function ProductActions({
     })
   }, [product.variants, options])
 
+  // Payment price calculation
+  const paymentVariant = selectedVariant || product.variants?.[0]
+
+  const sellingPrice =
+    Number(paymentVariant?.calculated_price?.calculated_amount) || 0
+
+  const currencyCode =
+    paymentVariant?.calculated_price?.currency_code?.toUpperCase() ||
+    region?.currency_code?.toUpperCase() ||
+    "GBP"
+
+  const formatMoney = (amount: number) => {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: currencyCode,
+    }).format(amount / 100)
+  }
+
+  const klarnaInstallment = sellingPrice ? formatMoney(sellingPrice / 3) : null
+  const clearpayInstallment = sellingPrice ? formatMoney(sellingPrice / 4) : null
+
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
     setOptions((prev) => ({
@@ -68,7 +92,7 @@ export default function ProductActions({
     }))
   }
 
-  //check if the selected options produce a valid variant
+  // check if the selected options produce a valid variant
   const isValidVariant = useMemo(() => {
     return product.variants?.some((v) => {
       const variantOptions = optionsAsKeymap(v.options)
@@ -91,7 +115,7 @@ export default function ProductActions({
     }
 
     router.replace(pathname + "?" + params.toString())
-  }, [selectedVariant, isValidVariant])
+  }, [selectedVariant, isValidVariant, pathname, router, searchParams])
 
   // check if the selected variant is in stock
   const inStock = useMemo(() => {
@@ -113,12 +137,10 @@ export default function ProductActions({
       return true
     }
 
-    // Otherwise, we can't add to cart
     return false
   }, [selectedVariant])
 
   const actionsRef = useRef<HTMLDivElement>(null)
-
   const inView = useIntersection(actionsRef, "0px")
 
   // add the selected variant to the cart
@@ -156,12 +178,33 @@ export default function ProductActions({
                   </div>
                 )
               })}
+
               <Divider />
             </div>
           )}
         </div>
 
         <ProductPrice product={product} variant={selectedVariant} />
+
+        {/* KLARNA + CLEARPAY MESSAGE */}
+        {sellingPrice > 0 && (
+          <div className="dj-payment-options">
+            <p className="dj-payment-line">
+              Pay now, or in 3 interest-free installments of{" "}
+              <strong>{klarnaInstallment}</strong>, with{" "}
+              <span className="dj-klarna-logo">Klarna</span>
+            </p>
+
+            <ul className="dj-payment-list">
+              <li>
+                4 interest-free installments of{" "}
+                <strong>{clearpayInstallment}</strong> with{" "}
+                <span className="dj-clearpay-logo">clearpay</span>
+              </li>
+              <li>18+, T&amp;C apply, Credit subject to status</li>
+            </ul>
+          </div>
+        )}
 
         <Button
           onClick={handleAddToCart}
@@ -184,7 +227,7 @@ export default function ProductActions({
             : "Add to cart"}
         </Button>
 
-        {/* ── DELIVERY INFO ── */}
+        {/* DELIVERY INFO */}
         <DeliveryInfo />
 
         <MobileActions
@@ -199,6 +242,73 @@ export default function ProductActions({
           optionsDisabled={!!disabled || isAdding}
         />
       </div>
+
+      <style>{`
+        .dj-payment-options {
+          margin: 8px 0 14px;
+          padding: 12px 14px;
+          background: #FAF8FF;
+          border: 1px solid #EDE8FA;
+          border-radius: 10px;
+        }
+
+        .dj-payment-line {
+          margin: 0 0 8px;
+          font-size: 12px;
+          line-height: 1.5;
+          color: #2A1F4A;
+        }
+
+        .dj-payment-line strong,
+        .dj-payment-list strong {
+          font-weight: 700;
+          color: #2A1F4A;
+        }
+
+        .dj-payment-list {
+          margin: 0;
+          padding-left: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .dj-payment-list li {
+          font-size: 11px;
+          line-height: 1.5;
+          color: #6C6285;
+        }
+
+        .dj-klarna-logo {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2px 8px;
+          border-radius: 5px;
+          background: #ffb3c7;
+          color: #111;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: -0.03em;
+          line-height: 1.2;
+          vertical-align: middle;
+        }
+
+        .dj-clearpay-logo {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2px 8px;
+          border-radius: 999px;
+          background: #111;
+          color: #b2fce4;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: -0.03em;
+          line-height: 1.2;
+          vertical-align: middle;
+        }
+      `}</style>
     </>
   )
 }
