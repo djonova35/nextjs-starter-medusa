@@ -20,24 +20,23 @@ export default function WishlistButton() {
         }
         .dj-nav-icon:hover { color: #7C3AED; }
         .dj-nav-badge {
-          position: absolute;
-          top: -6px;
-          right: -8px;
-          min-width: 16px;
-          height: 16px;
-          padding: 0 4px;
-          background: #7C3AED;
-          color: #fff;
-          font-size: 10px;
-          font-weight: 700;
-          line-height: 1;
-          border-radius: 999px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 2px solid #fff;
-          box-sizing: content-box;
-        }
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  background: #7C3AED;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 999px;
+  border: 1.5px solid #fff;
+  box-sizing: content-box;
+  pointer-events: none;
+}
       `}</style>
 
       <LocalizedClientLink
