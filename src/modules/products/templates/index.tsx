@@ -30,16 +30,21 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
-  return (
-    <div className="djonova-product-page">
+ return (
+  <div className="djonova-product-page">
+    <div className="dj-product-top-shell">
+      <div className="dj-product-top-grid">
 
-      {/* ── 1. IMAGE GALLERY ── */}
-      <div className="dj-gallery-wrap">
-        <ImageGallery images={images} />
-      </div>
+        {/* LEFT SIDE: IMAGE GALLERY */}
+        <div className="dj-gallery-wrap">
+          <ImageGallery images={images} />
+        </div>
 
-      {/* ── MAIN CONTENT ── */}
-      <div className="dj-product-content">
+        {/* RIGHT SIDE: PRODUCT INFO + COMPLETE THE LOOK */}
+        <div className="dj-right-column">
+
+          {/* ── MAIN CONTENT ── */}
+          <div className="dj-product-content">
 
         {/* ── 2. PRODUCT TITLE + SUBTITLE + RATING ── */}
         <div className="dj-name-section">
@@ -159,19 +164,25 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
         </div>
 
-        {/* ── ONBOARDING CTA (dev only) ── */}
-        <ProductOnboardingCta />
+                    {/* ── ONBOARDING CTA (dev only) ── */}
 
+            <ProductOnboardingCta />
+
+          </div>
+
+          {/* ── 7. COMPLETE THE LOOK / RELATED PRODUCTS ── */}
+
+          <div className="dj-related-section">
+            <Suspense fallback={<SkeletonRelatedProducts />}>
+              <RelatedProducts product={product} countryCode={countryCode} />
+            </Suspense>
+          </div>
+
+        </div>
       </div>
+    </div>
 
-      {/* ── 7. RELATED PRODUCTS ── */}
-      <div className="dj-related-section">
-        <Suspense fallback={<SkeletonRelatedProducts />}>
-          <RelatedProducts product={product} countryCode={countryCode} />
-        </Suspense>
-      </div>
-
-      {/* ── 8. CUSTOMER REVIEWS ── */}
+    {/* ── 8. CUSTOMER REVIEWS ── */}
       <div className="dj-reviews-section">
         <div className="content-container">
           <div className="dj-section-header">
