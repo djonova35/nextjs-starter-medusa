@@ -7,6 +7,9 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
 import SearchOverlay from "@modules/layout/components/search-overlay"
+import WishlistButton from "@modules/layout/components/wishlist-button"      // 👈 NEW
+import CountryFlag from "@modules/layout/components/country-flag"            // 👈 NEW
+
 
 export default async function Nav() {
   const [regions, locales, currentLocale] = await Promise.all([
@@ -50,6 +53,9 @@ export default async function Nav() {
           {/* RIGHT — icons */}
           <div className="flex items-center gap-x-4">
 
+             {/* COUNTRY FLAG PILL — 👈 NEW */}
+            <CountryFlag />
+
             {/* SEARCH */}
             <SearchOverlay />
 
@@ -73,23 +79,8 @@ export default async function Nav() {
               </svg>
             </LocalizedClientLink>
 
-            {/* WISHLIST */}
-            <LocalizedClientLink
-              href="/wishlist"
-              className="hover:text-purple-500 transition-colors"
-              title="Wishlist"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </LocalizedClientLink>
+            {/* WISHLIST with badge — 👈 REPLACED */}
+            <WishlistButton />
 
             {/* CART */}
             <Suspense
