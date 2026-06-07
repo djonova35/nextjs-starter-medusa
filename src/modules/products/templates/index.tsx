@@ -553,11 +553,15 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   }
 
   .dj-gallery-wrap {
-    width: 100%;
-    background: transparent;
-    position: sticky;
-    top: 90px;
-  }
+  width: 100%;
+  background: transparent;
+}
+
+.dj-right-column {
+  position: sticky;
+  top: 90px;
+  align-self: start;
+}
 
   .dj-right-column {
     min-width: 0;
