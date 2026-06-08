@@ -26,7 +26,7 @@ export default async function Nav() {
         <nav className="content-container flex items-center justify-between w-full h-14 px-4">
 
           {/* LEFT — hamburger + logo side by side like Boohooman */}
-          <div className="flex items-center gap-x-4">
+          <div className="flex items-center gap-x-2 small:gap-x-4">
             <SideMenu
               regions={regions}
               locales={locales}
@@ -51,7 +51,7 @@ export default async function Nav() {
           </div>
 
           {/* RIGHT — icons */}
-          <div className="flex items-center gap-x-4">
+          <div className="flex items-center gap-x-2 small:gap-x-4">
 
              {/* COUNTRY FLAG PILL — 👈 NEW */}
             <CountryFlag />
