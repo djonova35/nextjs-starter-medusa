@@ -33,21 +33,22 @@ export default async function Nav() {
               currentLocale={currentLocale}
             />
             <LocalizedClientLink
-              href="/"
-              data-testid="nav-store-link"
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "20px",
-                fontWeight: "300",
-                letterSpacing: "8px",
-                textTransform: "uppercase",
-                color: "#2A1F4A",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              DJONOVA
-            </LocalizedClientLink>
+  href="/"
+  data-testid="nav-store-link"
+  style={{
+    fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+    fontSize: "24px",
+    fontWeight: 600,
+    letterSpacing: "1.5px",
+    textTransform: "uppercase",
+    color: "#2A1F4A",
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+    lineHeight: 1,
+  }}
+>
+  DJONOVA
+</LocalizedClientLink>
           </div>
 
           {/* RIGHT — icons */}
