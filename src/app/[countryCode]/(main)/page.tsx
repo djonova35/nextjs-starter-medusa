@@ -15,14 +15,14 @@ export default async function Home({
         <div className="ticker-track">
           <span className="ticker-item">Free shipping on orders over £40 <span className="dot"></span></span>
           <span className="ticker-item">SS26 Collection — Now Live <span className="dot"></span></span>
-          <span className="ticker-item">Use code DJNV20 for 20% off your first order <span className="dot"></span></span>
+          <span className="ticker-item">Use code DJNV20 for 10% off your first order <span className="dot"></span></span>
           <span className="ticker-item">New footwear drops every Friday <span className="dot"></span></span>
           <span className="ticker-item">Join DJONOVA Members Club — Earn points on every purchase <span className="dot"></span></span>
           <span className="ticker-item">Kids & Toddlers range — now available <span className="dot"></span></span>
           <span className="ticker-item">Tech Essentials — Smart accessories for modern living <span className="dot"></span></span>
           <span className="ticker-item">Free shipping on orders over £40 <span className="dot"></span></span>
           <span className="ticker-item">SS26 Collection — Now Live <span className="dot"></span></span>
-          <span className="ticker-item">Use code DJNV20 for 20% off your first order <span className="dot"></span></span>
+          <span className="ticker-item">Use code DJNV20 for 10% off your first order <span className="dot"></span></span>
           <span className="ticker-item">New footwear drops every Friday <span className="dot"></span></span>
           <span className="ticker-item">Join DJONOVA Members Club — Earn points on every purchase <span className="dot"></span></span>
           <span className="ticker-item">Kids & Toddlers range — now available <span className="dot"></span></span>
@@ -35,15 +35,16 @@ export default async function Home({
         <div className="hero-left">
           <p className="hero-eyebrow fade-up fade-up-1">Spring / Summer 2026 Collection</p>
           <h1 className="hero-heading fade-up fade-up-2">
-            Wear<br/>
-            the <em>Future,</em><br/>
-            Own<br/>
-            the Room.
+            Style<br/>
+            for <em>Everyone,</em><br/>
+            Priced<br/>
+            for Real Life.
           </h1>
           <p className="hero-desc fade-up fade-up-3">
-            DJONOVA blends couture-level craft with everyday wearability — shoes, style,
-            and tech essentials designed for those who move with intention.
-          </p>
+            DJONOVA is a fashion and lifestyle brand built for families,individuals,
+            and everyone in between- shoes,clothing,and essentials that look good 
+            without the markup.
+           </p>
           <div className="hero-btns fade-up fade-up-4">
             <a href="/gb/store" className="btn btn-primary">Shop SS26 ↗</a>
             <a href="#lookbook" className="btn btn-outline">View Lookbook</a>
@@ -409,33 +410,34 @@ export default async function Home({
         <div className="brand-story-left fade-up">
           <span className="section-label">Our Story</span>
           <h2 className="section-heading">
-            Rooted in<br/>
-            <em style={{fontStyle:'italic',color:'var(--accent)'}}>Craft,</em><br/>
-            Built for Now.
+            Built from<br/>
+            <em style={{fontStyle:'italic',color:'var(--accent)'}}>Scratch,</em><br/>
+            Made for you.
           </h2>
           <p className="brand-story-text">
-            DJONOVA was born from a simple belief: that what you wear should feel as deliberate
+            DJONOVA started with one goal: that what you wear should feel as deliberate
             as every move you make. We design footwear, clothing, and tech essentials that honour
-            precision without sacrificing comfort — for the ones who live at the intersection
-            of culture and craft.
+            precision without sacrificing comfort — just a business built around making it easier
+            to dress well
+            
           </p>
           <a href="#" className="btn btn-accent-outline">Read Our Story →</a>
           <div className="brand-story-stats">
             <div className="story-stat">
-              <div className="story-stat-num">2019</div>
-              <div className="story-stat-label">Founded</div>
+              <div className="story-stat-num">Secure</div>
+              <div className="story-stat-label">Checkout</div>
             </div>
             <div className="story-stat">
               <div className="story-stat-num">18+</div>
               <div className="story-stat-label">Countries</div>
             </div>
             <div className="story-stat">
-              <div className="story-stat-num">100%</div>
-              <div className="story-stat-label">Ethically Sourced</div>
+              <div className="story-stat-num">New Drops</div>
+              <div className="story-stat-label">Weekly</div>
             </div>
             <div className="story-stat">
-              <div className="story-stat-num">40K</div>
-              <div className="story-stat-label">Community Members</div>
+              <div className="story-stat-num">Tracked</div>
+              <div className="story-stat-label">Shipping</div>
             </div>
           </div>
         </div>
