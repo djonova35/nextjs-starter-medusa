@@ -5,12 +5,11 @@ import { revalidateTag } from "next/cache"
 import { getCacheTag, setAuthToken } from "./cookies"
 
 // -----------------------------------------------------
-// Decode JWT payload manually — no external library
+// Decode JWT payload to check if customer exists
 // -----------------------------------------------------
 function decodeJwtPayload(token: string): Record<string, any> {
   try {
     const payloadPart = token.split(".")[1]
-    // Add padding if needed for base64 decoding
     const padded = payloadPart + "=".repeat((4 - (payloadPart.length % 4)) % 4)
     const decoded = Buffer.from(padded, "base64").toString("utf-8")
     return JSON.parse(decoded)
@@ -21,134 +20,120 @@ function decodeJwtPayload(token: string): Record<string, any> {
 }
 
 // -----------------------------------------------------
-// Complete the Google login flow on the server
+// Complete the Google OAuth callback using the SDK's
+// built-in method. This handles:
+// - Exchanging the code with Medusa
+// - Creating the customer record if first-time
+// - Returning a proper session token
 // -----------------------------------------------------
-export async function completeGoogleLogin(
-  token: string
+export async function completeGoogleLoginFromParams(
+  queryParams: Record<string, string>
 ): Promise<{ success: boolean; error?: string }> {
-  console.log("[GoogleAuth] Step 1: Starting completeGoogleLogin")
+  console.log("[GoogleAuth] Step 1: Starting SDK callback flow")
+  console.log("[GoogleAuth] Query param keys:", Object.keys(queryParams))
 
   try {
+    // -----------------------------------------------
+    // Step A: Use SDK's built-in callback method
+    // This does the code-for-token exchange for us
+    // -----------------------------------------------
+    console.log("[GoogleAuth] Step 2: Calling sdk.auth.callback")
+
+    const token = (await sdk.auth.callback(
+      "customer",
+      "google",
+      queryParams
+    )) as string
+
+    console.log(
+      "[GoogleAuth] Step 3: Received token, length:",
+      token?.length || 0
+    )
+
     if (!token) {
-      console.error("[GoogleAuth] No token provided")
-      return { success: false, error: "No token provided" }
+      return { success: false, error: "SDK callback returned no token" }
     }
 
     // -----------------------------------------------
-    // Step A: Store the token FIRST
-    // Even if later steps fail, at least the user
-    // has an auth cookie
+    // Step B: Check if customer record exists yet
+    // by inspecting the token's actor_id
     // -----------------------------------------------
-    console.log("[GoogleAuth] Step 2: Setting auth token cookie")
-    await setAuthToken(token)
-
-    // -----------------------------------------------
-    // Step B: Inspect the token to see if a customer
-    // exists yet
-    // -----------------------------------------------
-    console.log("[GoogleAuth] Step 3: Decoding JWT payload")
     const payload = decodeJwtPayload(token)
-    console.log("[GoogleAuth] Payload keys:", Object.keys(payload))
-    console.log("[GoogleAuth] actor_id:", payload.actor_id)
+    console.log("[GoogleAuth] Step 4: Token payload actor_id:", payload.actor_id)
 
     let finalToken = token
 
-    // -----------------------------------------------
-    // Step C: If no actor_id, this is a first-time
-    // Google login — create the customer record
-    // -----------------------------------------------
     if (!payload.actor_id) {
+      // -----------------------------------------------
+      // First-time Google user — need to create the
+      // customer record before the token becomes valid
+      // -----------------------------------------------
       console.log(
-        "[GoogleAuth] Step 4: First-time login, creating customer record"
+        "[GoogleAuth] Step 5: First-time user, creating customer"
       )
 
       const email =
         payload.email ||
         payload.user_metadata?.email ||
-        payload.app_metadata?.email ||
-        payload.auth_identity?.email
+        payload.app_metadata?.email
 
-      console.log("[GoogleAuth] Email from payload:", email)
+      console.log("[GoogleAuth] Email:", email || "not in token")
 
-      if (!email) {
-        // Fall back: try to fetch email from the auth identity
-        try {
-          const authIdentity = await sdk.client.fetch<any>(
-            "/auth/session",
-            {
-              method: "GET",
-              headers: { authorization: `Bearer ${token}` },
-            }
-          )
-          console.log("[GoogleAuth] Auth session:", authIdentity)
-        } catch (e) {
-          console.error("[GoogleAuth] Auth session fetch failed:", e)
-        }
-      }
-
-      // Try to create the customer — swallow error if it already exists
       try {
         await sdk.store.customer.create(
-          { email: email || `google-user-${Date.now()}@djonova.com` },
+          email ? { email } : {},
           {},
           { authorization: `Bearer ${token}` }
         )
-        console.log("[GoogleAuth] Customer created successfully")
-      } catch (createError: any) {
-        const errMsg = createError?.message || String(createError)
-        console.log("[GoogleAuth] Customer creation result:", errMsg)
-        // If customer already exists, that's fine — continue
-        if (
-          !errMsg.toLowerCase().includes("already") &&
-          !errMsg.toLowerCase().includes("exist")
-        ) {
-          console.warn(
-            "[GoogleAuth] Non-duplicate customer creation error, continuing anyway"
-          )
-        }
+        console.log("[GoogleAuth] Customer created")
+      } catch (createErr: any) {
+        const msg = createErr?.message || String(createErr)
+        console.log("[GoogleAuth] Customer create result:", msg)
+        // Ignore "already exists" errors — that's fine
       }
 
-      // Refresh the token so it includes the actor_id
+      // -----------------------------------------------
+      // Refresh the token using SDK's proper method
+      // Now that customer exists, we get a real session
+      // -----------------------------------------------
       try {
-        console.log("[GoogleAuth] Step 5: Refreshing token")
-        const refreshResponse = await sdk.client.fetch<{ token: string }>(
-          "/auth/token/refresh",
-          {
-            method: "POST",
-            headers: { authorization: `Bearer ${token}` },
-          }
-        )
+        console.log("[GoogleAuth] Step 6: Refreshing token via SDK")
+        const refreshed = (await sdk.auth.refresh()) as string
 
-        if (refreshResponse?.token) {
-          finalToken = refreshResponse.token
-          await setAuthToken(finalToken)
-          console.log("[GoogleAuth] Token refreshed and stored")
-        } else {
-          console.warn(
-            "[GoogleAuth] Refresh returned no token, keeping original"
+        if (refreshed) {
+          finalToken = refreshed
+          console.log(
+            "[GoogleAuth] Refreshed token length:",
+            refreshed.length
           )
         }
-      } catch (refreshError: any) {
+      } catch (refreshErr: any) {
         console.warn(
-          "[GoogleAuth] Token refresh failed (non-fatal):",
-          refreshError?.message || refreshError
+          "[GoogleAuth] Refresh failed (non-fatal):",
+          refreshErr?.message
         )
-        // Keep the original token — the customer creation may still let us in
       }
     }
 
     // -----------------------------------------------
+    // Step C: Store the final token in the cookie
+    // -----------------------------------------------
+    console.log("[GoogleAuth] Step 7: Setting auth cookie")
+    await setAuthToken(finalToken)
+
+    // -----------------------------------------------
     // Step D: Clear the cached "not logged in" state
     // -----------------------------------------------
-    console.log("[GoogleAuth] Step 6: Revalidating customer cache")
     const customerCacheTag = await getCacheTag("customers")
-    revalidateTag(customerCacheTag)
+    if (customerCacheTag) {
+      revalidateTag(customerCacheTag)
+    }
 
     console.log("[GoogleAuth] ✅ All steps complete")
     return { success: true }
   } catch (error: any) {
-    console.error("[GoogleAuth] ❌ FATAL error in completeGoogleLogin:", error)
-    console.error("[GoogleAuth] Error stack:", error?.stack)
+    console.error("[GoogleAuth] ❌ FATAL:", error?.message || error)
+    console.error("[GoogleAuth] Stack:", error?.stack)
     return {
       success: false,
       error: error?.message || String(error),
