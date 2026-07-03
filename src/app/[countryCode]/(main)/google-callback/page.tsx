@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams, useParams } from "next/navigation"
+import { completeGoogleLogin } from "@lib/data/google-auth-actions"
 
 export default function GoogleCallbackPage() {
   const router = useRouter()
@@ -33,6 +34,7 @@ export default function GoogleCallbackPage() {
       try {
         setStatus("Verifying with Medusa...")
 
+        // STEP 1: Exchange the Google code for a Medusa token
         const response = await fetch(
           `${backendUrl}/auth/customer/google/callback?code=${encodeURIComponent(
             code
@@ -53,18 +55,27 @@ export default function GoogleCallbackPage() {
 
         const data = await response.json()
 
-        if (data.token) {
-          document.cookie = `_medusa_jwt=${data.token}; path=/; max-age=604800; SameSite=Lax; Secure`
-
-          setStatus("Success! Redirecting to your account...")
-
-          setTimeout(() => {
-            router.push(`/${countryCode}/account`)
-            router.refresh()
-          }, 500)
-        } else {
+        if (!data.token) {
           throw new Error("No token received from Medusa")
         }
+
+        // STEP 2: Hand the token to the SERVER so it can
+        // set the proper HTTP-only cookie, create the
+        // customer record if needed, and clear the cache
+        setStatus("Setting up your account...")
+
+        const result = await completeGoogleLogin(data.token)
+
+        if (!result.success) {
+          throw new Error(result.error || "Login completion failed")
+        }
+
+        setStatus("Success! Redirecting to your account...")
+
+        setTimeout(() => {
+          router.push(`/${countryCode}/account`)
+          router.refresh()
+        }, 500)
       } catch (error) {
         console.error("Google callback failed:", error)
         setStatus("Sign in failed. Redirecting...")
