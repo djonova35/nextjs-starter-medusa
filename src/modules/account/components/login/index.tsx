@@ -65,6 +65,22 @@ const Login = ({ setCurrentView }: Props) => {
   const [message, formAction] = useActionState(login, null)
 
   return (
+    // Inside your Login component's return statement, before the email/password form:
+
+<GoogleLoginButton />
+
+<div style={{
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  margin: "16px 0",
+  color: "#666",
+  fontSize: "14px",
+}}>
+  <div style={{ flex: 1, height: "1px", backgroundColor: "#e5e5e5" }} />
+  <span>or</span>
+  <div style={{ flex: 1, height: "1px", backgroundColor: "#e5e5e5" }} />
+</div>
     <div
       className="max-w-sm w-full flex flex-col items-center"
       data-testid="login-page"
