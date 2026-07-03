@@ -19,7 +19,7 @@ export default function GoogleCallbackPage() {
       if (!code) {
         setStatus("No authorization code received. Redirecting...")
         setTimeout(() => {
-          router.push(`/${countryCode}/account?error=google_auth_failed`)
+          router.push(`/${countryCode}/account?error=no_code`)
         }, 2000)
         return
       }
@@ -34,7 +34,6 @@ export default function GoogleCallbackPage() {
       try {
         setStatus("Verifying with Medusa...")
 
-        // STEP 1: Exchange the Google code for a Medusa token
         const response = await fetch(
           `${backendUrl}/auth/customer/google/callback?code=${encodeURIComponent(
             code
@@ -50,7 +49,11 @@ export default function GoogleCallbackPage() {
         )
 
         if (!response.ok) {
-          throw new Error(`Auth failed: ${response.status}`)
+          const errorText = await response.text()
+          console.error("Medusa callback error response:", errorText)
+          throw new Error(
+            `Medusa returned ${response.status}: ${errorText.slice(0, 200)}`
+          )
         }
 
         const data = await response.json()
@@ -59,29 +62,35 @@ export default function GoogleCallbackPage() {
           throw new Error("No token received from Medusa")
         }
 
-        // STEP 2: Hand the token to the SERVER so it can
-        // set the proper HTTP-only cookie, create the
-        // customer record if needed, and clear the cache
         setStatus("Setting up your account...")
 
         const result = await completeGoogleLogin(data.token)
 
+        // Even if result.success is false, the cookie may have been set
+        // Just try going to the account page — the middleware will redirect
+        // back to login if genuinely not authenticated
         if (!result.success) {
-          throw new Error(result.error || "Login completion failed")
+          console.warn(
+            "completeGoogleLogin reported failure:",
+            result.error
+          )
+          setStatus("Almost there, redirecting...")
+        } else {
+          setStatus("Success! Redirecting to your account...")
         }
 
-        setStatus("Success! Redirecting to your account...")
-
+        // Redirect to account regardless — if cookie was set, user is in
         setTimeout(() => {
           router.push(`/${countryCode}/account`)
           router.refresh()
-        }, 500)
-      } catch (error) {
+        }, 800)
+      } catch (error: any) {
         console.error("Google callback failed:", error)
-        setStatus("Sign in failed. Redirecting...")
+        setStatus(`Sign in issue: ${error.message}. Redirecting...`)
         setTimeout(() => {
-          router.push(`/${countryCode}/account?error=google_auth_failed`)
-        }, 2000)
+          router.push(`/${countryCode}/account`)
+          router.refresh()
+        }, 3000)
       }
     }
 
@@ -111,7 +120,9 @@ export default function GoogleCallbackPage() {
           animation: "spin 1s linear infinite",
         }}
       />
-      <p style={{ fontSize: "16px", color: "#333" }}>{status}</p>
+      <p style={{ fontSize: "16px", color: "#333", maxWidth: "400px" }}>
+        {status}
+      </p>
       <style jsx>{`
         @keyframes spin {
           to {
