@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams, useParams } from "next/navigation"
 import { completeGoogleLoginFromParams } from "@lib/data/google-auth-actions"
 
@@ -10,7 +10,21 @@ export default function GoogleCallbackPage() {
   const params = useParams()
   const [status, setStatus] = useState("Signing you in with Google...")
 
+  // -----------------------------------------------------
+  // useRef persists across re-renders — we use it as
+  // a guard to make sure the callback only fires ONCE
+  // even if React's strict mode calls useEffect twice
+  // -----------------------------------------------------
+  const hasRunRef = useRef(false)
+
   useEffect(() => {
+    // Bail out on the second call
+    if (hasRunRef.current) {
+      console.log("[GoogleCallback] Already ran, skipping second invocation")
+      return
+    }
+    hasRunRef.current = true
+
     const handleCallback = async () => {
       const countryCode = (params.countryCode as string) || "gb"
 
@@ -35,7 +49,9 @@ export default function GoogleCallbackPage() {
 
         if (!result.success) {
           console.error("Login failed:", result.error)
-          setStatus(`Sign in issue: ${result.error?.slice(0, 100)}`)
+          setStatus(
+            `Sign in issue: ${result.error?.slice(0, 100)}. Redirecting...`
+          )
           setTimeout(() => {
             router.push(`/${countryCode}/account`)
             router.refresh()
