@@ -1,33 +1,20 @@
-// -----------------------------------------------------
-// Google Auth Client-Side Utility
-// -----------------------------------------------------
-// Medusa v2's Google auth endpoint returns a JSON
-// response containing the actual Google URL to redirect
-// to. We fetch that JSON, then perform the redirect
-// ourselves in the browser.
-// -----------------------------------------------------
-
 export async function loginWithGoogle(): Promise<void> {
   const backendUrl =
     process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
     "https://medusa-production-08a5.up.railway.app"
 
-  if (!backendUrl) {
-    console.error("Medusa backend URL not configured")
-    return
-  }
-
   const publishableKey =
     process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ""
 
-  // Where Google will send the user back to after they log in
-  const callbackUrl = `${window.location.origin}/account/google-callback`
+  // Detect the current country code from the URL
+  // e.g. "/gb/account" → "gb"
+  const pathSegments = window.location.pathname.split("/").filter(Boolean)
+  const countryCode = pathSegments[0] || "gb"
+
+  // Callback URL for THIS country — must match Google Cloud Console
+  const callbackUrl = `${window.location.origin}/${countryCode}/account/google-callback`
 
   try {
-    // -----------------------------------------------
-    // STEP 1: Ask Medusa where to send the user
-    // Medusa responds with { location: "https://accounts.google.com/..." }
-    // -----------------------------------------------
     const response = await fetch(
       `${backendUrl}/auth/customer/google?callback_url=${encodeURIComponent(
         callbackUrl
@@ -44,15 +31,12 @@ export async function loginWithGoogle(): Promise<void> {
 
     if (!response.ok) {
       throw new Error(
-        `Failed to initiate Google login: ${response.status} ${response.statusText}`
+        `Failed to initiate Google login: ${response.status}`
       )
     }
 
     const data = await response.json()
 
-    // -----------------------------------------------
-    // STEP 2: Redirect the browser to Google
-    // -----------------------------------------------
     if (data.location) {
       window.location.href = data.location
     } else {
