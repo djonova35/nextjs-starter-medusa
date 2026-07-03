@@ -1,3 +1,7 @@
+// -----------------------------------------------------
+// Google Auth Client-Side Utility
+// -----------------------------------------------------
+
 export async function loginWithGoogle(): Promise<void> {
   const backendUrl =
     process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
@@ -7,12 +11,11 @@ export async function loginWithGoogle(): Promise<void> {
     process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ""
 
   // Detect the current country code from the URL
-  // e.g. "/gb/account" → "gb"
   const pathSegments = window.location.pathname.split("/").filter(Boolean)
   const countryCode = pathSegments[0] || "gb"
 
-  // Callback URL for THIS country — must match Google Cloud Console
-  const callbackUrl = `${window.location.origin}/${countryCode}/account/google-callback`
+  // ⚠️ Callback URL WITHOUT /account/ — matches new file location
+  const callbackUrl = `${window.location.origin}/${countryCode}/google-callback`
 
   try {
     const response = await fetch(
