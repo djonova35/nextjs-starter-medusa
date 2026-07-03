@@ -6,10 +6,10 @@ import OrderCard from "../order-card"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 
-// Logic to add inside your Order display component:
-
-const OrderTimer = ({ order }: { order: any }) => {
-  const deliveryDate = order.metadata?.[`delivery_date_${order.id}`]
+// Corrected OrderTimer with Medusa type safety
+const OrderTimer = ({ order }: { order: HttpTypes.StoreOrder }) => {
+  // Use optional chaining and type casting if metadata is strictly typed
+  const deliveryDate = (order.metadata as Record<string, any>)?.[`delivery_date_${order.id}`]
   
   if (!deliveryDate) return null
 
@@ -20,22 +20,22 @@ const OrderTimer = ({ order }: { order: any }) => {
   const timeLeft = expiryDate.getTime() - now.getTime()
   const daysLeft = Math.ceil(timeLeft / (1000 * 60 * 60 * 24))
 
-  if (daysLeft <= 0) return <p className="text-red-500">Return window closed</p>
+  if (daysLeft <= 0) return <p className="text-red-500 mt-2">Return window closed</p>
 
   return (
     <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-4">
       <p className="font-bold">Return Window: {daysLeft} days remaining</p>
       
-      {/* THE REFUND BUTTON */}
       <button 
-        onClick={() => /* open your refund modal */}
-        className="mt-2 bg-black text-white px-4 py-2 rounded"
+        onClick={() => { /* Open your refund modal here */ }}
+        className="mt-2 bg-black text-white px-4 py-2 rounded text-sm hover:bg-gray-800 transition"
       >
         Request Refund
       </button>
     </div>
   )
 }
+
 const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
   if (orders?.length) {
     return (
@@ -46,6 +46,8 @@ const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
             className="border-b border-gray-200 pb-6 last:pb-0 last:border-none"
           >
             <OrderCard order={o} />
+            {/* FIX: Render the timer directly under the order card */}
+            <OrderTimer order={o} />
           </div>
         ))}
       </div>
