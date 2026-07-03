@@ -3,7 +3,8 @@ import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
-import DeliveryInfo from "../../../../components/DeliveryInfo"   // ← Correct path for checkout
+import DeliveryInfo from "../../../../components/DeliveryInfo"
+import CartRecommendations from "@modules/cart/components/cart-recommendations"  // ← ADDED THIS LINE
 
 const CheckoutSummary = ({ cart }: { cart: any }) => {
   return (
