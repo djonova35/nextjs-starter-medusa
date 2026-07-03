@@ -48,6 +48,27 @@ export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
     ...(await getAuthHeaders()),
   }
 
+  // ------------------------------------------------------
+// Trigger the Google OAuth flow
+// This sends the user to Google to authenticate, then
+// Google redirects them back to your callback URL
+// ------------------------------------------------------
+export async function loginWithGoogle() {
+  const backendUrl =
+    process.env.MEDUSA_BACKEND_URL ||
+    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
+
+  if (!backendUrl) {
+    throw new Error("Medusa backend URL not configured")
+  }
+
+  // Redirect the user to Medusa's Google auth endpoint
+  // Medusa handles the OAuth handshake and calls back
+  window.location.href = `${backendUrl}/auth/customer/google?callback_url=${encodeURIComponent(
+    window.location.origin + "/account/google-callback"
+  )}`
+}
+
   const updateRes = await sdk.store.customer
     .update(body, {}, headers)
     .then(({ customer }) => customer)
