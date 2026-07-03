@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache"
 import { getCacheTag, setAuthToken } from "./cookies"
 
 // -----------------------------------------------------
-// Decode JWT payload to check if customer exists
+// Decode JWT payload
 // -----------------------------------------------------
 function decodeJwtPayload(token: string): Record<string, any> {
   try {
@@ -20,11 +20,46 @@ function decodeJwtPayload(token: string): Record<string, any> {
 }
 
 // -----------------------------------------------------
-// Complete the Google OAuth callback using the SDK's
-// built-in method. This handles:
-// - Exchanging the code with Medusa
-// - Creating the customer record if first-time
-// - Returning a proper session token
+// Manually refresh the token by calling Medusa's
+// refresh endpoint with the current token in the header
+// -----------------------------------------------------
+async function manualRefreshToken(currentToken: string): Promise<string | null> {
+  const backendUrl =
+    process.env.MEDUSA_BACKEND_URL ||
+    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
+    "https://medusa-production-08a5.up.railway.app"
+
+  const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ""
+
+  try {
+    const response = await fetch(`${backendUrl}/auth/token/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-publishable-api-key": publishableKey,
+        authorization: `Bearer ${currentToken}`,
+      },
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error(
+        `[GoogleAuth] Manual refresh HTTP ${response.status}:`,
+        errorText.slice(0, 200)
+      )
+      return null
+    }
+
+    const data = await response.json()
+    return data?.token || null
+  } catch (err: any) {
+    console.error("[GoogleAuth] Manual refresh threw error:", err?.message)
+    return null
+  }
+}
+
+// -----------------------------------------------------
+// Complete the Google OAuth callback
 // -----------------------------------------------------
 export async function completeGoogleLoginFromParams(
   queryParams: Record<string, string>
@@ -34,102 +69,120 @@ export async function completeGoogleLoginFromParams(
 
   try {
     // -----------------------------------------------
-    // Step A: Use SDK's built-in callback method
-    // This does the code-for-token exchange for us
+    // Step A: SDK does the code-for-token exchange
     // -----------------------------------------------
     console.log("[GoogleAuth] Step 2: Calling sdk.auth.callback")
 
-    const token = (await sdk.auth.callback(
+    const initialToken = (await sdk.auth.callback(
       "customer",
       "google",
       queryParams
     )) as string
 
     console.log(
-      "[GoogleAuth] Step 3: Received token, length:",
-      token?.length || 0
+      "[GoogleAuth] Step 3: Received initial token, length:",
+      initialToken?.length || 0
     )
 
-    if (!token) {
+    if (!initialToken) {
       return { success: false, error: "SDK callback returned no token" }
     }
 
     // -----------------------------------------------
-    // Step B: Check if customer record exists yet
-    // by inspecting the token's actor_id
+    // Step B: Check if customer exists
     // -----------------------------------------------
-    const payload = decodeJwtPayload(token)
-    console.log("[GoogleAuth] Step 4: Token payload actor_id:", payload.actor_id)
+    const payload = decodeJwtPayload(initialToken)
+    console.log(
+      "[GoogleAuth] Step 4: Initial token actor_id:",
+      payload.actor_id || "(empty - new user)"
+    )
 
-    let finalToken = token
+    let finalToken = initialToken
 
+    // -----------------------------------------------
+    // Step C: If no actor_id, create customer AND
+    // then manually refresh with the initial token
+    // in the authorization header
+    // -----------------------------------------------
     if (!payload.actor_id) {
-      // -----------------------------------------------
-      // First-time Google user — need to create the
-      // customer record before the token becomes valid
-      // -----------------------------------------------
-      console.log(
-        "[GoogleAuth] Step 5: First-time user, creating customer"
-      )
-
       const email =
         payload.email ||
         payload.user_metadata?.email ||
         payload.app_metadata?.email
 
-      console.log("[GoogleAuth] Email:", email || "not in token")
+      console.log("[GoogleAuth] Step 5: Creating customer for", email)
 
       try {
         await sdk.store.customer.create(
           email ? { email } : {},
           {},
-          { authorization: `Bearer ${token}` }
+          { authorization: `Bearer ${initialToken}` }
         )
-        console.log("[GoogleAuth] Customer created")
+        console.log("[GoogleAuth] Customer create call completed")
       } catch (createErr: any) {
         const msg = createErr?.message || String(createErr)
         console.log("[GoogleAuth] Customer create result:", msg)
-        // Ignore "already exists" errors — that's fine
+        // Ignore "already exists" errors
       }
 
       // -----------------------------------------------
-      // Refresh the token using SDK's proper method
-      // Now that customer exists, we get a real session
+      // MANUAL refresh — pass the initial token in header
+      // This is the key fix
       // -----------------------------------------------
-      try {
-        console.log("[GoogleAuth] Step 6: Refreshing token via SDK")
-        const refreshed = (await sdk.auth.refresh()) as string
+      console.log("[GoogleAuth] Step 6: Manually refreshing token")
+      const refreshedToken = await manualRefreshToken(initialToken)
 
-        if (refreshed) {
-          finalToken = refreshed
-          console.log(
-            "[GoogleAuth] Refreshed token length:",
-            refreshed.length
-          )
-        }
-      } catch (refreshErr: any) {
-        console.warn(
-          "[GoogleAuth] Refresh failed (non-fatal):",
-          refreshErr?.message
+      if (refreshedToken) {
+        finalToken = refreshedToken
+        const refreshedPayload = decodeJwtPayload(refreshedToken)
+        console.log(
+          "[GoogleAuth] Refreshed token actor_id:",
+          refreshedPayload.actor_id || "(still empty - bad)"
+        )
+        console.log(
+          "[GoogleAuth] Refreshed token length:",
+          refreshedToken.length
+        )
+      } else {
+        console.error(
+          "[GoogleAuth] ⚠️ Refresh returned no token — using initial (login will fail)"
         )
       }
     }
 
     // -----------------------------------------------
-    // Step C: Store the final token in the cookie
+    // Step D: Store the final token in the cookie
     // -----------------------------------------------
     console.log("[GoogleAuth] Step 7: Setting auth cookie")
     await setAuthToken(finalToken)
 
     // -----------------------------------------------
-    // Step D: Clear the cached "not logged in" state
+    // Step E: Clear cache so account page re-fetches
     // -----------------------------------------------
     const customerCacheTag = await getCacheTag("customers")
     if (customerCacheTag) {
       revalidateTag(customerCacheTag)
     }
 
-    console.log("[GoogleAuth] ✅ All steps complete")
+    // -----------------------------------------------
+    // Step F: Sanity check — does the final token
+    // actually have an actor_id?
+    // -----------------------------------------------
+    const finalPayload = decodeJwtPayload(finalToken)
+    if (!finalPayload.actor_id) {
+      console.error(
+        "[GoogleAuth] ❌ Final token has no actor_id — user won't stay logged in"
+      )
+      return {
+        success: false,
+        error: "Token refresh did not attach customer ID",
+      }
+    }
+
+    console.log(
+      "[GoogleAuth] ✅ All steps complete, actor_id:",
+      finalPayload.actor_id
+    )
     return { success: true }
   } catch (error: any) {
     console.error("[GoogleAuth] ❌ FATAL:", error?.message || error)
